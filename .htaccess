@@ -1,0 +1,10 @@
+DirectoryIndex tinyfier.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule . tinyfier.php [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    ErrorDocument 404 tinyfier.php
+</IfModule>
