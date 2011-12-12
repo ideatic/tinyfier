@@ -1,0 +1,42 @@
+/* 
+   CSS Sprites text
+*/
+
+.login, .logout, .register, .profile {
+   width: 16px;
+   height: 16px;
+}
+
+.login {
+    background: sprite('images/user_go.png', 'user') no-repeat;
+}
+
+.logout {
+    background: sprite('images/user_delete.png', 'user') no-repeat;
+}
+
+.register {
+    background: sprite('images/user_add.png', 'user') no-repeat;
+}
+
+.profile {
+    background: sprite('images/user.png', 'user') no-repeat;
+}
+
+.social-share {
+    div {
+        width: 64px;
+        height: 64px;
+    }
+    #fb {
+        background: sprite('images/social/facebook.png', 'social') no-repeat;
+    }
+
+    #twitter {
+        background: sprite('images/social/twitter.png', 'social') no-repeat;
+    }
+
+    #gplus {
+        background: inline('images/social/gplus.png') no-repeat;
+    }
+}

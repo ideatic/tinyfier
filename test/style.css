@@ -1,0 +1,65 @@
+/* Import sprites */
+@import url("sprites.less");//import files must have .less extension for be added to the current document, otherwise will be treated as normal CSS imports!
+
+/* Vars */
+@borders: #DDD;
+@background: #F9F9F9;
+@header_start: #E9F6FB;
+@header_middle: #EEF9FE;
+@header_end: #DFF1F7;
+@header_height: 150px;
+@footer_start: #F4F2F2;
+
+/* Layout */
+
+header, article, footer, aside{
+    display:block;
+
+}
+
+body{
+    background: @background;
+    margin: 0;
+}
+
+header{
+    background: gradient('vertical', @header_start, @header_middle 50%, @header_end, 1px, @header_height);
+    border-bottom: 1px solid @borders;
+    padding-bottom: 10px;
+    text-align: center;
+
+    h1{
+    margin:0;
+    line-height:@header_height;
+}
+}
+
+article{
+
+    margin: 0 auto;
+    width: 50%;
+}
+
+#logo{
+    float: left;
+    background: url("images/compress.png") no-repeat;
+    width: 128px;
+    height: 128px;
+    margin: 10px;
+    @border-radius(10px);
+    @box-shadow(5px, 5px, 5px, rgba(0,0,0,.5));
+}
+
+#sidebar {
+    float: left;
+}
+
+footer{
+    background: gradient('vertical', @footer_start, @background, 1px, 50px);
+    border-top: 1px solid @borders;
+    color: #666666;
+    height: 80px;
+    margin-top: 15px;
+    padding-top: 10px;
+    text-align: center;
+}
