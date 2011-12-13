@@ -1,4 +1,4 @@
-nbproject/
-cache/
-tcompiler.php
-TODO.txt
+/nbproject/
+/TODO.txt
+/tinyfier/cache/*
+/tinyfier/tcompiler.php

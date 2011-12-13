@@ -4,9 +4,11 @@
 /* Vars */
 @borders: #DDD;
 @background: #F9F9F9;
-@header_start: #E9F6FB;
-@header_middle: #EEF9FE;
-@header_end: #DFF1F7;
+
+@header_start: @base;
+@header_middle: lighten(@base, 5%);
+@header_end: darken(@base, 10%);
+
 @header_height: 150px;
 @footer_start: #F4F2F2;
 

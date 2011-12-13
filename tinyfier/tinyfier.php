@@ -1,26 +1,20 @@
 <?php
 
 /**
- * Tinyfier 0.2 (http://www.digitalestudio.es/proyectos/tinyfier/)
- *
- * Mucha parte del código se ha obtenido de otros paquetes y librerías como:
- *
- *  -Minify (http://code.google.com/p/minify/)
+ * Tinyfier 0.2 (https://github.com/javiermarinros/Tinyfier)
  *
  * @author Javier Marín <www.digitalestudio.es>
  * @license http://opensource.org/licenses/bsd-license.php  New BSD License
- * @copyright 2009 Javier Marín. All rights reserved.
  * @see http://www.digitalestudio.es/proyectos/tinyfier/
  * @package Tinyfier
  */
-
 /*
  * Configuration
  */
 $cache_dir = dirname(__FILE__) . '/cache'; //Path to cache folder
 $auto_compatibility_mode = true; // Detect automatically IE7-
 $max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 1800; //Max time for user caché
-$file_separator = ','; //Source files separator
+$separator = ','; //Source files separator
 
 $debug = isset($_GET['debug']); //Debug mode, useful during development
 $recache = isset($_GET['recache']); //Disable cache
@@ -34,47 +28,53 @@ ini_set('display_errors', false);
 ini_set('log_errors', 'On');
 ini_set('error_log', dirname(__FILE__) . '/error_log.txt');
 
-//Get source files
+//Get input string
 if (isset($_SERVER['PATH_INFO'])) {
-    $sources = $_SERVER['PATH_INFO'][0] == '/' ? substr($_SERVER['PATH_INFO'], 1) : $_SERVER['PATH_INFO'];
+    $input_string = $_SERVER['PATH_INFO'][0] == '/' ? substr($_SERVER['PATH_INFO'], 1) : $_SERVER['PATH_INFO'];
 } else if (isset($_GET['f'])) {
-    $sources = $_GET['f'];
-} else {
-    $script_path = dirname($_SERVER['PHP_SELF']) . '/';
-    $request_uri = $_SERVER['REQUEST_URI'];
-    $sources = strpos($request_uri, $script_path) === 0 ? substr($request_uri, strlen($script_path)) : $request_uri;
-    if (($query_start = strpos($sources, '?')) !== false) {
-        $sources = substr($sources, 0, $query_start);
-    }
+    $input_string = $_GET['f'];
 }
 
 //Check that source files are safe and well-formed
-if (empty($sources) || !preg_match("/^[^{$file_separator}]+\.(css|js)(?:{$file_separator}[^{$file_separator}]+\.\\1)*$/", $sources, $type) || strpos($sources, '//') !== false
-        || strpos($sources, '\\') !== false || strpos($sources, './') !== false) {
+if (empty($input_string) || strpos($input_string, '//') !== false || strpos($input_string, '\\') !== false || strpos($input_string, './') !== false) {
     header('HTTP/1.0 400 Bad Request');
-    die('Invalid source files or filetype');
+    die('Invalid source files');
 }
-$type = $type[1];
-$source_files = explode($file_separator, $sources);
+$input_data = explode($separator, $input_string);
 
-//Get source files path and last mod time
+//Get source files path, type, last mod time, and input vars
 $last_modified = 0;
 $files = array();
+$vars = array();
+$type = null;
 $base_path = dirname(dirname($_SERVER['SCRIPT_FILENAME']));
-foreach ($source_files as $relative_path) {
-    $absolute_path = $relative_path[0] == '/' ? "{$_SERVER['DOCUMENT_ROOT']}/$relative_path" : "$base_path/$relative_path";
+foreach ($input_data as $input) {
+    if (strpos($input, '=') !== false) {//Input data
+        $parts = explode('=', urldecode($input));
+        $vars[$parts[0]] = $parts[1];
+    } else {//Input file
+        $absolute_path = $input[0] == '/' ? "{$_SERVER['DOCUMENT_ROOT']}/$input" : "$base_path/$input";
 
-    if (!is_readable($absolute_path)) {//Check if file exits in the last file folder
-        $absolute_path = isset($last_path) ? dirname($last_path) . '/' . $relative_path : false;
-        if ($absolute_path === false || !is_readable($absolute_path)) { //File not found
-            header('HTTP/1.0 400 Bad Request');
-            die("File '$relative_path' not found");
+        if (!is_readable($absolute_path)) {//Check if file exits in the last file folder
+            $absolute_path = isset($last_path) ? dirname($last_path) . '/' . $input : false;
+            if ($absolute_path === false || !is_readable($absolute_path)) { //File not found
+                header('HTTP/1.0 400 Bad Request');
+                die("File '$input' not found");
+            }
         }
-    }
 
-    $last_modified = max($last_modified, filemtime($absolute_path));
-    $last_path = $absolute_path;
-    $files[$relative_path] = $absolute_path;
+        $extension = $pos = substr($input, strrpos($input, '.') + 1);
+        if (empty($extension) || (isset($type) && $type != $extension)) {
+            header('HTTP/1.0 400 Bad Request');
+            die('Invalid filetype');
+        } elseif (!isset($type)) {
+            $type = $extension;
+        }
+
+        $last_modified = max($last_modified, filemtime($absolute_path));
+        $last_path = $absolute_path;
+        $files[$input] = $absolute_path;
+    }
 }
 
 //Check IF-MODIFIED-SINCE header
@@ -98,6 +98,7 @@ if (strpos($accept_encoding, 'gzip') !== false) {
     $encoding = 'none';
 }
 
+//Extra check for GZIP support (from Minify project, http://code.google.com/p/minify/)
 $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 if (strpos($ua, 'Mozilla/4.0 (compatible; MSIE ') === 0 && strpos($ua, 'Opera') === false) {// quick escape for non-IEs
     $IE_version = (float) substr($ua, 30);
@@ -118,7 +119,7 @@ if (!$debug) {
 $compatible_mode = $type == 'css' ? ($auto_compatibility_mode && !isset($_GET['compatible']) ? isset($IE_version) && $IE_version <= 7 : isset($_GET['compatible'])) : false;
 
 //Check cache
-$cache_prefix = 'tynifier_' . md5($sources);
+$cache_prefix = 'tynifier_' . md5($input_string);
 $cache_id = $cache_prefix . '_' . $last_modified . ($compatible_mode ? '_compatible' : '') . '.' . $type;
 $cache_file = $cache_dir . '/' . $cache_id . ($encoding != 'none' ? ".$encoding" : '');
 
@@ -130,16 +131,16 @@ if (!file_exists($cache_file) || $debug || $recache) :
             require 'js/js.php';
 
             //Combine
-            $source = '';
+            $source = array();
             foreach ($files as $relative_path => $absolute_path) {
                 if ($debug) {
-                    $source .= "\n\n\n/* $relative_path */\n\n\n";
+                    $source [] = "\n\n\n/* $relative_path */\n\n\n";
                 }
-                $source .= file_get_contents($absolute_path) . "\n";
+                $source [] = file_get_contents($absolute_path) . "\n";
             }
 
             //Compress
-            $source = JS::compress($source, array(
+            $source = JS::compress(implode('', $source), array(
                         'pretty' => $debug,
                         'gclosure' => !$debug //No usar Google Closure en modo debug
                     ));
@@ -147,22 +148,27 @@ if (!file_exists($cache_file) || $debug || $recache) :
             require 'css/css.php';
 
             //Process and compress
-            $css_sources = array();
+            $source = array();
             foreach ($files as $relative_path => $absolute_path) {
-                if ($debug)
-                    $css_sources[] = "\n\n\n/* $relative_path */\n\n\n";
+                if ($debug) {
+                    $source[] = "\n\n\n/* $input */\n\n\n";
+                }
 
-                $css_sources[] = CSS::process(array(
+                $source[] = CSS::process(array(
                             'absolute_path' => $absolute_path,
                             'relative_path' => $relative_path,
                             'cache_path' => $cache_dir,
                             'pretty' => $debug,
+                            'data' => $vars,
                             'ie_compatible' => $compatible_mode
                         ));
             }
 
             //Combine
-            $source = trim(implode('', $css_sources));
+            $source = trim(implode('', $source));
+        } else {
+            header('HTTP/1.0 400 Bad Request');
+            die('Invalid source type');
         }
     } catch (Exception $err) {
         header('HTTP/1.1 500 Internal Server Error');

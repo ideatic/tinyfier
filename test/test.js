@@ -5,6 +5,10 @@ function decrease(){
     change_font_size(1/1.25);
 }
 
+function change_theme(base_color){
+    $('#theme').attr('href', '../tinyfier/tinyfier.php/test/style.css,base=%23'+base_color);
+}
+
 function change_font_size(incr){    
     var ourText = $('body');
     var currFontSize = ourText.css('fontSize');

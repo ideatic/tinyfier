@@ -11,7 +11,7 @@ class tinyfier_less extends lessc {
     public function __construct($settings) {
         parent::__construct();
         $this->_settings = $settings;
-        $this->_cache_prefix = basename($this->_settings['relative_path'], '.css') . '_' . substr(md5($this->_settings['absolute_path']), 0, 5);
+        $this->_cache_prefix = basename($this->_settings['relative_path'], '.css') . '_' . substr(md5($this->_settings['absolute_path'].  serialize($this->_settings['data'])), 0, 5);
     }
 
     public function parse($str = null, $initial_variables = null) {

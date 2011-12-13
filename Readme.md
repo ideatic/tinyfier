@@ -1,7 +1,30 @@
 # Tinyfier v0.2
 #### <http://www.digitalestudio.es/proyectos/tinyfier/>
 
-`Tinyfier` is a CSS and Javascript preprocessing and minification tool.
+`Tinyfier` is a CSS and Javascript preprocessing and minification tool. 
+It combines multiple CSS or Javascript files, removes unnecessary whitespace and comments, and serves them with gzip encoding and optimal client-side cache headers.
+
+### Usage
+
+For compress and process your javascript and stylesheets files, all that you
+need to do is replace the original URL:
+
+    http://example.com/static/stylesheet.css
+
+By this:
+
+    http://example.com/static/tinyfier/f=stylesheet.css
+
+You can also join multiple files into a larger one, reducing the number of
+HTTP request and making your application fly!
+
+    http://example.com/static/tinyfier/f=main.css,user.css,print.css
+
+Also, if you want to pass extra variables to the LESS parser, you can do by adding
+it into the URL, for example:
+
+    http://example.com/static/tinyfier/f=stylesheet.css,base_color=%23ff0000
+    http://example.com/static/tinyfier/f=stylesheet.css,height=450
 
 ### Javascript
 

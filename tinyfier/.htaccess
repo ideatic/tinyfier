@@ -4,9 +4,16 @@ DirectoryIndex tinyfier.php
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . tinyfier.php [L]
+    
+    # Rewrite URLs like "/tinyfier/f=..." to "/tinyfier/tinyfier.php?f=..."
+    RewriteRule ^(f=.*) tinyfier.php?$1 [L,NE]
 </IfModule>
 
 <IfModule !mod_rewrite.c>
     ErrorDocument 404 tinyfier.php
+</IfModule>
+
+<IfModule mod_env.c>
+    # In case AddOutputFilterByType has been added
+    SetEnv no-gzip
 </IfModule>
