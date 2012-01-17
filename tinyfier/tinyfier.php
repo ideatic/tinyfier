@@ -11,9 +11,10 @@
 /*
  * Configuration
  */
-$cache_dir = dirname(__FILE__) . '/cache'; //Path to cache folder
+if (!isset($cache_dir))
+    $cache_dir = dirname(__FILE__) . '/cache'; //Path to cache folder
 $auto_compatibility_mode = true; // Detect automatically IE7-
-$max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 1800; //Max time for user caché
+$max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 604800; //Max time for user caché (default: 1 week)
 $separator = ','; //Source files separator
 
 $debug = isset($_GET['debug']); //Debug mode, useful during development

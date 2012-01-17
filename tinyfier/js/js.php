@@ -36,7 +36,7 @@ abstract class JS {
         if ($settings['pretty']) {
             return $source;
         } else {
-            require 'jsminplus.php';
+            require_once 'jsminplus.php';
             return JSMinPlus::minify($source);
         }
     }

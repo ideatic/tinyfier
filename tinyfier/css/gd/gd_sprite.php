@@ -32,7 +32,7 @@ class gd_sprite {
 
     /**
      * Crea el sprite CSS en memoria y devuelve su identificador
-     * @return mixed
+     * @return gd_image
      */
     public function build() {
         //Organizar imágenes dentro del sprite
@@ -41,7 +41,7 @@ class gd_sprite {
         //Dibujar sprite
         $sprite = $this->_draw_sprite();
 
-        return $sprite;
+        return new gd_image($sprite);
     }
 
     /**
@@ -88,14 +88,14 @@ class gd_sprite {
 }
 
 /**
- * Representa una imagen dentro de un sprite
+ * Represents an image inside a sprite
  */
 class gd_sprite_image {
 
     public function __construct($path) {
         $this->Path = $path;
-        list($this->Width, $this->Height, $type) = getimagesize($path);
-        $this->Handle = $this->_load_image($path, $type);
+        list($this->Width, $this->Height) = getimagesize($path);
+        $this->Handle = gd_image::load_image_handle($path);
     }
 
     /**
@@ -134,28 +134,4 @@ class gd_sprite_image {
      * @var mixed
      */
     public $Tag;
-
-    private function _load_image($path, $type) {
-        switch ($type) {
-            case IMAGETYPE_GIF :
-                return imagecreatefromgif($path);
-
-            case IMAGETYPE_JPEG:
-                return imagecreatefromjpeg($path);
-
-            case IMAGETYPE_PNG:
-                return imagecreatefrompng($path);
-
-            case IMAGETYPE_SWF :
-                return imagecreatefromswf($path);
-
-            case IMAGETYPE_WBMP :
-                return imagecreatefromwbmp($path);
-
-            case IMAGETYPE_XBM :
-                return imagecreatefromxbm($path);
-        }
-        return false;
-    }
-
 }

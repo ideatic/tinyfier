@@ -15,13 +15,13 @@ class HTML {
      */
     public static function Process($html, $compress_all = false) {
         if ($compress_all) {
-            require_once '../css/css.php';
-            require_once '../css/js.php';
+            require_once dirname(dirname(__FILE__)) . '/css/css.php';
+            require_once dirname(dirname(__FILE__)) . '/js/js.php';
 
             return Minify_HTML::minify($html, array(
-                'cssMinifier' => 'CSS::process',
-                'jsMinifier' => 'JS::process',
-            ));
+                        'cssMinifier' => 'CSS::process',
+                        'jsMinifier' => 'JS::compress',
+                    ));
         } else {
             return Minify_HTML::minify($html);
         }

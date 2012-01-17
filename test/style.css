@@ -1,5 +1,7 @@
 /* Import sprites */
 @import url("sprites.less");//import files must have .less extension for be added to the current document, otherwise will be treated as normal CSS imports!
+@import url("gradients.less");
+@import url("filters.less");
 
 /* Vars */
 @borders: #DDD;
@@ -50,6 +52,10 @@ article{
     margin: 10px;
     @border-radius(10px);
     @box-shadow(5px, 5px, 5px, rgba(0,0,0,.5));
+}
+
+#logo:hover{
+    background: filter("images/compress.png", "desaturate") no-repeat;
 }
 
 #sidebar {

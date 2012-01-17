@@ -18,3 +18,9 @@ function change_font_size(incr){
         fontSize: (finalNum*incr) + stringEnding
     },600);
 }
+
+$(document).ready(function(){
+    $('div[class]').each(function(){
+        $(this).attr('title',$(this).attr("class"));
+    });
+});

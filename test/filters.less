@@ -1,0 +1,58 @@
+/* 
+   CSS Sprites test
+*/
+
+#filters {
+
+     &:after{
+         content: ".";
+         display: block;
+         height: 0;
+         clear: both;
+         visibility: hidden;
+     }
+
+     div{
+         height:125px;
+         width:200px;
+         float: left;
+     }
+
+     .original{
+         background: url('images/lion.jpg');
+     }
+     .negate{
+         background: filter('images/lion.jpg', 'negate');
+     }
+     .grayscale{
+         background: filter('images/lion.jpg', 'grayscale');
+     }
+     .brightness{
+         background: filter('images/lion.jpg', 'brightness', 50%);
+     }
+     .contrast{
+         background: filter('images/lion.jpg', 'contrast', -50%);
+     }
+     .colorize{
+         background: filter('images/lion.jpg', 'colorize', 120,0,120);
+     }
+     .edges{
+         background: filter('images/lion.jpg', 'edges');
+     }
+     .emboss{
+         background: filter('images/lion.jpg', 'emboss');
+     }
+     .blur{
+         background: filter('images/lion.jpg', 'blur');
+     }
+     .mean_removal{
+         background: filter('images/lion.jpg', 'mean_removal');
+     }
+     .smooth{
+         background: filter('images/lion.jpg', 'smooth', 5%);
+     }
+     .pixelate{
+         background: filter('images/lion.jpg', 'pixelate', 10);
+     }
+
+ }
