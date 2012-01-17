@@ -70,3 +70,7 @@ You can also embed images in the document with the command `inline`
     #gplus {
         background: inline('images/social/gplus.png');
     }
+
+#### More
+
+Please, look in the test file for more examples for using Tinyfier in your project. It's really easy!

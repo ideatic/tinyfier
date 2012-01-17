@@ -2,6 +2,9 @@
 
 require 'lessc.inc.php';
 
+/**
+ * Custom lessphp extension for new functionality
+ */
 class tinyfier_less extends lessc {
 
     private $_settings;
@@ -109,8 +112,9 @@ class tinyfier_less extends lessc {
         call_user_func_array(array($image, 'filter'), array_merge(array($filter), $filter_args));
 
         //Save image and generate CSS
-        $path = $this->_get_cache_path('filter_' . $filter, 'png');
-        $image->save($path, 'png', true);
+        $format = in_array($image->format, array('gif', 'png', 'jpg')) ? $image->format : 'png';
+        $path = $this->_get_cache_path('filter_' . $filter, $format);
+        $image->save($path, $format, true);
         return array('string', "url('{$this->_get_cache_url($path)}')");
     }
 

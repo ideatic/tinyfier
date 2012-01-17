@@ -3,13 +3,15 @@
 class gd_image {
 
     protected $_handle;
+    public $format;
 
     public function __construct($path_or_handle) {
         if (is_string($path_or_handle))
-            $this->_handle = self::load_image_handle($path_or_handle);
+            $this->_handle = self::load_image_handle($path_or_handle, $this->format);
         else
             $this->_handle = $path_or_handle;
     }
+    
 
     /**
      * Save a image on the specified path
@@ -109,25 +111,31 @@ class gd_image {
      * @param string $path
      * @return boolean 
      */
-    public static function load_image_handle($path) {
+    public static function load_image_handle($path, &$format=null) {
         list($w, $h, $type) = getimagesize($path);
         switch ($type) {
             case IMAGETYPE_GIF :
+                $format='gif';
                 return imagecreatefromgif($path);
 
             case IMAGETYPE_JPEG:
+                $format='jpg';
                 return imagecreatefromjpeg($path);
 
             case IMAGETYPE_PNG:
+                $format='png';
                 return imagecreatefrompng($path);
 
             case IMAGETYPE_SWF :
+                $format='swf';
                 return imagecreatefromswf($path);
 
             case IMAGETYPE_WBMP :
+                $format='wbmp';
                 return imagecreatefromwbmp($path);
 
             case IMAGETYPE_XBM :
+                $format='xbm';
                 return imagecreatefromxbm($path);
         }
         return false;
