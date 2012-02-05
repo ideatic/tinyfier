@@ -122,8 +122,6 @@ class tinyfier_less extends lessc {
      * Generates a gradient compatible with old browsers
      */
     protected function lib_gradient($arguments) {
-        static $i = 0;
-
         $color_stops = array();
         $gradient_type = 'vertical';
         $gradient_width = 1;

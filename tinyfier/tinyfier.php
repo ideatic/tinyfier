@@ -27,7 +27,7 @@ $recache = isset($_GET['recache']); //Disable cache
 error_reporting(E_ALL & ~E_STRICT);
 ini_set('display_errors', false);
 ini_set('log_errors', 'On');
-ini_set('error_log', dirname(__FILE__) . '/error_log.txt');
+ini_set('error_log', isset($error_log) ? $error_log : dirname(__FILE__) . '/error_log.txt');
 
 //Get input string
 if (isset($_SERVER['PATH_INFO'])) {
@@ -78,7 +78,19 @@ foreach ($input_data as $input) {
     }
 }
 
-//Check IF-MODIFIED-SINCE header
+//Etag header
+if (!$debug) {
+    $etag = '"' . crc32($input_string . $last_modified) . '"';
+    if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strcmp($_SERVER['HTTP_IF_NONE_MATCH'], $etag) == 0 && !$recache) {
+        header('HTTP/1.1 304 Not Modified');
+        header('Content-Length: 0');
+        exit;
+    } else {
+        header("Etag: $etag");
+    }
+}
+
+//IF-MODIFIED-SINCE header
 if (!$debug) {
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && date_default_timezone_set('GMT') && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $last_modified && !$recache) {
         header('HTTP/1.1 304 Not Modified');
