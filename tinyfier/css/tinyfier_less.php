@@ -9,6 +9,9 @@ class tinyfier_less extends lessc {
 
     private $_settings;
     private $_sprites = array();
+    
+    //Disable inline images?
+    public $disable_inline = false;
 
     public function __construct($settings) {
         parent::__construct();
@@ -71,7 +74,7 @@ class tinyfier_less extends lessc {
         list($type, $value) = $arg;
         $url = $this->_remove_quotes(trim($value));
 
-        if (strpos($url, 'data:') !== 0) {
+        if (!$this->disable_inline && strpos($url, 'data:') !== 0) {
             $local_path = $this->_local_url($url);
             $content = @file_get_contents($local_path) or die("Can't retrieve $url content (looked in $local_path)");
             $url = 'data:image/' . pathinfo($local_path, PATHINFO_EXTENSION) . ';base64,' . base64_encode($content);
