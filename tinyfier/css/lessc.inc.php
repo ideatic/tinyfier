@@ -135,7 +135,7 @@ class lessc {
 	function parseChunk() {
 		if (empty($this->buffer)) return false;
 		$s = $this->seek();
-
+		
 		// setting a property
 		if ($this->keyword($key) && $this->assign() &&
 			$this->propertyValue($value) && $this->end())
@@ -327,7 +327,7 @@ class lessc {
 		while ($this->expression($exp)) {
 			$values[] = $exp;
 		}
-
+		
 		if (count($values) == 0) return false;
 
 		$exps = $this->compressList($values, ' ');
@@ -413,7 +413,7 @@ class lessc {
 	// consume a list of values for a property
 	function propertyValue(&$value) {
 		$values = array();	
-
+		
 		$s = null;
 		while ($this->expressionList($v)) {
 			$values[] = $v;
@@ -451,7 +451,7 @@ class lessc {
 			$value = $a;
 			return true;
 		}
-
+		
 		// color
 		if ($this->color($value)) return true;
 
@@ -580,7 +580,7 @@ class lessc {
 			$this->seek($s);
 			return false;
 		}
-
+		
 		$d = $delim;
 		return true;
 	}
@@ -636,7 +636,7 @@ class lessc {
 
 				$color[$i] = $t * (256/$width) + $t * floor(16/$width);
 			}
-
+			
 			$out = $color;
 			return true;
 		} 
@@ -663,7 +663,7 @@ class lessc {
 			$this->seek($s);
 			return false;
 		}
-
+		
 		$args = $values;
 		return true;
 	}
@@ -955,7 +955,7 @@ class lessc {
 					$parts[$i] = str_replace($this->parentSelector, $ptag, $chunk, $c);
 					$count += $c;
 				}
-
+				
 				$tag = implode("&", $parts);
 
 				if ($count > 0) {
@@ -1110,7 +1110,7 @@ class lessc {
 			return $value[1];
 		case 'string':
 			// [1] - contents of string (includes quotes)
-
+			
 			// search for inline variables to replace
 			$replace = array();
 			if (preg_match_all('/'.$this->preg_quote($this->vPrefix).'\{([\w-_][0-9\w-_]*)\}/', $value[1], $m)) {
@@ -1607,7 +1607,7 @@ class lessc {
 			if ($op == '-') $right[1] = '-'.$right[1];
 			return array('keyword', $this->compileValue($left) .' '. $this->compileValue($right));
 		}
-
+	
 		// default to number operation
 		return $this->op_number_number($op, $left, $right);
 	}
@@ -1715,7 +1715,7 @@ class lessc {
 		$this->env = $b;
 		return $b;
 	}
-
+	
 	// push a block that doesn't multiply tags
 	function pushSpecialBlock($name) {
 		$b = $this->pushBlock(array($name));
@@ -1769,7 +1769,7 @@ class lessc {
 
 		return null;
 	}
-
+	
 	/* raw parsing functions */
 
 	function literal($what, $eatWhitespace = true) {
@@ -1801,7 +1801,7 @@ class lessc {
 		$out = $m[1];
 		return true;
 	}
-
+	
 	// try to match something on head of buffer
 	function match($regex, &$out, $eatWhitespace = true) {
 		$r = '/'.$regex.($eatWhitespace ? '\s*' : '').'/Ais';
@@ -1816,7 +1816,7 @@ class lessc {
 	function peek($regex, &$out = null) {
 		$r = '/'.$regex.'/Ais';
 		$result =  preg_match($r, $this->buffer, $out, null, $this->count);
-
+		
 		return $result;
 	}
 
@@ -1887,7 +1887,7 @@ class lessc {
 			$this->set($name, $value);
 		}
 	}
-
+	
 	// parse and compile buffer
 	function parse($str = null, $initial_variables = null) {
 		$locale = setlocale(LC_NUMERIC, 0);
@@ -2236,3 +2236,4 @@ class lessc {
 		'yellowgreen' => '154,205,50'
 	);
 }
+
