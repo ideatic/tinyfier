@@ -47,7 +47,6 @@ abstract class CSS {
         require_once 'tinyfier_less.php';
         $less = new tinyfier_less($settings);
         $less->importDir = dirname($settings['absolute_path']);
-        $less->disable_inline = $settings['ie_compatible'];
         $css = $less->parse("$helpers\n$css", $settings['data']);
 
         // 3. Parse and remove IE hacks
