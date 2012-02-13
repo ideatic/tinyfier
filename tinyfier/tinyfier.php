@@ -30,10 +30,12 @@ ini_set('log_errors', 'On');
 ini_set('error_log', isset($error_log) ? $error_log : dirname(__FILE__) . '/error_log.txt');
 
 //Get input string
-if (isset($_SERVER['PATH_INFO'])) {
-    $input_string = $_SERVER['PATH_INFO'][0] == '/' ? substr($_SERVER['PATH_INFO'], 1) : $_SERVER['PATH_INFO'];
-} else if (isset($_GET['f'])) {
+if (isset($_GET['f'])) {
     $input_string = $_GET['f'];
+} else if (isset($_SERVER['PATH_INFO'])) {
+    $input_string = $_SERVER['PATH_INFO'][0] == '/' ? substr($_SERVER['PATH_INFO'], 1) : $_SERVER['PATH_INFO'];
+} else {
+    die('Input not found');
 }
 
 //Check that source files are safe and well-formed
