@@ -10,8 +10,8 @@ class tinyfier_less extends lessc {
     private $_settings;
     private $_sprites = array();
 
-    public function __construct($settings) {
-        parent::__construct();
+    public function __construct($file,$settings) {
+        parent::__construct($file);
         $this->_settings = $settings;
     }
 
@@ -185,17 +185,14 @@ class tinyfier_less extends lessc {
         $image->save($path, 'png', true);
 
         //Create CSS code
-        $color_positions_w3c = array();
-        $color_positions_webkit = array();
+        $css_color_positions = array();
         foreach ($color_stops as $stop) {
             list($position, $unit, $color) = $stop;
 
             $color = $this->_css_color($color);
-            $color_positions_w3c[] = "$color {$position}$unit";
-            $color_positions_webkit[] = "color-stop({$position}$unit,$color)";
+            $css_color_positions[] = "$color {$position}$unit";
         }
-        $color_positions_w3c = implode(',', $color_positions_w3c);
-        $color_positions_webkit = implode(',', $color_positions_webkit);
+        $css_color_positions = implode(',', $css_color_positions);
 
         $back_color = $this->_css_color($back_color);
 
@@ -204,41 +201,28 @@ class tinyfier_less extends lessc {
                 case 'vertical':
                     $repeat = 'repeat-x';
                     $position = 'top';
-                    $webkit_position = 'left top, left bottom';
                     break;
 
                 case 'horizontal':
                     $repeat = 'repeat-y';
                     $position = 'left';
-                    $webkit_position = 'left top, right top';
                     break;
 
                 case 'diagonal':
                     $repeat = '';
                     $position = '-45deg';
-                    $webkit_position = 'left top, right  bottom';
                     break;
 
                 default:
                     $repeat = '';
-                    $position = $webkit_position = $gradient_type;
+                    $position  = $gradient_type;
                     break;
             }
             $css = "background: url('{$this->_get_cache_url($path)}') $repeat $back_color; /* Old browsers */
-background: -moz-linear-gradient($position, $color_positions_w3c); /* FF3.6+ */
-background: -webkit-gradient(linear, $webkit_position, $color_positions_webkit); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient($position, $color_positions_w3c); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient($position, $color_positions_w3c); /* Opera11.10+ */
-background: -ms-linear-gradient($position, $color_positions_w3c); /* IE10+ */
-background: linear-gradient($position, $color_positions_w3c); /* W3C */";
+background: linear-gradient($position, $css_color_positions);";
         } else if ($gradient_type == 'radial') {
             $css = "background: url('{$this->_get_cache_url($path)}') no-repeat $back_color; /* Old browsers */
-background: -moz-radial-gradient(center, ellipse cover,$color_positions_w3c); /* FF3.6+ */
-background: -webkit-gradient(radial, center center, 0px, center center, 100%, $color_positions_webkit); /* Chrome,Safari4+ */
-background: -webkit-radial-gradient(center, ellipse cover, $color_positions_w3c); /* Chrome10+,Safari5.1+ */
-background: -o-radial-gradient(center, ellipse cover, $color_positions_w3c); /* Opera 12+ */
-background: -ms-radial-gradient(center, ellipse cover, $color_positions_w3c); /* IE10+ */
-background: radial-gradient(center, ellipse cover, $color_positions_w3c); /* W3C */";
+background: radial-gradient(center, ellipse cover, $css_color_positions);";
         } else {//It is necessary to use images
             $css = "background: url('{$this->_get_cache_url($path)}') $back_color;";
         }

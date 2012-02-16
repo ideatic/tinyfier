@@ -1,4 +1,4 @@
-# Tinyfier v0.2
+# Tinyfier v0.3
 #### <http://www.digitalestudio.es/proyectos/tinyfier/>
 
 `Tinyfier` is a CSS and Javascript preprocessing and minification tool. 
@@ -35,7 +35,7 @@ rely on JSMinPlus for that operation.
 
 For CSS files, `Tinyfier` uses the [lessphp parser by `leafo`](http://leafo.net/lessphp/) for add extra functionality to css files. This include 
 variables, mixins, expressions, nested blocks, etc. You can see all the available
-commands in [lessphp documentation](http://leafo.net/lessphp/docs/).
+commands in [lessphp documentation](http://leafo.net/lessphp/docs/). Also, the generated css code is optimized,  compressed and the CSS3 vendor prefix (like -*webkit* or *-moz*) are added, using [css_optimizer](https://github.com/javiermarinros/css_optimizer).
 
 Also, Tinyfier adds even more functionality:
 
