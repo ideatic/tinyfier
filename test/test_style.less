@@ -1,5 +1,6 @@
 /* Import sprites */
-@import url("sprites.less");//import files must have .less extension for be added to the current document, otherwise will be treated as normal CSS imports!
+@import url("sprites.less");
+//import files must have .less extension for be added to the current document, otherwise will be treated as normal CSS imports!
 @import url("gradients.less");
 @import url("filters.less");
 
@@ -16,49 +17,60 @@
 
 /* Layout */
 
-header, article, footer, aside{
-    display:block;
+header, article, footer, aside {
+    display: block;
 
 }
 
-body{
+body {
     background: @background;
     margin: 0;
-    font-family: "Segoe UI",Arial,Verdana,"Trebuchet MS",Helvetica,Tahoma,Verdana;
+    font-family: "Segoe UI", Arial, Verdana, "Trebuchet MS", Helvetica, Tahoma, Verdana;
 }
 
-header{
+a:link, a:visited {
+    color: blue;
+    transition: color .25s linear .1s;
+}
+
+a:hover {
+    color: red;
+    background-color: rgb(235, 235, 185);
+    transition: color .25s linear, background-color .15s linear .1s;
+}
+
+header {
     background: gradient('vertical', @header_start, @header_middle 50%, @header_end, 1px, @header_height);
     border-bottom: 1px solid @borders;
     padding-bottom: 10px;
     text-align: center;
 
-    h1{
-    margin:0;
-    line-height:@header_height;
-   color: #fff; 
-   text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
-   font-size: 80px;
-}
+    h1 {
+        margin: 0;
+        line-height: @header_height;
+        color: #fff;
+        text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
+        font-size: 80px;
+    }
 }
 
-article{
+article {
 
     margin: 0 auto;
     width: 50%;
 }
 
-#logo{
+#logo {
     float: left;
     background: url("images/compress.png") no-repeat;
     width: 128px;
     height: 128px;
     margin: 10px;
     border-radius: 10px;
-    box-shadow: 5px, 5px, 5px, rgba(0,0,0,.5);
+    box-shadow: 5px, 5px, 5px, rgba(0, 0, 0, .5);
 }
 
-#logo:hover{
+#logo:hover {
     background: filter("images/compress.png", "desaturate") no-repeat;
 }
 
@@ -66,7 +78,7 @@ article{
     float: left;
 }
 
-footer{
+footer {
     background: gradient('vertical', @footer_start, @background, 1px, 50px);
     border-top: 1px solid @borders;
     color: #666666;
@@ -74,4 +86,11 @@ footer{
     margin-top: 15px;
     padding-top: 10px;
     text-align: center;
+}
+
+/* Smartphones */
+@media only screen and (max-width : 480px) {
+    header h1 {
+        font-size: 50px;
+    }
 }

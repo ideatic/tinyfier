@@ -1,21 +1,21 @@
 <?php
 
-require 'lessc.inc.php';
+require_once 'lessc.inc.php';
 
 /**
- * Custom lessphp extension for new functionality
+ * Custom lessphp extension for add new functionality
  */
 class tinyfier_less extends lessc {
 
     private $_settings;
     private $_sprites = array();
 
-    public function __construct($file,$settings) {
+    public function __construct($file, $settings) {
         parent::__construct($file);
         $this->_settings = $settings;
     }
 
-    public function parse($str = null, $initial_variables = null) {
+    public function parse($str = NULL, $initial_variables = NULL) {
         $this->_sprites = array();
 
         //Process with lessphp base class
@@ -30,14 +30,14 @@ class tinyfier_less extends lessc {
 
             //Save (only if not equal!)
             $path = $this->_get_cache_path("sprite_$group", 'png');
-            $image->save($path, 'png', true);
+            $image->save($path, 'png', TRUE);
             $sprite_url = $this->_get_cache_url($path);
 
             //Replace sprite marks by the correct CSS
             foreach ($sprite->images() as $sprite_image) {
                 /* @var $sprite_image gd_sprite_image */
-                $css = "url('$sprite_url') -{$sprite_image->Left}px -{$sprite_image->Top}px";
-                $result = str_replace($sprite_image->Tag, $css, $result);
+                $css = "url('$sprite_url') -{$sprite_image->left}px -{$sprite_image->top}px";
+                $result = str_replace($sprite_image->tag, $css, $result);
             }
         }
 
@@ -51,7 +51,7 @@ class tinyfier_less extends lessc {
         list($type, $value) = $arg;
         $url = $this->_remove_quotes(trim($value));
 
-        if (strpos($url, 'data:') !== 0) {//Don't rewrite embedded images
+        if (strpos($url, 'data:') !== 0) { //Don't rewrite embedded images
             if ($url[0] != '/' && strpos($url, 'http://') !== 0) { //Rewrite relative URL from tinyfier script path
                 if ($this->_settings['relative_path'][0] == '/') {
                     $url = $this->_clear_path(dirname($this->_settings['relative_path']) . '/' . $url);
@@ -73,8 +73,12 @@ class tinyfier_less extends lessc {
 
         if (strpos($url, 'data:') !== 0) {
             $local_path = $this->_local_url($url);
+            $ext = pathinfo($local_path, PATHINFO_EXTENSION);
+            if (!in_array($ext, array('png', 'gif', 'jpg', 'jpeg'))) {
+                die("The file extension '$ext' is not allowed for inline images");
+            }
             $content = @file_get_contents($local_path) or die("Can't retrieve $url content (looked in $local_path)");
-            $url = 'data:image/' . pathinfo($local_path, PATHINFO_EXTENSION) . ';base64,' . base64_encode($content);
+            $url = "data:image/$ext;base64," . base64_encode($content);
         }
         return array($type, "url('$url')");
     }
@@ -114,7 +118,7 @@ class tinyfier_less extends lessc {
         //Save image and generate CSS
         $format = in_array($image->format, array('gif', 'png', 'jpg')) ? $image->format : 'png';
         $path = $this->_get_cache_path('filter_' . $filter, $format);
-        $image->save($path, $format, true);
+        $image->save($path, $format, TRUE);
         return array('string', "url('{$this->_get_cache_url($path)}')");
     }
 
@@ -126,22 +130,26 @@ class tinyfier_less extends lessc {
         $gradient_type = 'vertical';
         $gradient_width = 1;
         $gradient_height = 50;
-        $size_changed = false;
+        $size_changed = FALSE;
 
         //Get input parameters
         foreach ($arguments[2] as $argument) {
             $type = $argument[0];
             switch ($type) {
-                case 'color'://Start or end color
-                    $is_initial_color = isset($is_initial_color) ? false : true;
+                case 'raw_color':
+                case 'color': //Start or end color  
+                    $argument = $this->coerceColor($argument);
+                    $is_initial_color = isset($is_initial_color) ? FALSE : TRUE;
+                    // $color = $type == 'color' ? array($argument[1], $argument[2], $argument[3]) : $this->coerceColor($argument[1]);
                     $color_stops[] = array($is_initial_color ? 0 : 100, '%', array($argument[1], $argument[2], $argument[3]));
                     break;
                 case 'list':
                     $list_data = $argument[2];
-                    if ($list_data[0][0] == 'color') { //Color and position
+                    if ($list_data[0][0] == 'color' || $list_data[0][0] == 'raw_color') { //Color and position
                         $color_index = 0;
                         $position_index = 1;
-                    } else {//Position and color
+                        $list_data[$color_index] = $this->coerceColor($list_data[$color_index]);
+                    } else { //Position and color
                         $color_index = 1;
                         $position_index = 0;
                     }
@@ -150,7 +158,7 @@ class tinyfier_less extends lessc {
                     $unit = $list_data[$position_index][0];
                     $color_stops[] = array($position, $unit, $color);
                     break;
-                case 'string'://Gradient type
+                case 'string': //Gradient type
                     $gradient_type = strtolower($this->_remove_quotes($argument[1]));
                     if ($gradient_type == 'vertical' && !$size_changed) {
                         $gradient_width = 1;
@@ -160,15 +168,15 @@ class tinyfier_less extends lessc {
                         $gradient_height = 1;
                     }
                     break;
-                case 'px'://Image size (first time received: width, other times: height)
+                case 'px': //Image size (first time received: width, other times: height)
                     if (!$size_changed) {
-                        if ($gradient_type == 'vertical')//If the gradient is vertical, we only need the height parameter
+                        if ($gradient_type == 'vertical') //If the gradient is vertical, we only need the height parameter
                             $gradient_height = $argument[1];
                         else
                             $gradient_width = $argument[1];
-                        $size_changed = true;
+                        $size_changed = TRUE;
                     } else {
-                        if ($gradient_type == 'vertical')//If the gradient is vertical and we have two parameters, restore width parameter
+                        if ($gradient_type == 'vertical') //If the gradient is vertical and we have two parameters, restore width parameter
                             $gradient_width = $gradient_height;
                         $gradient_height = $argument[1];
                     }
@@ -180,9 +188,9 @@ class tinyfier_less extends lessc {
         require_once 'gd/gd_gradients.php';
         require_once 'gd/gd_image.php';
         $gd = new gd_gradients();
-        $image = $gd->generate_gradient($gradient_width, $gradient_height, $color_stops, $gradient_type, false, $back_color);
+        $image = $gd->generate_gradient($gradient_width, $gradient_height, $color_stops, $gradient_type, FALSE, $back_color);
         $path = $this->_get_cache_path('gradient', 'png');
-        $image->save($path, 'png', true);
+        $image->save($path, 'png', TRUE);
 
         //Create CSS code
         $css_color_positions = array();
@@ -215,7 +223,7 @@ class tinyfier_less extends lessc {
 
                 default:
                     $repeat = '';
-                    $position  = $gradient_type;
+                    $position = $gradient_type;
                     break;
             }
             $css = "background: url('{$this->_get_cache_url($path)}') $repeat $back_color; /* Old browsers */
@@ -223,7 +231,7 @@ background: linear-gradient($position, $css_color_positions);";
         } else if ($gradient_type == 'radial') {
             $css = "background: url('{$this->_get_cache_url($path)}') no-repeat $back_color; /* Old browsers */
 background: radial-gradient(center, ellipse cover, $css_color_positions);";
-        } else {//It is necessary to use images
+        } else { //It is necessary to use images
             $css = "background: url('{$this->_get_cache_url($path)}') $back_color;";
         }
 
@@ -260,7 +268,7 @@ background: radial-gradient(center, ellipse cover, $css_color_positions);";
     private function _local_url($url) {
         if ($url[0] == '/') { //Relative to DOCUMENT_ROOT
             $url = realpath($_SERVER['DOCUMENT_ROOT'] . $url);
-        } elseif (strpos($url, 'http://') !== 0) {//Relative to the document
+        } elseif (strpos($url, 'http://') !== 0) { //Relative to the document
             $url = realpath(dirname($this->_settings['absolute_path']) . '/' . $url);
         }
         return $url;
@@ -317,7 +325,7 @@ background: radial-gradient(center, ellipse cover, $css_color_positions);";
             $hex = '';
             for ($i = 0; $i < count($color); $i++) {
                 $h = dechex($color[$i]);
-                $hex .= ( strlen($h) < 2 ? '0' : '') . $h;
+                $hex .= (strlen($h) < 2 ? '0' : '') . $h;
             }
             return "#$hex";
         } else if ($color[0] != '#') {

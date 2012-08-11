@@ -2,7 +2,7 @@
 
 /**
  * Funcionalidad para la creación de degradados utilizando la librería GD
- * 
+ *
  * @author Javier Marín <www.digitalestudio.es>
  */
 class gd_gradients {
@@ -18,13 +18,13 @@ class gd_gradients {
      * @param array $background_color Si se indica, devuelve el último color que forma el degradado en su parte más exterior
      * @return gd_image
      */
-    public function generate_gradient($width, $height, $color_stops, $direction='vertical', $invert=false, &$background_color=null) {
+    public function generate_gradient($width, $height, $color_stops, $direction = 'vertical', $invert = FALSE, &$background_color = NULL) {
         //Crear imagen
-        $image = imagecreatetruecolor($width, $height);
+        $image = imagecreateTRUEcolor($width, $height);
 
         //Calcular el número de líneas a dibujar
         $lines;
-        $fill_background = false;
+        $fill_background = FALSE;
         switch ($direction) {
             case 'vertical':
                 $lines = $height;
@@ -40,9 +40,9 @@ class gd_gradients {
                 $center_y = $height / 2;
                 $rh = $height > $width ? 1 : $width / $height;
                 $rw = $width > $height ? 1 : $height / $width;
-                $lines = ceil(max($width, $height) / 1.5);//Lo correcto sería /2, pero se aplica 1.5 para expandir el degradado y hacerlo más similar al generado por los navegadores
+                $lines = ceil(max($width, $height) / 1.5); //Lo correcto sería /2, pero se aplica 1.5 para expandir el degradado y hacerlo más similar al generado por los navegadores
 
-                $fill_background = true;
+                $fill_background = TRUE;
                 $invert = !$invert; //The gradient is drawn from outside to inside
                 break;
             case 'square':
@@ -61,7 +61,7 @@ class gd_gradients {
                 break;
 
             default:
-                return false;
+                return FALSE;
                 break;
         }
 
@@ -84,9 +84,9 @@ class gd_gradients {
         ksort($colors);
 
         $positions = array_keys($colors);
-        if (!isset($colors[0]))//Usar el primero como color de inicio
+        if (!isset($colors[0])) //Usar el primero como color de inicio
             $colors[0] = $colors[reset($positions)];
-        if (!isset($colors[100]))//Usar el último como color final
+        if (!isset($colors[100])) //Usar el último como color final
             $colors[100] = $colors[end($positions)];
 
         //Fill background
@@ -113,12 +113,12 @@ class gd_gradients {
         for ($i = 0; $i < $lines; $i = $i + $incr) {
             //Escoger color
             $total_progress = 100 / $lines * $i;
-            if ($total_progress >= $end_color_progress) {//Cambiar de rango de colores
+            if ($total_progress >= $end_color_progress) { //Cambiar de rango de colores
                 //Buscar color inicial a partir del progreso total
                 $j = intval($total_progress);
                 do {
                     $color_index = array_search($j--, $color_change_positions);
-                } while ($color_index === false && $j >= 0);
+                } while ($color_index === FALSE && $j >= 0);
 
                 //Obtener colores inicio y final para este rango
                 $start_color_progress = $color_change_positions[$color_index];
@@ -134,15 +134,15 @@ class gd_gradients {
 
             //Dibujar línea
             switch ($direction) {
-                case 'vertical'://Draw from top to bottom
+                case 'vertical': //Draw from top to bottom
                     imagefilledrectangle($image, 0, $i, $width, $i + $incr, $color);
                     break;
 
-                case 'horizontal'://Draw from left to right
+                case 'horizontal': //Draw from left to right
                     imagefilledrectangle($image, $i, 0, $i + $incr, $height, $color);
                     break;
 
-                case 'diagonal'://Draw from top-left to bottom-right
+                case 'diagonal': //Draw from top-left to bottom-right
                     imagefilledpolygon($image, array(
                         $i, 0,
                         $i + $incr, 0,
@@ -150,15 +150,15 @@ class gd_gradients {
                         0, $i), 4, $color);
                     break;
 
-                case 'square'://Draw from outside to center
+                case 'square': //Draw from outside to center
                     imagefilledrectangle($image, $i * $width / $height, $i * $height / $width, $width - ($i * $width / $height), $height - ($i * $height / $width), $color);
                     break;
 
-                case 'radial'://Draw from outside to center
+                case 'radial': //Draw from outside to center
                     imagefilledellipse($image, $center_x, $center_y, ($lines - $i) * $rh * 2, ($lines - $i) * $rw * 2, $color);
                     break;
 
-                case 'diamond'://Draw from outside to center
+                case 'diamond': //Draw from outside to center
                     imagefilledpolygon($image, array(
                         $width / 2, $i * $rw - 0.5 * $height,
                         $i * $rh - 0.5 * $width, $height / 2,

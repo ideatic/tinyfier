@@ -3,7 +3,7 @@
     <head>
         <title>Tinyfier Test</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link id="theme" type="text/css" rel="stylesheet" href="../tinyfier/tinyfier.php/test/style.css,base=%23e9f6fb" />
+        <link id="theme" type="text/css" rel="stylesheet" href="../tinyfier/tinyfier.php/test/test_style.less,base=%23e9f6fb" />
         <script type="text/javascript" src="../tinyfier/tinyfier.php/test/js/jquery-dev.js,test.js"></script>
     </head>
     <body>
@@ -68,6 +68,8 @@
                 <div class="horizontal-stops"></div>
                 <div class="diagonal-stops"></div>
             </div>
+            <h2>Generated CSS</h2>
+            <iframe src="../tinyfier/tinyfier.php/test/test_style.less,base=%23e9f6fb" style="width: 100%;height: 350px;border: 1px solid #CCC;"></iframe>
         </article>
         <footer>Powered by <a href="https://github.com/javiermarinros/Tinyfier">Tinyfier</a></footer>
     </body>

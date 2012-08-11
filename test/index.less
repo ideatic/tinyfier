@@ -1,0 +1,168 @@
+@background: #F9F9F9;
+
+html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: @background;
+    opacity: 1;
+}
+
+body { // background: radial-gradient(center 0, ellipse cover, #fbfcfe 0%,#d8ecf2 100%) no-repeat;
+    background: gradient('vertical', #D2E5F3 0%, @background 300px, 1px, 300px);
+    height: 100%;
+    font-family: "Segoe UI", Arial, Verdana, "Trebuchet MS", Helvetica, Tahoma, Verdana;
+    padding: 20px;
+}
+
+a {
+    transition: color .25s linear .1s;
+    -webkit-transition: color .25s linear .1s;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+
+header {
+    width: 500px;
+
+    h1 a {
+
+        &:link, &:visited {
+            color: #ffffff;
+        }
+
+        &:hover {
+            color: #eeeeee;
+        }
+
+    }
+
+    h1, h1 a {
+        color: white;
+        text-shadow: 0px 1px 0px #999999, 0px 2px 0px #888, 0px 3px 0px #777777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
+        font-size: 80px;
+        margin-top: 5px;
+        margin-left: 0px;
+        margin-bottom: 15px;
+        margin-right: 0;
+        text-decoration: none;
+    }
+
+    h2, h2 a {
+        text-shadow: 0px 1px 8px black;
+        text-align: right;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    h2:hover a, a:hover {
+        color: black;
+    }
+}
+
+@media print {
+    body {
+        background: white;
+    }
+}
+
+#editor, #extra {
+    clear: both;
+    margin: 15px 0;
+
+    &:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+}
+
+#editor {
+    &>div {
+        float: left;
+        width: 40%;
+        margin: 0 20px;
+    }
+}
+
+#editor label, h3 {
+    display: block;
+    text-shadow: 0 1px 0 #fff;
+    line-height: 2.5em;
+    font-size: 95%;
+    font-weight: bold;
+}
+
+h3 {
+    border-bottom: 1px solid #555;
+    line-height: 2em;
+}
+
+textarea, .CodeMirror {
+    height: 450px;
+    transition: box-shadow 500ms;
+    overflow: hidden;
+
+    background: linear-gradient(top, #E3E3E3 10%, white 40%);
+    background: -webkit-linear-gradient(top, #E3E3E3 10%, white 40%);
+
+    box-shadow: 0 0 0 1px #aaa, 0 0 20px rgba(0, 0, 0, .4);
+}
+
+.CodeMirror-scroll {
+    height: 450px;
+}
+
+textarea:hover, .CodeMirror:hover, textarea:focus, .CodeMirror-focused {
+    box-shadow: 0 0 0 1px #777777, 0 0 20px rgba(0, 0, 0, .4);
+}
+
+#extra > div {
+    float: left;
+    min-width: 250px;
+    _width: 300px; /* HACK */
+    margin: 0 10px;
+}
+
+#submit {
+
+    clear: both;
+    margin: 15px 0;
+
+    input:hover {
+        border-color: #666666;
+        color: #000000;
+    }
+}
+
+    #submit input, .tools input {
+        background: linear-gradient(center top, #DDDDDD 0%, #FFFFFF 100%);
+        border: 1px solid #BBB;
+        border-radius: 11px;
+        color: #464646;
+        cursor: pointer;
+        line-height: 16px;
+        padding: 2px 8px;
+    }
+
+.tools{
+    margin-top: 15px;
+}
+
+@-webkit-keyframes "slide" {
+    0%
+    {
+        left: 0;
+        box-shadow: 10px 10px 10px black;
+    }
+
+    100%
+    {
+        left: 50px;
+        box-shadow: 5px 5px 5px black;
+    }
+}

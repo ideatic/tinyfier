@@ -11,18 +11,18 @@ class gd_image {
         else
             $this->_handle = $path_or_handle;
     }
-    
+
 
     /**
      * Save a image on the specified path
      * @param string $path
      * @param bool $check_is_equal Check, before save, that the file exists and it's equal to the current image
-     * @return bool Image write (true); error or image skipped (false)
+     * @return bool Image write (TRUE); error or image skipped (FALSE)
      */
-    public function save($path, $format = 'png', $check_is_equal = true, $quality = 90) {
+    public function save($path, $format = 'png', $check_is_equal = TRUE, $quality = 90) {
         //Check if image exists and is equal
         if ($check_is_equal && file_exists($path) && self::compare_images($this->_handle, $path)) {
-            return false; //Same images, don't overwrite
+            return FALSE; //Same images, don't overwrite
         }
 
         //Save image
@@ -35,7 +35,7 @@ class gd_image {
                 return imagegif($this->_handle, $path);
 
             default:
-                imagesavealpha($this->_handle, true);
+                imagesavealpha($this->_handle, TRUE);
                 return imagepng($this->_handle, $path, 9, PNG_ALL_FILTERS);
         }
     }
@@ -44,7 +44,7 @@ class gd_image {
      * Apply a filter on the selected image
      * @see http://php.net/manual/function.imagefilter.php
      * @param string $path
-     * @param string $filter 
+     * @param string $filter
      */
     public function filter($filter, $arg1 = '', $arg2 = '', $arg3 = '') {
         switch ($filter) {
@@ -97,7 +97,7 @@ class gd_image {
                 break;
 
             case 'pixelate':
-                imagefilter($this->_handle, IMG_FILTER_PIXELATE, $arg1, isset($arg2) ? $arg2 : false);
+                imagefilter($this->_handle, IMG_FILTER_PIXELATE, $arg1, isset($arg2) ? $arg2 : FALSE);
                 break;
 
             default:
@@ -109,36 +109,36 @@ class gd_image {
     /**
      * Load an image and returns its handle
      * @param string $path
-     * @return boolean 
+     * @return boolean
      */
-    public static function load_image_handle($path, &$format=null) {
+    public static function load_image_handle($path, &$format = NULL) {
         list($w, $h, $type) = getimagesize($path);
         switch ($type) {
             case IMAGETYPE_GIF :
-                $format='gif';
+                $format = 'gif';
                 return imagecreatefromgif($path);
 
             case IMAGETYPE_JPEG:
-                $format='jpg';
+                $format = 'jpg';
                 return imagecreatefromjpeg($path);
 
             case IMAGETYPE_PNG:
-                $format='png';
+                $format = 'png';
                 return imagecreatefrompng($path);
 
             case IMAGETYPE_SWF :
-                $format='swf';
+                $format = 'swf';
                 return imagecreatefromswf($path);
 
             case IMAGETYPE_WBMP :
-                $format='wbmp';
+                $format = 'wbmp';
                 return imagecreatefromwbmp($path);
 
             case IMAGETYPE_XBM :
-                $format='xbm';
+                $format = 'xbm';
                 return imagecreatefromxbm($path);
         }
-        return false;
+        return FALSE;
     }
 
     /**
@@ -155,7 +155,7 @@ class gd_image {
 
         //Comparar tamaños
         if (imagesx($image_a) != imagesx($image_b) || imagesy($image_a) != imagesy($image_b))
-            return false;
+            return FALSE;
 
         //Comparar píxeles
         for ($x = 0; $x <= imagesx($image_a) - 1; $x++) {
@@ -169,13 +169,13 @@ class gd_image {
                     $alpha_b = ($color_index_b >> 24) & 0x7F;
                     if ($alpha_a != 0 || $alpha_b != 0) {
                         // echo "Píxel ($x, $y) distinto: $color_index_a != $color_index_b\n";
-                        return false;
+                        return FALSE;
                     }
                 }
             }
         }
 
-        return true;
+        return TRUE;
     }
 
 }

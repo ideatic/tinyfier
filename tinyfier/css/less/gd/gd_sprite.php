@@ -7,7 +7,7 @@ class gd_sprite {
 
     /**
      * Array con las imágenes añadidas al sprite
-     * @var gd_sprite_image 
+     * @var gd_sprite_image
      */
     private $_images;
 
@@ -18,15 +18,15 @@ class gd_sprite {
     /**
      * Añade una nueva imagen al sprite
      */
-    public function add_image($path, $tag=null) {
+    public function add_image($path, $tag = NULL) {
         //Comprobar que el archivo no está ya incluido
         foreach ($this->_images as $image) {
-            if ($image->Path == $path)
+            if ($image->path == $path)
                 return;
         }
 
         $im = new gd_sprite_image($path);
-        $im->Tag = $tag;
+        $im->tag = $tag;
         $this->_images[] = $im;
     }
 
@@ -58,9 +58,9 @@ class gd_sprite {
     private function _sort_images() {
         $y = 0;
         foreach ($this->_images as $image) {
-            $image->Top = $y;
-            $image->Left = 0;
-            $y+=$image->Height;
+            $image->top = $y;
+            $image->left = 0;
+            $y += $image->height;
         }
     }
 
@@ -72,15 +72,15 @@ class gd_sprite {
         $w = 0;
         $h = 0;
         foreach ($this->_images as $image) {
-            $w = max($w, $image->Left + $image->Width);
-            $h = max($w, $image->Top + $image->Height);
+            $w = max($w, $image->left + $image->width);
+            $h = max($w, $image->top + $image->height);
         }
 
         //Crear sprite
-        $sprite = imagecreatetruecolor($w, $h);
-        imagealphablending($sprite, false); //Soporte de transparencias
+        $sprite = imagecreateTRUEcolor($w, $h);
+        imagealphablending($sprite, FALSE); //Soporte de transparencias
         foreach ($this->_images as $image) {
-            imagecopy($sprite, $image->Handle, $image->Left, $image->Top, 0, 0, $image->Width, $image->Height);
+            imagecopy($sprite, $image->handle, $image->left, $image->top, 0, 0, $image->width, $image->height);
         }
         return $sprite;
     }
@@ -93,45 +93,45 @@ class gd_sprite {
 class gd_sprite_image {
 
     public function __construct($path) {
-        $this->Path = $path;
-        list($this->Width, $this->Height) = getimagesize($path);
-        $this->Handle = gd_image::load_image_handle($path);
+        $this->path = $path;
+        list($this->width, $this->height) = getimagesize($path);
+        $this->handle = gd_image::load_image_handle($path);
     }
 
     /**
      * Ruta del archivo original que forma esta imagen
      * @var string
      */
-    public $Path;
-    
+    public $path;
+
     /**
      * Identificador de la imagen para su manipulación
      * @var mixed
      */
-    public $Handle;
+    public $handle;
     /**
      * Ancho de la imagen
-     * @var int 
+     * @var int
      */
-    public $Width;
+    public $width;
     /**
      * Altura de la imagen
-     * @var int 
+     * @var int
      */
-    public $Height;
+    public $height;
     /**
      * Número de píxeles respecto al border superior donde se mostrará la imagen
      * @var int
      */
-    public $Top;
-     /**
+    public $top;
+    /**
      * Número de píxeles respecto al border izquierdo donde se mostrará la imagen
      * @var int
      */
-    public $Left;
+    public $left;
     /**
      * Información asociada a esta imagen
      * @var mixed
      */
-    public $Tag;
+    public $tag;
 }

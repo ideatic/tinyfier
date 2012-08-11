@@ -2,7 +2,7 @@
 
 /**
  * css_optimizer - Add vendor prefixes in your CSS files for cross browser compatibility
- * 
+ *
  * --
  * Copyright (c) Javier Marín
  *
@@ -12,10 +12,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,13 +24,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * --
- * 
- * @package		css_optimizer
- * @link		https://github.com/javiermarinros/css_optimizer
- * @version		1
- * @author		Javier Marín <https://github.com/javiermarinros>
+ *
+ * @package        css_optimizer
+ * @link        https://github.com/javiermarinros/css_optimizer
+ * @version        1
+ * @author        Javier Marín <https://github.com/javiermarinros>
  * @copyright           Javier Marín <https://github.com/javiermarinros>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
  */
 require 'cssmin.php';
 
@@ -47,48 +47,48 @@ class css_optimizer {
 
     public static function default_settings() {
         return array(
-            'compress' => true,
-            'optimize' => true,
-            'extra_optimize' => false,
-            'remove_ie_hacks' => false,
+            'compress' => TRUE,
+            'optimize' => TRUE,
+            'extra_optimize' => FALSE,
+            'remove_ie_hacks' => FALSE,
             'prefix' => array(
-                'webkit' => true,
-                'mozilla' => true,
-                'opera' => true,
-                'microsoft' => true,
+                'webkit' => TRUE,
+                'mozilla' => TRUE,
+                'opera' => TRUE,
+                'microsoft' => TRUE,
             ),
         );
     }
 
     public function process($css) {
         $plugins = array(
-            'Variables' => false,
+            'Variables' => FALSE,
             'ConvertFontWeight' => $this->_settings['optimize'],
             'ConvertHslColors' => $this->_settings['optimize'],
             'ConvertRgbColors' => $this->_settings['optimize'],
             'ConvertNamedColors' => $this->_settings['optimize'],
             'CompressUnitValues' => $this->_settings['optimize'],
-            'CompressExpressionValues' => false,
+            'CompressExpressionValues' => FALSE,
             //Custom
             'CustomCompressColorValues' => $this->_settings['optimize'],
         );
 
         $filters = array(
-            'ImportImports' => false,
+            'ImportImports' => FALSE,
             'RemoveComments' => $this->_settings['optimize'],
             'RemoveEmptyRulesets' => $this->_settings['optimize'],
             'RemoveEmptyAtBlocks' => $this->_settings['optimize'],
             'ConvertLevel3AtKeyframes' => $this->_settings['optimize'],
-            'ConvertLevel3Properties' => false,
-            'Variables' => false,
+            'ConvertLevel3Properties' => FALSE,
+            'Variables' => FALSE,
             'RemoveLastDelarationSemiColon' => $this->_settings['optimize'],
             'SortRulesetProperties' => $this->_settings['extra_optimize'],
             //Custom filters
             'AddVendorPrefix' => $this->_settings['prefix'],
             'CustomConvertLevel3Properties' => $this->_settings['prefix'],
             'RemoveIEHacks' => $this->_settings['remove_ie_hacks'],
-                //   'OptimizeSelectorsCompressionRatio' => $this->_settings['extra_optimize'],
-                //  'OptimizeRulesCompressionRatio' => $this->_settings['extra_optimize'],
+            //   'OptimizeSelectorsCompressionRatio' => $this->_settings['extra_optimize'],
+            //  'OptimizeRulesCompressionRatio' => $this->_settings['extra_optimize'],
         );
 
 
@@ -99,9 +99,9 @@ class css_optimizer {
             //   $filter->apply($minifier->getMinifiedTokens());
         }
 
-        if (!$this->_settings['compress']) {//Format result
+        if (!$this->_settings['compress']) { //Format result
             $formatter = new CssOtbsFormatter($minifier->getMinifiedTokens(), "\t", 25);
-            $min = (string) $formatter;
+            $min = (string)$formatter;
         } else {
             $min = $minifier->getMinified();
         }
@@ -109,14 +109,14 @@ class css_optimizer {
         if (CssMin::hasErrors()) {
             $this->_errors = CssMin::getErrors();
         } else {
-            $this->_errors = null;
+            $this->_errors = NULL;
         }
 
         return $min;
     }
 
     /**
-     * Errors produced during the last execution 
+     * Errors produced during the last execution
      */
     public function errors() {
         return $this->_errors;
@@ -128,23 +128,23 @@ class CssCustomCompressColorValuesMinifierPlugin extends CssCompressColorValuesM
 
     /**
      * Regular expression matching 6 char hexadecimal color values.
-     * 
+     *
      * @var string
      */
     private $reMatch = "/\#([0-9a-f]{6})/iS";
 
     /**
      * Implements {@link aCssMinifierPlugin::minify()}.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
     public function apply(aCssToken &$token) {
-        if (strpos($token->Value, "#") !== false) {
+        if (strpos($token->Value, "#") !== FALSE) {
 
             //Ignore IE filters colors, they needs full hex colors
-            if ($token instanceof aCssDeclarationToken && strpos($token->Property, "filter") !== false)
-                return false;
+            if ($token instanceof aCssDeclarationToken && strpos($token->Property, "filter") !== FALSE)
+                return FALSE;
 
             preg_match_all($this->reMatch, $token->Value, $matches, PREG_SET_ORDER);
             foreach ($matches as $m) {
@@ -154,12 +154,13 @@ class CssCustomCompressColorValuesMinifierPlugin extends CssCompressColorValuesM
                 }
             }
         }
-        return false;
+        return FALSE;
     }
 
 }
 
 class CssCustomConvertLevel3PropertiesMinifierFilter extends CssConvertLevel3PropertiesMinifierFilter {
+    private static $config;
 
     function __construct(CssMinifier $minifier, array $configuration = array()) {
         parent::__construct($minifier, $configuration);
@@ -167,55 +168,58 @@ class CssCustomConvertLevel3PropertiesMinifierFilter extends CssConvertLevel3Pro
         //Change the transformations array for comply the settings
         foreach ($this->transformations as $key => $transformation) {
             if (count($transformation) == 2) {
-                if ($transformation[1] == 'opacity' && $configuration['microsoft'] == false)
-                    $transformation = array(null, null, null, null);
-                else if ($transformation[1] == 'filter' && $configuration['microsoft'] == false)
-                    $transformation = array(null, null, null, null);
+                if ($transformation[1] == 'opacity' && $configuration['microsoft'] == FALSE)
+                    $transformation = array(NULL, NULL, NULL, NULL);
+                else if ($transformation[1] == 'filter' && $configuration['microsoft'] == FALSE)
+                    $transformation = array(NULL, NULL, NULL, NULL);
                 else if ($transformation[1] == 'whiteSpace')
-                    $transformation[0] = __CLASS__;
+                    $transformation = array(__CLASS__, 'newWhiteSpace');
             } else {
                 //$transformation is Array(Mozilla, Webkit, Opera, Internet Explorer);
-                if ($configuration['mozilla'] == false)
-                    $transformation[0] = null;
+                if ($configuration['mozilla'] == FALSE)
+                    $transformation[0] = NULL;
 
-                if ($configuration['webkit'] == false)
-                    $transformation[1] = null;
+                if ($configuration['webkit'] == FALSE)
+                    $transformation[1] = NULL;
 
-                if ($configuration['opera'] == false)
-                    $transformation[2] = null;
+                if ($configuration['opera'] == FALSE)
+                    $transformation[2] = NULL;
 
-                if ($configuration['microsoft'] == false)
-                    $transformation[3] = null;
+                if ($configuration['microsoft'] == FALSE)
+                    $transformation[3] = NULL;
             }
 
             $this->transformations[$key] = $transformation;
         }
+        self::$config = $this->configuration;
     }
 
     /**
      * Transforms "white-space: pre-wrap" into browser specific counterparts.
-     * 
+     *
      * @param aCssToken $token
      * @return array
      */
-    public static function whiteSpace($token) {
+    public static function newWhiteSpace($token) {
         if (strtolower($token->Value) === "pre-wrap") {
             $r = array();
 
-            if ($this->configuration['mozilla']) // Firefox < 3
+            $token->IsLast = FALSE;
+
+            if (self::$config['mozilla']) // Firefox < 3
                 $r [] = new CssRulesetDeclarationToken("white-space", "-moz-pre-wrap", $token->MediaTypes);
 
-            if ($this->configuration['webkit']) // Webkit
+            if (self::$config['webkit']) // Webkit
                 $r [] = new CssRulesetDeclarationToken("white-space", "-webkit-pre-wrap", $token->MediaTypes);
 
-            if ($this->configuration['opera']) {
+            if (self::$config['opera']) {
                 // Opera >= 4 <= 6
                 $r [] = new CssRulesetDeclarationToken("white-space", "-pre-wrap", $token->MediaTypes);
                 // Opera >= 7
                 $r [] = new CssRulesetDeclarationToken("white-space", "-o-pre-wrap", $token->MediaTypes);
             }
 
-            if ($this->configuration['microsoft']) // Internet Explorer >= 5.5
+            if (self::$config['microsoft']) // Internet Explorer >= 5.5
                 $r [] = new CssRulesetDeclarationToken("word-wrap", "break-word", $token->MediaTypes);
 
             return $r;
@@ -250,7 +254,7 @@ class CssAddVendorPrefixMinifierFilter extends aCssMinifierFilter {
 
                 $value = $tokens[$i]->Value;
 
-                $result = null;
+                $result = NULL;
                 if (preg_match('/(\s|^)((repeating-)?(radial|linear)-gradient)/i', $value, $match)) {
                     $result = array();
                     //Add w3c gradient formats
@@ -264,7 +268,7 @@ class CssAddVendorPrefixMinifierFilter extends aCssMinifierFilter {
                                 continue 2;
                             }
                         }
-                        $tokens[$i]->IsLast = false;
+                        $tokens[$i]->IsLast = FALSE;
                         $result[] = new CssRulesetDeclarationToken($tokens[$i]->Property, $new_value, $tokens[$i]->MediaTypes);
                     }
 
@@ -273,15 +277,15 @@ class CssAddVendorPrefixMinifierFilter extends aCssMinifierFilter {
                     if ($this->configuration['webkit']) {
                         //Examples
                         //
-                    //Horizontal
+                        //Horizontal
                         //new: background: -webkit-linear-gradient(left, rgb(255,255,255) 0%,rgb(255,255,255) 98%); /* Chrome10+,Safari5.1+ */
                         //old: background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgb(255,255,255)), color-stop(98%,rgb(255,255,255))); /* Chrome,Safari4+ */
                         //
-                    //Vertical
+                        //Vertical
                         //new: background: -webkit-linear-gradient(top, rgb(30,87,153) 0%,rgb(41,137,216) 50%,rgb(32,124,202) 51%,rgb(125,185,232) 100%); /* Chrome10+,Safari5.1+ */
                         //old: background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(30,87,153)), color-stop(50%,rgb(41,137,216)), color-stop(51%,rgb(32,124,202)), color-stop(100%,rgb(125,185,232))); /* Chrome,Safari4+ */
                         //
-                    //Radial
+                        //Radial
                         //new: background: -webkit-radial-gradient(center, ellipse cover, rgb(255,255,255) 0%,rgb(255,255,255) 98%); /* Chrome10+,Safari5.1+ */
                         //old: background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgb(255,255,255)), color-stop(98%,rgb(255,255,255))); /* Chrome,Safari4+ */
                         $replacements = array(
@@ -307,7 +311,7 @@ class CssAddVendorPrefixMinifierFilter extends aCssMinifierFilter {
                         if (!empty($matches)) {
                             $first = reset($matches);
                             $last = end($matches);
-                            $gradient_type = stripos($value, 'top') !== false ? 0 : 1;
+                            $gradient_type = stripos($value, 'top') !== FALSE ? 0 : 1;
                             $result[] = new CssRulesetDeclarationToken("filter", "progid:DXImageTransform.Microsoft.gradient( startColorstr='{$this->ie_color($first['color'])}', endColorstr='{$this->ie_color($last['color'])}',GradientType=$gradient_type)", $tokens[$i]->MediaTypes);
                         }
                     }
@@ -364,14 +368,14 @@ class CssRemoveIEHacksMinifierFilter extends aCssMinifierFilter {
         for ($i = 0, $l = count($tokens); $i < $l; $i++) {
             $token = &$tokens[$i];
             if ($token instanceof aCssDeclarationToken) {
-                if (strcasecmp($token->Property, "filter") === 0 || strcasecmp($token->Property, "-ms-filter") === 0) {//Filter
-                    $token = null;
+                if (strcasecmp($token->Property, "filter") === 0 || strcasecmp($token->Property, "-ms-filter") === 0) { //Filter
+                    $token = NULL;
                     $changes++;
-                } else if ($token->Property[0] == '_' || $token->Property[0] == '*') {//Hack (_width, *background)
-                    $token = null;
+                } else if ($token->Property[0] == '_' || $token->Property[0] == '*') { //Hack (_width, *background)
+                    $token = NULL;
                     $changes++;
-                } else if (stripos($token->Value, 'expression') === 0) {//CSS Expression
-                    $token = null;
+                } else if (stripos($token->Value, 'expression') === 0) { //CSS Expression
+                    $token = NULL;
                     $changes++;
                 }
             }
@@ -388,7 +392,7 @@ class CssOptimizeRulesCompressionRatioMinifierFilter extends aCssMinifierFilter 
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value larger than 0 will rebuild the array
      */
@@ -401,7 +405,7 @@ class CssOptimizeRulesCompressionRatioMinifierFilter extends aCssMinifierFilter 
                 continue;
             }
             // Look for the corresponding ruleset end
-            $endIndex = false;
+            $endIndex = FALSE;
             for ($ii = $i + 1; $ii < $l; $ii++) {
                 if (get_class($tokens[$ii]) !== "CssRulesetEndToken") {
                     continue;
@@ -427,8 +431,8 @@ class CssOptimizeRulesCompressionRatioMinifierFilter extends aCssMinifierFilter 
             $declarations = array_slice($tokens, $startIndex + 1, $endIndex - $startIndex - 1);
 
             // Look for the best compression, looking in ALL possible permutations
-            $this->_best_order = $this->_min_size = null;
-            $this->_max_size = null;
+            $this->_best_order = $this->_min_size = NULL;
+            $this->_max_size = NULL;
             $this->permutations($declarations, array($this, '_check_permutation'), 1000);
             // echo "SAVING: <b>".($this->_max_size-$this->_min_size)."</b> MIN: $this->_min_size MAX: $this->_max_size ORIGINAL: ".implode('',$declarations)." NEW: ".implode('',$this->_best_order)."<br/>";
 
@@ -438,9 +442,9 @@ class CssOptimizeRulesCompressionRatioMinifierFilter extends aCssMinifierFilter 
             // Update "IsLast" property
             for ($ii = 0, $ll = count($declarations) - 1; $ii <= $ll; $ii++) {
                 if ($ii == $ll) {
-                    $declarations[$ii]->IsLast = true;
+                    $declarations[$ii]->IsLast = TRUE;
                 } else {
-                    $declarations[$ii]->IsLast = false;
+                    $declarations[$ii]->IsLast = FALSE;
                 }
             }
             // Splice back into the array.
@@ -455,9 +459,9 @@ class CssOptimizeRulesCompressionRatioMinifierFilter extends aCssMinifierFilter 
      * PHP function to generate all permutations
      * @see http://www.needcodefor.com/php/php-function-to-generate-all-permutations/
      * @param array $declarations
-     * @return array 
+     * @return array
      */
-    private function permutations(array $set, $callback = null, $limit = 0) {
+    private function permutations(array $set, $callback = NULL, $limit = 0) {
         $solutions = array();
         $n = count($set);
         $p = array_keys($set);
@@ -494,12 +498,12 @@ class CssOptimizeRulesCompressionRatioMinifierFilter extends aCssMinifierFilter 
                 $i++;
             }
         }
-        return isset($callback) ? true : $solutions;
+        return isset($callback) ? TRUE : $solutions;
     }
 
     private $_best_order;
-    private $_min_size = null;
-    private $_max_size = null;
+    private $_min_size = NULL;
+    private $_max_size = NULL;
 
     /**
      * @access private
@@ -525,7 +529,7 @@ class CssOptimizeSelectorsCompressionRatioMinifierFilter extends aCssMinifierFil
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value larger than 0 will rebuild the array
      */
@@ -551,8 +555,8 @@ class CssOptimizeSelectorsCompressionRatioMinifierFilter extends aCssMinifierFil
         }
 
         //Step 2: Reorder rules, looking for the best compression
-        $best_seed = $seed = false;
-        $min_size = null;
+        $best_seed = $seed = FALSE;
+        $min_size = NULL;
         for ($i = 0; $i < 1500; $i++) {
             //Shuffle array
             if ($i > 0) {
@@ -579,7 +583,7 @@ class CssOptimizeSelectorsCompressionRatioMinifierFilter extends aCssMinifierFil
         }
 
         //Step 3: Shuffle array with the best seed and rebuild original
-        if ($best_seed !== false) {
+        if ($best_seed !== FALSE) {
             srand($best_seed);
             shuffle($chunks);
             $tokens = array();

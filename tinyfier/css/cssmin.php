@@ -2,7 +2,7 @@
 
 /**
  * CssMin - A (simple) css minifier with benefits
- * 
+ *
  * --
  * Copyright (c) 2011 Joe Scylla <joe.scylla@gmail.com>
  *
@@ -12,10 +12,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,32 +24,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * --
- * 
- * @package		CssMin
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 
 /**
  * Abstract definition of a CSS token class.
- * 
+ *
  * Every token has to extend this class.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssToken {
 
     /**
      * Returns the token as string.
-     * 
+     *
      * @return string
      */
     abstract public function __toString();
@@ -58,32 +58,32 @@ abstract class aCssToken {
 /**
  * Abstract definition of a for a ruleset start token.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssRulesetStartToken extends aCssToken {
-    
+
 }
 
 /**
  * Abstract definition of a for ruleset end token.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssRulesetEndToken extends aCssToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -94,69 +94,69 @@ abstract class aCssRulesetEndToken extends aCssToken {
 
 /**
  * Abstract definition of a parser plugin.
- * 
- * Every parser plugin have to extend this class. A parser plugin contains the logic to parse one or aspects of a 
+ *
+ * Every parser plugin have to extend this class. A parser plugin contains the logic to parse one or aspects of a
  * stylesheet.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssParserPlugin {
 
     /**
      * Plugin configuration.
-     * 
+     *
      * @var array
      */
     protected $configuration = array();
 
     /**
      * The CssParser of the plugin.
-     * 
+     *
      * @var CssParser
      */
-    protected $parser = null;
+    protected $parser = NULL;
 
     /**
      * Plugin buffer.
-     * 
+     *
      * @var string
      */
     protected $buffer = "";
 
     /**
      * Constructor.
-     * 
+     *
      * @param CssParser $parser The CssParser object of this plugin.
      * @param array $configuration Plugin configuration [optional]
      * @return void
      */
-    public function __construct(CssParser $parser, array $configuration = null) {
+    public function __construct(CssParser $parser, array $configuration = NULL) {
         $this->configuration = $configuration;
         $this->parser = $parser;
     }
 
     /**
      * Returns the array of chars triggering the parser plugin.
-     * 
+     *
      * @return array
      */
     abstract public function getTriggerChars();
 
     /**
      * Returns the array of states triggering the parser plugin or FALSE if every state will trigger the parser plugin.
-     * 
+     *
      * @return array
      */
     abstract public function getTriggerStates();
 
     /**
      * Parser routine of the plugin.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -166,37 +166,37 @@ abstract class aCssParserPlugin {
 }
 
 /**
- * Abstract definition of a minifier plugin class. 
- * 
- * Minifier plugin process the parsed tokens one by one to apply changes to the token. Every minifier plugin has to 
+ * Abstract definition of a minifier plugin class.
+ *
+ * Minifier plugin process the parsed tokens one by one to apply changes to the token. Every minifier plugin has to
  * extend this class.
  *
- * @package		CssMin/Minifier/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Minifier/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssMinifierPlugin {
 
     /**
      * Plugin configuration.
-     * 
+     *
      * @var array
      */
     protected $configuration = array();
 
     /**
      * The CssMinifier of the plugin.
-     * 
+     *
      * @var CssMinifier
      */
-    protected $minifier = null;
+    protected $minifier = NULL;
 
     /**
      * Constructor.
-     * 
+     *
      * @param CssMinifier $minifier The CssMinifier object of this plugin.
      * @param array $configuration Plugin configuration [optional]
      * @return void
@@ -208,7 +208,7 @@ abstract class aCssMinifierPlugin {
 
     /**
      * Apply the plugin to the token.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
@@ -216,44 +216,44 @@ abstract class aCssMinifierPlugin {
 
     /**
      * --
-     * 
+     *
      * @return array
      */
     abstract public function getTriggerTokens();
 }
 
 /**
- * Abstract definition of a minifier filter class. 
- * 
+ * Abstract definition of a minifier filter class.
+ *
  * Minifier filters allows a pre-processing of the parsed token to add, edit or delete tokens. Every minifier filter
  * has to extend this class.
- * 
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssMinifierFilter {
 
     /**
      * Filter configuration.
-     * 
+     *
      * @var array
      */
     protected $configuration = array();
 
     /**
      * The CssMinifier of the filter.
-     * 
+     *
      * @var CssMinifier
      */
-    protected $minifier = null;
+    protected $minifier = NULL;
 
     /**
      * Constructor.
-     * 
+     *
      * @param CssMinifier $minifier The CssMinifier object of this plugin.
      * @param array $configuration Filter configuration [optional]
      * @return void
@@ -265,7 +265,7 @@ abstract class aCssMinifierFilter {
 
     /**
      * Filter the tokens.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value large than 0 will rebuild the array
      */
@@ -274,47 +274,47 @@ abstract class aCssMinifierFilter {
 
 /**
  * Abstract formatter definition.
- * 
+ *
  * Every formatter have to extend this class.
- * 
- * @package		CssMin/Formatter
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Formatter
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssFormatter {
 
     /**
      * Indent string.
-     * 
+     *
      * @var string
      */
     protected $indent = "    ";
 
     /**
      * Declaration padding.
-     * 
+     *
      * @var integer
      */
     protected $padding = 0;
 
     /**
      * Tokens.
-     * 
+     *
      * @var array
      */
     protected $tokens = array();
 
     /**
      * Constructor.
-     * 
+     *
      * @param array $tokens Array of CssToken
      * @param string $indent Indent string [optional]
      * @param integer $padding Declaration value padding [optional]
      */
-    public function __construct(array $tokens, $indent = null, $padding = null) {
+    public function __construct(array $tokens, $indent = NULL, $padding = NULL) {
         $this->tokens = $tokens;
         $this->indent = !is_null($indent) ? $indent : $this->indent;
         $this->padding = !is_null($padding) ? $padding : $this->padding;
@@ -322,7 +322,7 @@ abstract class aCssFormatter {
 
     /**
      * Returns the array of aCssToken as formatted string.
-     * 
+     *
      * @return string
      */
     abstract public function __toString();
@@ -331,53 +331,53 @@ abstract class aCssFormatter {
 /**
  * Abstract definition of a ruleset declaration token.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssDeclarationToken extends aCssToken {
 
     /**
      * Is the declaration flagged as important?
-     * 
+     *
      * @var boolean
      */
-    public $IsImportant = false;
+    public $IsImportant = FALSE;
 
     /**
      * Is the declaration flagged as last one of the ruleset?
-     * 
+     *
      * @var boolean
      */
-    public $IsLast = false;
+    public $IsLast = FALSE;
 
     /**
      * Property name of the declaration.
-     * 
+     *
      * @var string
      */
     public $Property = "";
 
     /**
      * Value of the declaration.
-     * 
+     *
      * @var string
      */
     public $Value = "";
 
     /**
-     * Set the properties of the @font-face declaration. 
-     * 
+     * Set the properties of the @font-face declaration.
+     *
      * @param string $property Property of the declaration
      * @param string $value Value of the declaration
      * @param boolean $isImportant Is the !important flag is set?
      * @param boolean $IsLast Is the declaration the last one of the block?
      * @return void
      */
-    public function __construct($property, $value, $isImportant = false, $isLast = false) {
+    public function __construct($property, $value, $isImportant = FALSE, $isLast = FALSE) {
         $this->Property = $property;
         $this->Value = $value;
         $this->IsImportant = $isImportant;
@@ -386,7 +386,7 @@ abstract class aCssDeclarationToken extends aCssToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -398,32 +398,32 @@ abstract class aCssDeclarationToken extends aCssToken {
 /**
  * Abstract definition of a for at-rule block start token.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssAtBlockStartToken extends aCssToken {
-    
+
 }
 
 /**
  * Abstract definition of a for at-rule block end token.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 abstract class aCssAtBlockEndToken extends aCssToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -434,19 +434,19 @@ abstract class aCssAtBlockEndToken extends aCssToken {
 
 /**
  * {@link aCssFromatter Formatter} returning the CSS source in {@link http://goo.gl/etzLs Whitesmiths indent style}.
- * 
- * @package		CssMin/Formatter
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Formatter
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssWhitesmithsFormatter extends aCssFormatter {
 
     /**
      * Implements {@link aCssFormatter::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -490,10 +490,10 @@ class CssWhitesmithsFormatter extends aCssFormatter {
                 $r[] = $this->indent . $indent . "{";
                 $level++;
             } elseif ($class == "CssAtFontFaceDeclarationToken"
-                    || $class === "CssAtKeyframesRulesetDeclarationToken"
-                    || $class === "CssAtPageDeclarationToken"
-                    || $class == "CssAtVariablesDeclarationToken"
-                    || $class === "CssRulesetDeclarationToken"
+                || $class === "CssAtKeyframesRulesetDeclarationToken"
+                || $class === "CssAtPageDeclarationToken"
+                || $class == "CssAtVariablesDeclarationToken"
+                || $class === "CssRulesetDeclarationToken"
             ) {
                 $declaration = $indent . $token->Property . ": ";
                 if ($this->padding) {
@@ -501,12 +501,12 @@ class CssWhitesmithsFormatter extends aCssFormatter {
                 }
                 $r[] = $declaration . $token->Value . ($token->IsImportant ? " !important" : "") . ";";
             } elseif ($class === "CssAtFontFaceEndToken"
-                    || $class === "CssAtMediaEndToken"
-                    || $class === "CssAtKeyframesEndToken"
-                    || $class === "CssAtKeyframesRulesetEndToken"
-                    || $class === "CssAtPageEndToken"
-                    || $class === "CssAtVariablesEndToken"
-                    || $class === "CssRulesetEndToken"
+                || $class === "CssAtMediaEndToken"
+                || $class === "CssAtKeyframesEndToken"
+                || $class === "CssAtKeyframesRulesetEndToken"
+                || $class === "CssAtPageEndToken"
+                || $class === "CssAtVariablesEndToken"
+                || $class === "CssRulesetEndToken"
             ) {
                 $r[] = $indent . "}";
                 $level--;
@@ -518,51 +518,51 @@ class CssWhitesmithsFormatter extends aCssFormatter {
 }
 
 /**
- * This {@link aCssMinifierPlugin} will process var-statement and sets the declaration value to the variable value. 
- * 
+ * This {@link aCssMinifierPlugin} will process var-statement and sets the declaration value to the variable value.
+ *
  * This plugin only apply the variable values. The variable values itself will get parsed by the
  * {@link CssVariablesMinifierFilter}.
- * 
+ *
  * Example:
  * <code>
  * @variables
- * 		{
- * 		defaultColor: black;
- * 		}
+ *         {
+ *         defaultColor: black;
+ *         }
  * color: var(defaultColor);
  * </code>
- * 
+ *
  * Will get converted to:
  * <code>
  * color:black;
  * </code>
  *
- * @package		CssMin/Minifier/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Minifier/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssVariablesMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Regular expression matching a value.
-     * 
+     *
      * @var string
      */
     private $reMatch = "/var\((.+)\)/iSU";
 
     /**
      * Parsed variables.
-     * 
+     *
      * @var array
      */
-    private $variables = null;
+    private $variables = NULL;
 
     /**
      * Returns the variables.
-     * 
+     *
      * @return array
      */
     public function getVariables() {
@@ -571,12 +571,12 @@ class CssVariablesMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Implements {@link aCssMinifierPlugin::minify()}.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
     public function apply(aCssToken &$token) {
-        if (stripos($token->Value, "var") !== false && preg_match_all($this->reMatch, $token->Value, $m)) {
+        if (stripos($token->Value, "var") !== FALSE && preg_match_all($this->reMatch, $token->Value, $m)) {
             $mediaTypes = $token->MediaTypes;
             if (!in_array("all", $mediaTypes)) {
                 $mediaTypes[] = "all";
@@ -591,22 +591,22 @@ class CssVariablesMinifierPlugin extends aCssMinifierPlugin {
                     }
                 }
                 // If no value was found trigger an error and replace the token with a CssNullToken
-                CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": No value found for variable <code>" . $variable . "</code> in media types <code>" . implode(", ", $mediaTypes) . "</code>", (string) $token));
+                CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": No value found for variable <code>" . $variable . "</code> in media types <code>" . implode(", ", $mediaTypes) . "</code>", (string)$token));
                 $token = new CssNullToken();
-                return true;
+                return TRUE;
             }
         }
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aMinifierPlugin::getTriggerTokens()}
-     * 
+     *
      * @return array
      */
     public function getTriggerTokens() {
         return array
-            (
+        (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -615,7 +615,7 @@ class CssVariablesMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Sets the variables.
-     * 
+     *
      * @param array $variables Variables to set
      * @return void
      */
@@ -626,22 +626,22 @@ class CssVariablesMinifierPlugin extends aCssMinifierPlugin {
 }
 
 /**
- * This {@link aCssMinifierFilter minifier filter} will parse the variable declarations out of @variables at-rule 
- * blocks. The variables will get store in the {@link CssVariablesMinifierPlugin} that will apply the variables to 
+ * This {@link aCssMinifierFilter minifier filter} will parse the variable declarations out of @variables at-rule
+ * blocks. The variables will get store in the {@link CssVariablesMinifierPlugin} that will apply the variables to
  * declaration.
- * 
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssVariablesMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value large than 0 will rebuild the array
      */
@@ -668,8 +668,7 @@ class CssVariablesMinifierFilter extends aCssMinifierFilter {
                             $variables[$mediaType][$tokens[$i]->Property] = $tokens[$i]->Value;
                         }
                         $remove[] = $i;
-                    }
-                    // Found the variables end token => break;
+                    } // Found the variables end token => break;
                     elseif (get_class($tokens[$i]) === "CssAtVariablesEndToken") {
                         $remove[] = $i;
                         break;
@@ -678,10 +677,10 @@ class CssVariablesMinifierFilter extends aCssMinifierFilter {
             }
         }
         // Variables in @variables at-rule blocks
-        foreach ($variables as $mediaType => $null) {
+        foreach ($variables as $mediaType => $NULL) {
             foreach ($variables[$mediaType] as $variable => $value) {
                 // If a var() statement in a variable value found...
-                if (stripos($value, "var") !== false && preg_match_all("/var\((.+)\)/iSU", $value, $m)) {
+                if (stripos($value, "var") !== FALSE && preg_match_all("/var\((.+)\)/iSU", $value, $m)) {
                     // ... then replace the var() statement with the variable values.
                     for ($i = 0, $l = count($m[0]); $i < $l; $i++) {
                         $variables[$mediaType][$variable] = str_replace($m[0][$i], (isset($variables[$mediaType][$m[1][$i]]) ? $variables[$mediaType][$m[1][$i]] : ""), $variables[$mediaType][$variable]);
@@ -691,7 +690,7 @@ class CssVariablesMinifierFilter extends aCssMinifierFilter {
         }
         // Remove the complete @variables at-rule block
         foreach ($remove as $i) {
-            $tokens[$i] = null;
+            $tokens[$i] = NULL;
         }
         if (!($plugin = $this->minifier->getPlugin("CssVariablesMinifierPlugin"))) {
             CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": The plugin <code>CssVariablesMinifierPlugin</code> was not found but is required for <code>" . __CLASS__ . "</code>"));
@@ -705,21 +704,21 @@ class CssVariablesMinifierFilter extends aCssMinifierFilter {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for preserve parsing url() values.
- * 
+ *
  * This plugin return no {@link aCssToken CssToken} but ensures that url() values will get parsed properly.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssUrlParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -728,16 +727,16 @@ class CssUrlParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -748,8 +747,7 @@ class CssUrlParserPlugin extends aCssParserPlugin {
         if ($char === "(" && strtolower(substr($this->parser->getSource(), $index - 3, 4)) === "url(" && $state !== "T_URL") {
             $this->parser->pushState("T_URL");
             $this->parser->setExclusive(__CLASS__);
-        }
-        // Escaped LF in url => remove escape backslash and LF
+        } // Escaped LF in url => remove escape backslash and LF
         elseif ($char === "\n" && $previousChar === "\\" && $state === "T_URL") {
             $this->parser->setBuffer(substr($this->parser->getBuffer(), 0, -2));
         }
@@ -766,37 +764,37 @@ class CssUrlParserPlugin extends aCssParserPlugin {
             $this->parser->popState();
             $this->parser->unsetExclusive();
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
 
 /**
  * {@link aCssParserPlugin Parser plugin} for preserve parsing string values.
- * 
+ *
  * This plugin return no {@link aCssToken CssToken} but ensures that string values will get parsed properly.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssStringParserPlugin extends aCssParserPlugin {
 
     /**
      * Current string delimiter char.
-     * 
+     *
      * @var string
      */
-    private $delimiterChar = null;
+    private $delimiterChar = NULL;
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -805,16 +803,16 @@ class CssStringParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -826,8 +824,7 @@ class CssStringParserPlugin extends aCssParserPlugin {
             $this->delimiterChar = $char;
             $this->parser->pushState("T_STRING");
             $this->parser->setExclusive(__CLASS__);
-        }
-        // Escaped LF in string => remove escape backslash and LF
+        } // Escaped LF in string => remove escape backslash and LF
         elseif ($char === "\n" && $previousChar === "\\" && $state === "T_STRING") {
             $this->parser->setBuffer(substr($this->parser->getBuffer(), 0, -2));
         }
@@ -838,7 +835,7 @@ class CssStringParserPlugin extends aCssParserPlugin {
             $this->parser->unsetExclusive();
             $this->parser->setBuffer(substr($this->parser->getBuffer(), 0, -1) . $this->delimiterChar); // Replace the LF with the current string char
             CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Unterminated string literal", $line . "_"));
-            $this->delimiterChar = null;
+            $this->delimiterChar = NULL;
         }
         // End of string
         elseif ($char === $this->delimiterChar && $state === "T_STRING") {
@@ -853,35 +850,35 @@ class CssStringParserPlugin extends aCssParserPlugin {
                     $i--;
                 }
                 if ($c % 2) {
-                    return false;
+                    return FALSE;
                 }
             }
             $this->parser->popState();
             $this->parser->unsetExclusive();
-            $this->delimiterChar = null;
+            $this->delimiterChar = NULL;
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
 
 /**
  * This {@link aCssMinifierFilter minifier filter} sorts the ruleset declarations of a ruleset by name.
- * 
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Rowan Beentje <http://assanka.net>
- * @copyright	Rowan Beentje <http://assanka.net>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Rowan Beentje <http://assanka.net>
+ * @copyright    Rowan Beentje <http://assanka.net>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssSortRulesetPropertiesMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value larger than 0 will rebuild the array
      */
@@ -893,7 +890,7 @@ class CssSortRulesetPropertiesMinifierFilter extends aCssMinifierFilter {
                 continue;
             }
             // Look for the corresponding ruleset end
-            $endIndex = false;
+            $endIndex = FALSE;
             for ($ii = $i + 1; $ii < $l; $ii++) {
                 if (get_class($tokens[$ii]) !== "CssRulesetEndToken") {
                     continue;
@@ -918,11 +915,11 @@ class CssSortRulesetPropertiesMinifierFilter extends aCssMinifierFilter {
             }
             $declarations = array_slice($tokens, $startIndex + 1, $endIndex - $startIndex - 1);
             // Check whether a sort is required
-            $sortRequired = $lastPropertyName = false;
+            $sortRequired = $lastPropertyName = FALSE;
             foreach ($declarations as $declaration) {
                 if ($lastPropertyName) {
                     if (strcmp($lastPropertyName, $declaration->Property) > 0) {
-                        $sortRequired = true;
+                        $sortRequired = TRUE;
                         break;
                     }
                 }
@@ -936,9 +933,9 @@ class CssSortRulesetPropertiesMinifierFilter extends aCssMinifierFilter {
             // Update "IsLast" property
             for ($ii = 0, $ll = count($declarations) - 1; $ii <= $ll; $ii++) {
                 if ($ii == $ll) {
-                    $declarations[$ii]->IsLast = true;
+                    $declarations[$ii]->IsLast = TRUE;
                 } else {
-                    $declarations[$ii]->IsLast = false;
+                    $declarations[$ii]->IsLast = FALSE;
                 }
             }
             // Splice back into the array.
@@ -950,7 +947,7 @@ class CssSortRulesetPropertiesMinifierFilter extends aCssMinifierFilter {
 
     /**
      * User defined sort function.
-     * 
+     *
      * @return integer
      */
     public static function userDefinedSort1($a, $b) {
@@ -961,27 +958,27 @@ class CssSortRulesetPropertiesMinifierFilter extends aCssMinifierFilter {
 
 /**
  * This {@link aCssToken CSS token} represents the start of a ruleset.
- * 
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssRulesetStartToken extends aCssRulesetStartToken {
 
     /**
      * Array of selectors.
-     * 
+     *
      * @var array
      */
     public $Selectors = array();
 
     /**
      * Set the properties of a ruleset token.
-     * 
-     * @param array $selectors Selectors of the ruleset 
+     *
+     * @param array $selectors Selectors of the ruleset
      * @return void
      */
     public function __construct(array $selectors = array()) {
@@ -990,7 +987,7 @@ class CssRulesetStartToken extends aCssRulesetStartToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -1001,22 +998,22 @@ class CssRulesetStartToken extends aCssRulesetStartToken {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for parsing ruleset block with including declarations.
- * 
- * Found rulesets will add a {@link CssRulesetStartToken} and {@link CssRulesetEndToken} to the 
+ *
+ * Found rulesets will add a {@link CssRulesetStartToken} and {@link CssRulesetEndToken} to the
  * parser; including declarations as {@link CssRulesetDeclarationToken}.
  *
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssRulesetParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -1025,7 +1022,7 @@ class CssRulesetParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
@@ -1034,14 +1031,14 @@ class CssRulesetParserPlugin extends aCssParserPlugin {
 
     /**
      * Selectors.
-     * 
+     *
      * @var array
      */
     private $selectors = array();
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -1054,8 +1051,7 @@ class CssRulesetParserPlugin extends aCssParserPlugin {
                 $this->parser->pushState("T_RULESET::SELECTORS");
             }
             $this->selectors[] = $this->parser->getAndClearBuffer(",{");
-        }
-        // End of selectors and start of declarations
+        } // End of selectors and start of declarations
         elseif ($char === "{" && ($state === "T_DOCUMENT" || $state === "T_AT_MEDIA" || $state === "T_RULESET::SELECTORS")) {
             if ($this->parser->getBuffer() !== "") {
                 $this->selectors[] = $this->parser->getAndClearBuffer(",{");
@@ -1070,13 +1066,13 @@ class CssRulesetParserPlugin extends aCssParserPlugin {
         // Start of declaration
         elseif ($char === ":" && $state === "T_RULESET") {
             $this->parser->pushState("T_RULESET_DECLARATION");
-            $this->buffer = $this->parser->getAndClearBuffer(":;", true);
+            $this->buffer = $this->parser->getAndClearBuffer(":;", TRUE);
         }
         // Unterminated ruleset declaration
         elseif ($char === ":" && $state === "T_RULESET_DECLARATION") {
             // Ignore Internet Explorer filter declarations
             if ($this->buffer === "filter") {
-                return false;
+                return FALSE;
             }
             CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Unterminated declaration", $this->buffer . ":" . $this->parser->getBuffer() . "_"));
         }
@@ -1085,9 +1081,9 @@ class CssRulesetParserPlugin extends aCssParserPlugin {
             $value = $this->parser->getAndClearBuffer(";}");
             if (strtolower(substr($value, -10, 10)) === "!important") {
                 $value = trim(substr($value, 0, -10));
-                $isImportant = true;
+                $isImportant = TRUE;
             } else {
-                $isImportant = false;
+                $isImportant = FALSE;
             }
             $this->parser->popState();
             $this->parser->appendToken(new CssRulesetDeclarationToken($this->buffer, $value, $this->parser->getMediaTypes(), $isImportant));
@@ -1106,9 +1102,9 @@ class CssRulesetParserPlugin extends aCssParserPlugin {
             $this->buffer = "";
             $this->selectors = array();
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
@@ -1116,39 +1112,39 @@ class CssRulesetParserPlugin extends aCssParserPlugin {
 /**
  *  This {@link aCssToken CSS token} represents the end of a ruleset.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssRulesetEndToken extends aCssRulesetEndToken {
-    
+
 }
 
 /**
  * This {@link aCssToken CSS token} represents a ruleset declaration.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssRulesetDeclarationToken extends aCssDeclarationToken {
 
     /**
      * Media types of the declaration.
-     * 
+     *
      * @var array
      */
     public $MediaTypes = array("all");
 
     /**
-     * Set the properties of a ddocument- or at-rule @media level declaration. 
-     * 
+     * Set the properties of a ddocument- or at-rule @media level declaration.
+     *
      * @param string $property Property of the declaration
      * @param string $value Value of the declaration
      * @param mixed $mediaTypes Media types of the declaration
@@ -1156,7 +1152,7 @@ class CssRulesetDeclarationToken extends aCssDeclarationToken {
      * @param boolean $isLast Is the declaration the last one of the ruleset
      * @return void
      */
-    public function __construct($property, $value, $mediaTypes = null, $isImportant = false, $isLast = false) {
+    public function __construct($property, $value, $mediaTypes = NULL, $isImportant = FALSE, $isLast = FALSE) {
         parent::__construct($property, $value, $isImportant, $isLast);
         $this->MediaTypes = $mediaTypes ? $mediaTypes : array("all");
     }
@@ -1164,33 +1160,34 @@ class CssRulesetDeclarationToken extends aCssDeclarationToken {
 }
 
 /**
- * This {@link aCssMinifierFilter minifier filter} sets the IsLast property of any last declaration in a ruleset, 
- * @font-face at-rule or @page at-rule block. If the property IsLast is TRUE the decrations will get stringified 
+ * This {@link aCssMinifierFilter minifier filter} sets the IsLast property of any last declaration in a ruleset,
+ * @font-face at-rule or @page at-rule block. If the property IsLast is TRUE the decrations will get stringified
  * without tailing semicolon.
- * 
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssRemoveLastDelarationSemiColonMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value large than 0 will rebuild the array
      */
     public function apply(array &$tokens) {
         for ($i = 0, $l = count($tokens); $i < $l; $i++) {
             $current = get_class($tokens[$i]);
-            $next = isset($tokens[$i + 1]) ? get_class($tokens[$i + 1]) : false;
+            $next = isset($tokens[$i + 1]) ? get_class($tokens[$i + 1]) : FALSE;
             if (($current === "CssRulesetDeclarationToken" && $next === "CssRulesetEndToken") ||
-                    ($current === "CssAtFontFaceDeclarationToken" && $next === "CssAtFontFaceEndToken") ||
-                    ($current === "CssAtPageDeclarationToken" && $next === "CssAtPageEndToken")) {
-                $tokens[$i]->IsLast = true;
+                ($current === "CssAtFontFaceDeclarationToken" && $next === "CssAtFontFaceEndToken") ||
+                ($current === "CssAtPageDeclarationToken" && $next === "CssAtPageEndToken")
+            ) {
+                $tokens[$i]->IsLast = TRUE;
             }
         }
         return 0;
@@ -1199,21 +1196,21 @@ class CssRemoveLastDelarationSemiColonMinifierFilter extends aCssMinifierFilter 
 }
 
 /**
- * This {@link aCssMinifierFilter minifier filter} will remove any empty rulesets (including @keyframes at-rule block 
+ * This {@link aCssMinifierFilter minifier filter} will remove any empty rulesets (including @keyframes at-rule block
  * rulesets).
  *
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssRemoveEmptyRulesetsMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value large than 0 will rebuild the array
      */
@@ -1221,12 +1218,12 @@ class CssRemoveEmptyRulesetsMinifierFilter extends aCssMinifierFilter {
         $r = 0;
         for ($i = 0, $l = count($tokens); $i < $l; $i++) {
             $current = get_class($tokens[$i]);
-            $next = isset($tokens[$i + 1]) ? get_class($tokens[$i + 1]) : false;
+            $next = isset($tokens[$i + 1]) ? get_class($tokens[$i + 1]) : FALSE;
             if (($current === "CssRulesetStartToken" && $next === "CssRulesetEndToken") ||
-                    ($current === "CssAtKeyframesRulesetStartToken" && $next === "CssAtKeyframesRulesetEndToken" && !array_intersect(array("from", "0%", "to", "100%"), array_map("strtolower", $tokens[$i]->Selectors)))
+                ($current === "CssAtKeyframesRulesetStartToken" && $next === "CssAtKeyframesRulesetEndToken" && !array_intersect(array("from", "0%", "to", "100%"), array_map("strtolower", $tokens[$i]->Selectors)))
             ) {
-                $tokens[$i] = null;
-                $tokens[$i + 1] = null;
+                $tokens[$i] = NULL;
+                $tokens[$i + 1] = NULL;
                 $i++;
                 $r = $r + 2;
             }
@@ -1237,21 +1234,21 @@ class CssRemoveEmptyRulesetsMinifierFilter extends aCssMinifierFilter {
 }
 
 /**
- * This {@link aCssMinifierFilter minifier filter} will remove any empty @font-face, @keyframes, @media and @page 
+ * This {@link aCssMinifierFilter minifier filter} will remove any empty @font-face, @keyframes, @media and @page
  * at-rule blocks.
- * 
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssRemoveEmptyAtBlocksMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value large than 0 will rebuild the array
      */
@@ -1259,13 +1256,14 @@ class CssRemoveEmptyAtBlocksMinifierFilter extends aCssMinifierFilter {
         $r = 0;
         for ($i = 0, $l = count($tokens); $i < $l; $i++) {
             $current = get_class($tokens[$i]);
-            $next = isset($tokens[$i + 1]) ? get_class($tokens[$i + 1]) : false;
+            $next = isset($tokens[$i + 1]) ? get_class($tokens[$i + 1]) : FALSE;
             if (($current === "CssAtFontFaceStartToken" && $next === "CssAtFontFaceEndToken") ||
-                    ($current === "CssAtKeyframesStartToken" && $next === "CssAtKeyframesEndToken") ||
-                    ($current === "CssAtPageStartToken" && $next === "CssAtPageEndToken") ||
-                    ($current === "CssAtMediaStartToken" && $next === "CssAtMediaEndToken")) {
-                $tokens[$i] = null;
-                $tokens[$i + 1] = null;
+                ($current === "CssAtKeyframesStartToken" && $next === "CssAtKeyframesEndToken") ||
+                ($current === "CssAtPageStartToken" && $next === "CssAtPageEndToken") ||
+                ($current === "CssAtMediaStartToken" && $next === "CssAtMediaEndToken")
+            ) {
+                $tokens[$i] = NULL;
+                $tokens[$i + 1] = NULL;
                 $i++;
                 $r = $r + 2;
             }
@@ -1277,19 +1275,19 @@ class CssRemoveEmptyAtBlocksMinifierFilter extends aCssMinifierFilter {
 
 /**
  * This {@link aCssMinifierFilter minifier filter} will remove any comments from the array of parsed tokens.
- * 
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssRemoveCommentsMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value large than 0 will rebuild the array
      */
@@ -1297,7 +1295,7 @@ class CssRemoveCommentsMinifierFilter extends aCssMinifierFilter {
         $r = 0;
         for ($i = 0, $l = count($tokens); $i < $l; $i++) {
             if (get_class($tokens[$i]) === "CssCommentToken") {
-                $tokens[$i] = null;
+                $tokens[$i] = NULL;
                 $r++;
             }
         }
@@ -1308,100 +1306,100 @@ class CssRemoveCommentsMinifierFilter extends aCssMinifierFilter {
 
 /**
  * CSS Parser.
- * 
- * @package		CssMin/Parser
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssParser {
 
     /**
      * Parse buffer.
-     * 
+     *
      * @var string
      */
     private $buffer = "";
 
     /**
      * {@link aCssParserPlugin Plugins}.
-     * 
+     *
      * @var array
      */
     private $plugins = array();
 
     /**
      * Source to parse.
-     * 
+     *
      * @var string
      */
     private $source = "";
 
     /**
      * Current state.
-     * 
+     *
      * @var integer
      */
     private $state = "T_DOCUMENT";
 
     /**
      * Exclusive state.
-     * 
+     *
      * @var string
      */
-    private $stateExclusive = false;
+    private $stateExclusive = FALSE;
 
     /**
      * Media types state.
-     * 
+     *
      * @var mixed
      */
-    private $stateMediaTypes = false;
+    private $stateMediaTypes = FALSE;
 
     /**
      * State stack.
-     * 
+     *
      * @var array
      */
     private $states = array("T_DOCUMENT");
 
     /**
      * Parsed tokens.
-     * 
+     *
      * @var array
      */
     private $tokens = array();
 
     /**
      * Constructer.
-     * 
+     *
      *  Create instances of the used {@link aCssParserPlugin plugins}.
-     * 
+     *
      * @param string $source CSS source [optional]
      * @param array $plugins Plugin configuration [optional]
      * @return void
      */
-    public function __construct($source = null, array $plugins = null) {
+    public function __construct($source = NULL, array $plugins = NULL) {
         $plugins = array_merge(array
-            (
-            "Comment" => true,
-            "String" => true,
-            "Url" => true,
-            "Expression" => true,
-            "Ruleset" => true,
-            "AtCharset" => true,
-            "AtFontFace" => true,
-            "AtImport" => true,
-            "AtKeyframes" => true,
-            "AtMedia" => true,
-            "AtPage" => true,
-            "AtVariables" => true
-                ), is_array($plugins) ? $plugins : array());
+        (
+            "Comment" => TRUE,
+            "String" => TRUE,
+            "Url" => TRUE,
+            "Expression" => TRUE,
+            "Ruleset" => TRUE,
+            "AtCharset" => TRUE,
+            "AtFontFace" => TRUE,
+            "AtImport" => TRUE,
+            "AtKeyframes" => TRUE,
+            "AtMedia" => TRUE,
+            "AtPage" => TRUE,
+            "AtVariables" => TRUE
+        ), is_array($plugins) ? $plugins : array());
         // Create plugin instances
         foreach ($plugins as $name => $config) {
-            if ($config !== false) {
+            if ($config !== FALSE) {
                 $class = "Css" . $name . "ParserPlugin";
                 $config = is_array($config) ? $config : array();
                 if (class_exists($class)) {
@@ -1418,7 +1416,7 @@ class CssParser {
 
     /**
      * Append a token to the array of tokens.
-     * 
+     *
      * @param aCssToken $token Token to append
      * @return void
      */
@@ -1428,7 +1426,7 @@ class CssParser {
 
     /**
      * Clears the current buffer.
-     * 
+     *
      * @return void
      */
     public function clearBuffer() {
@@ -1437,12 +1435,12 @@ class CssParser {
 
     /**
      * Returns and clear the current buffer.
-     * 
+     *
      * @param string $trim Chars to use to trim the returned buffer
      * @param boolean $tolower if TRUE the returned buffer will get converted to lower case
      * @return string
      */
-    public function getAndClearBuffer($trim = "", $tolower = false) {
+    public function getAndClearBuffer($trim = "", $tolower = FALSE) {
         $r = $this->getBuffer($trim, $tolower);
         $this->buffer = "";
         return $r;
@@ -1450,12 +1448,12 @@ class CssParser {
 
     /**
      * Returns the current buffer.
-     * 
+     *
      * @param string $trim Chars to use to trim the returned buffer
      * @param boolean $tolower if TRUE the returned buffer will get converted to lower case
      * @return string
      */
-    public function getBuffer($trim = "", $tolower = false) {
+    public function getBuffer($trim = "", $tolower = FALSE) {
         $r = $this->buffer;
         if ($trim) {
             $r = trim($r, " \t\n\r\0\x0B" . $trim);
@@ -1468,7 +1466,7 @@ class CssParser {
 
     /**
      * Returns the current media types state.
-     * 
+     *
      * @return array
      */
     public function getMediaTypes() {
@@ -1477,7 +1475,7 @@ class CssParser {
 
     /**
      * Returns the CSS source.
-     * 
+     *
      * @return string
      */
     public function getSource() {
@@ -1486,7 +1484,7 @@ class CssParser {
 
     /**
      * Returns the current state.
-     * 
+     *
      * @return integer The current state
      */
     public function getState() {
@@ -1495,24 +1493,24 @@ class CssParser {
 
     /**
      * Returns a plugin by class name.
-     * 
-     * @param string $name Class name of the plugin 
+     *
+     * @param string $name Class name of the plugin
      * @return aCssParserPlugin
      */
     public function getPlugin($class) {
-        static $index = null;
+        static $index = NULL;
         if (is_null($index)) {
             $index = array();
             for ($i = 0, $l = count($this->plugins); $i < $l; $i++) {
                 $index[get_class($this->plugins[$i])] = $i;
             }
         }
-        return isset($index[$class]) ? $this->plugins[$index[$class]] : false;
+        return isset($index[$class]) ? $this->plugins[$index[$class]] : FALSE;
     }
 
     /**
      * Returns the parsed tokens.
-     * 
+     *
      * @return array
      */
     public function getTokens() {
@@ -1521,7 +1519,7 @@ class CssParser {
 
     /**
      * Returns if the current state equals the passed state.
-     * 
+     *
      * @param integer $state State to compare with the current state
      * @return boolean TRUE is the state equals to the passed state; FALSE if not
      */
@@ -1531,7 +1529,7 @@ class CssParser {
 
     /**
      * Parse the CSS source and return a array with parsed tokens.
-     * 
+     *
      * @param string $source CSS source
      * @return array Array with tokens
      */
@@ -1551,30 +1549,30 @@ class CssParser {
             $tPluginClassName = get_class($plugins[$i]);
             $pluginTriggerChars[$i] = implode("", $plugins[$i]->getTriggerChars());
             $tPluginTriggerStates = $plugins[$i]->getTriggerStates();
-            $pluginTriggerStates[$i] = $tPluginTriggerStates === false ? false : "|" . implode("|", $tPluginTriggerStates) . "|";
+            $pluginTriggerStates[$i] = $tPluginTriggerStates === FALSE ? FALSE : "|" . implode("|", $tPluginTriggerStates) . "|";
             $pluginIndex[$tPluginClassName] = $i;
             for ($ii = 0, $ll = strlen($pluginTriggerChars[$i]); $ii < $ll; $ii++) {
                 $c = substr($pluginTriggerChars[$i], $ii, 1);
-                if (strpos($globalTriggerChars, $c) === false) {
+                if (strpos($globalTriggerChars, $c) === FALSE) {
                     $globalTriggerChars .= $c;
                 }
             }
         }
         // Normalise line endings
         $source = str_replace("\r\n", "\n", $source); // Windows to Unix line endings
-        $source = str_replace("\r", "\n", $source);  // Mac to Unix line endings
+        $source = str_replace("\r", "\n", $source); // Mac to Unix line endings
         $this->source = $source;
         // Variables
         $buffer = &$this->buffer;
         $exclusive = &$this->stateExclusive;
         $state = &$this->state;
-        $c = $p = null;
+        $c = $p = NULL;
         // --
         for ($i = 0, $l = strlen($source); $i < $l; $i++) {
             // Set the current Char
             $c = $source[$i]; // Is faster than: $c = substr($source, $i, 1);
             // Normalize and filter double whitespace characters
-            if ($exclusive === false) {
+            if ($exclusive === FALSE) {
                 if ($c === "\n" || $c === "\t") {
                     $c = " ";
                 }
@@ -1584,37 +1582,34 @@ class CssParser {
             }
             $buffer .= $c;
             // Extended processing only if the current char is a global trigger char
-            if (strpos($globalTriggerChars, $c) !== false) {
+            if (strpos($globalTriggerChars, $c) !== FALSE) {
                 // Exclusive state is set; process with the exclusive plugin 
                 if ($exclusive) {
                     $tPluginIndex = $pluginIndex[$exclusive];
-                    if (strpos($pluginTriggerChars[$tPluginIndex], $c) !== false && ($pluginTriggerStates[$tPluginIndex] === false || strpos($pluginTriggerStates[$tPluginIndex], $state) !== false)) {
+                    if (strpos($pluginTriggerChars[$tPluginIndex], $c) !== FALSE && ($pluginTriggerStates[$tPluginIndex] === FALSE || strpos($pluginTriggerStates[$tPluginIndex], $state) !== FALSE)) {
                         $r = $plugins[$tPluginIndex]->parse($i, $c, $p, $state);
                         // Return value is TRUE => continue with next char
-                        if ($r === true) {
+                        if ($r === TRUE) {
                             continue;
-                        }
-                        // Return value is numeric => set new index and continue with next char
-                        elseif ($r !== false && $r != $i) {
+                        } // Return value is numeric => set new index and continue with next char
+                        elseif ($r !== FALSE && $r != $i) {
                             $i = $r;
                             continue;
                         }
                     }
-                }
-                // Else iterate through the plugins
+                } // Else iterate through the plugins
                 else {
                     $triggerState = "|" . $state . "|";
                     for ($ii = 0, $ll = $pluginCount; $ii < $ll; $ii++) {
                         // Only process if the current char is one of the plugin trigger chars
-                        if (strpos($pluginTriggerChars[$ii], $c) !== false && ($pluginTriggerStates[$ii] === false || strpos($pluginTriggerStates[$ii], $triggerState) !== false)) {
+                        if (strpos($pluginTriggerChars[$ii], $c) !== FALSE && ($pluginTriggerStates[$ii] === FALSE || strpos($pluginTriggerStates[$ii], $triggerState) !== FALSE)) {
                             // Process with the plugin
                             $r = $plugins[$ii]->parse($i, $c, $p, $state);
                             // Return value is TRUE => break the plugin loop and and continue with next char
-                            if ($r === true) {
+                            if ($r === TRUE) {
                                 break;
-                            }
-                            // Return value is numeric => set new index, break the plugin loop and and continue with next char
-                            elseif ($r !== false && $r != $i) {
+                            } // Return value is numeric => set new index, break the plugin loop and and continue with next char
+                            elseif ($r !== FALSE && $r != $i) {
                                 $i = $r;
                                 break;
                             }
@@ -1629,7 +1624,7 @@ class CssParser {
 
     /**
      * Remove the last state of the state stack and return the removed stack value.
-     * 
+     *
      * @return integer Removed state value
      */
     public function popState() {
@@ -1640,7 +1635,7 @@ class CssParser {
 
     /**
      * Adds a new state onto the state stack.
-     * 
+     *
      * @param integer $state State to add onto the state stack.
      * @return integer The index of the added state in the state stacks
      */
@@ -1652,7 +1647,7 @@ class CssParser {
 
     /**
      * Sets/restores the buffer.
-     * 
+     *
      * @param string $buffer Buffer to set
      * @return void
      */
@@ -1662,7 +1657,7 @@ class CssParser {
 
     /**
      * Set the exclusive state.
-     * 
+     *
      * @param string $exclusive Exclusive state
      * @return void
      */
@@ -1672,7 +1667,7 @@ class CssParser {
 
     /**
      * Set the media types state.
-     * 
+     *
      * @param array $mediaTypes Media types state
      * @return void
      */
@@ -1682,7 +1677,7 @@ class CssParser {
 
     /**
      * Sets the current state in the state stack; equals to {@link CssParser::popState()} + {@link CssParser::pushState()}.
-     * 
+     *
      * @param integer $state State to set
      * @return integer
      */
@@ -1695,39 +1690,39 @@ class CssParser {
 
     /**
      * Removes the exclusive state.
-     * 
+     *
      * @return void
      */
     public function unsetExclusive() {
-        $this->stateExclusive = false;
+        $this->stateExclusive = FALSE;
     }
 
     /**
      * Removes the media types state.
-     * 
+     *
      * @return void
      */
     public function unsetMediaTypes() {
-        $this->stateMediaTypes = false;
+        $this->stateMediaTypes = FALSE;
     }
 
 }
 
 /**
  * {@link aCssFromatter Formatter} returning the CSS source in {@link http://goo.gl/j4XdU OTBS indent style} (The One True Brace Style).
- * 
- * @package		CssMin/Formatter
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Formatter
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssOtbsFormatter extends aCssFormatter {
 
     /**
      * Implements {@link aCssFormatter::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -1750,7 +1745,7 @@ class CssOtbsFormatter extends aCssFormatter {
             } elseif ($class === "CssAtImportToken") {
                 $r[] = $indent . "@import " . $token->Import . " " . implode(", ", $token->MediaTypes) . ";";
             } elseif ($class === "CssAtKeyframesStartToken") {
-                $r[] = $indent .$token;//; "@keyframes \"" . $token->Name . "\" {";
+                $r[] = $indent . $token; //; "@keyframes \"" . $token->Name . "\" {";
                 $level++;
             } elseif ($class === "CssAtMediaStartToken") {
                 $r[] = $indent . "@media " . implode(", ", $token->MediaTypes) . " {";
@@ -1765,10 +1760,10 @@ class CssOtbsFormatter extends aCssFormatter {
                 $r[] = $indent . implode(", ", $token->Selectors) . " {";
                 $level++;
             } elseif ($class == "CssAtFontFaceDeclarationToken"
-                    || $class === "CssAtKeyframesRulesetDeclarationToken"
-                    || $class === "CssAtPageDeclarationToken"
-                    || $class == "CssAtVariablesDeclarationToken"
-                    || $class === "CssRulesetDeclarationToken"
+                || $class === "CssAtKeyframesRulesetDeclarationToken"
+                || $class === "CssAtPageDeclarationToken"
+                || $class == "CssAtVariablesDeclarationToken"
+                || $class === "CssRulesetDeclarationToken"
             ) {
                 $declaration = $indent . $token->Property . ": ";
                 if ($this->padding) {
@@ -1776,12 +1771,12 @@ class CssOtbsFormatter extends aCssFormatter {
                 }
                 $r[] = $declaration . $token->Value . ($token->IsImportant ? " !important" : "") . ";";
             } elseif ($class === "CssAtFontFaceEndToken"
-                    || $class === "CssAtMediaEndToken"
-                    || $class === "CssAtKeyframesEndToken"
-                    || $class === "CssAtKeyframesRulesetEndToken"
-                    || $class === "CssAtPageEndToken"
-                    || $class === "CssAtVariablesEndToken"
-                    || $class === "CssRulesetEndToken"
+                || $class === "CssAtMediaEndToken"
+                || $class === "CssAtKeyframesEndToken"
+                || $class === "CssAtKeyframesRulesetEndToken"
+                || $class === "CssAtPageEndToken"
+                || $class === "CssAtVariablesEndToken"
+                || $class === "CssRulesetEndToken"
             ) {
                 $level--;
                 $r[] = str_repeat($indent, $level) . "}";
@@ -1795,18 +1790,18 @@ class CssOtbsFormatter extends aCssFormatter {
 /**
  * This {@link aCssToken CSS token} is a utility token that extends {@link aNullToken} and returns only a empty string.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssNullToken extends aCssToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -1817,33 +1812,33 @@ class CssNullToken extends aCssToken {
 
 /**
  * CSS Minifier.
- * 
- * @package		CssMin/Minifier
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssMinifier {
 
     /**
      * {@link aCssMinifierFilter Filters}.
-     *  
+     *
      * @var array
      */
     private $filters = array();
 
     /**
      * {@link aCssMinifierPlugin Plugins}.
-     * 
+     *
      * @var array
      */
     private $plugins = array();
 
     /**
      * Minified source.
-     * 
+     *
      * @var string
      */
     private $minified = "";
@@ -1851,40 +1846,40 @@ class CssMinifier {
 
     /**
      * Constructer.
-     * 
+     *
      * Creates instances of {@link aCssMinifierFilter filters} and {@link aCssMinifierPlugin plugins}.
-     * 
+     *
      * @param string $source CSS source [optional]
      * @param array $filters Filter configuration [optional]
      * @param array $plugins Plugin configuration [optional]
      * @return void
      */
-    public function __construct($source = null, array $filters = null, array $plugins = null) {
+    public function __construct($source = NULL, array $filters = NULL, array $plugins = NULL) {
         $filters = array_merge(array
-            (
-            "ImportImports" => false,
-            "RemoveComments" => true,
-            "RemoveEmptyRulesets" => true,
-            "RemoveEmptyAtBlocks" => true,
-            "ConvertLevel3Properties" => false,
-            "ConvertLevel3AtKeyframes" => false,
-            "Variables" => true,
-            "RemoveLastDelarationSemiColon" => true
-                ), is_array($filters) ? $filters : array());
+        (
+            "ImportImports" => FALSE,
+            "RemoveComments" => TRUE,
+            "RemoveEmptyRulesets" => TRUE,
+            "RemoveEmptyAtBlocks" => TRUE,
+            "ConvertLevel3Properties" => FALSE,
+            "ConvertLevel3AtKeyframes" => FALSE,
+            "Variables" => TRUE,
+            "RemoveLastDelarationSemiColon" => TRUE
+        ), is_array($filters) ? $filters : array());
         $plugins = array_merge(array
-            (
-            "Variables" => true,
-            "ConvertFontWeight" => false,
-            "ConvertHslColors" => false,
-            "ConvertRgbColors" => false,
-            "ConvertNamedColors" => false,
-            "CompressColorValues" => false,
-            "CompressUnitValues" => false,
-            "CompressExpressionValues" => false
-                ), is_array($plugins) ? $plugins : array());
+        (
+            "Variables" => TRUE,
+            "ConvertFontWeight" => FALSE,
+            "ConvertHslColors" => FALSE,
+            "ConvertRgbColors" => FALSE,
+            "ConvertNamedColors" => FALSE,
+            "CompressColorValues" => FALSE,
+            "CompressUnitValues" => FALSE,
+            "CompressExpressionValues" => FALSE
+        ), is_array($plugins) ? $plugins : array());
         // Filters
         foreach ($filters as $name => $config) {
-            if ($config !== false) {
+            if ($config !== FALSE) {
                 $class = "Css" . $name . "MinifierFilter";
                 $config = is_array($config) ? $config : array();
                 if (class_exists($class)) {
@@ -1896,7 +1891,7 @@ class CssMinifier {
         }
         // Plugins
         foreach ($plugins as $name => $config) {
-            if ($config !== false) {
+            if ($config !== FALSE) {
                 $class = "Css" . $name . "MinifierPlugin";
                 $config = is_array($config) ? $config : array();
                 if (class_exists($class)) {
@@ -1914,7 +1909,7 @@ class CssMinifier {
 
     /**
      * Returns the minified Source.
-     * 
+     *
      * @return string
      */
     public function getMinified() {
@@ -1923,7 +1918,7 @@ class CssMinifier {
 
     /**
      * Returns the minified Source tokens.
-     * 
+     *
      * @return array
      */
     public function &getMinifiedTokens() {
@@ -1932,24 +1927,24 @@ class CssMinifier {
 
     /**
      * Returns a plugin by class name.
-     * 
+     *
      * @param string $name Class name of the plugin
      * @return aCssMinifierPlugin
      */
     public function getPlugin($class) {
-        static $index = null;
+        static $index = NULL;
         if (is_null($index)) {
             $index = array();
             for ($i = 0, $l = count($this->plugins); $i < $l; $i++) {
                 $index[get_class($this->plugins[$i])] = $i;
             }
         }
-        return isset($index[$class]) ? $this->plugins[$index[$class]] : false;
+        return isset($index[$class]) ? $this->plugins[$index[$class]] : FALSE;
     }
 
     /**
      * Minifies the CSS source.
-     * 
+     *
      * @param string $source CSS source
      * @return string
      */
@@ -1983,7 +1978,7 @@ class CssMinifier {
         for ($i = 0; $i < $filterCount; $i++) {
             // Apply the filter; if the return value is larger than 0...
             if ($filters[$i]->apply($tokens) > 0) {
-                // ...then filter null values and rebuild the token array
+                // ...then filter NULL values and rebuild the token array
                 $tokens = array_values(array_filter($tokens));
             }
         }
@@ -1993,11 +1988,11 @@ class CssMinifier {
          */
         for ($i = 0; $i < $tokenCount; $i++) {
             $triggerToken = "|" . get_class($tokens[$i]) . "|";
-            if (strpos($globalTriggerTokens, $triggerToken) !== false) {
+            if (strpos($globalTriggerTokens, $triggerToken) !== FALSE) {
                 for ($ii = 0; $ii < $pluginCount; $ii++) {
-                    if (strpos($pluginTriggerTokens[$ii], $triggerToken) !== false || $pluginTriggerTokens[$ii] === false) {
+                    if (strpos($pluginTriggerTokens[$ii], $triggerToken) !== FALSE || $pluginTriggerTokens[$ii] === FALSE) {
                         // Apply the plugin; if the return value is TRUE continue to the next token
-                        if ($plugins[$ii]->apply($tokens[$i]) === true) {
+                        if ($plugins[$ii]->apply($tokens[$i]) === TRUE) {
                             continue 2;
                         }
                     }
@@ -2006,7 +2001,7 @@ class CssMinifier {
         }
         // Stringify the tokens
         for ($i = 0; $i < $tokenCount; $i++) {
-            $r .= (string) $tokens[$i];
+            $r .= (string)$tokens[$i];
         }
         $this->minified = $r;
         $this->minified_tokens = $tokens;
@@ -2017,7 +2012,7 @@ class CssMinifier {
 
 /**
  * CssMin - A (simple) css minifier with benefits
- * 
+ *
  * --
  * Copyright (c) 2011 Joe Scylla <joe.scylla@gmail.com>
  *
@@ -2027,10 +2022,10 @@ class CssMinifier {
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -2039,40 +2034,40 @@ class CssMinifier {
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * --
- * 
- * @package		CssMin
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssMin {
 
     /**
      * Index of classes
-     * 
+     *
      * @var array
      */
     private static $classIndex = array();
 
     /**
      * Parse/minify errors
-     * 
+     *
      * @var array
      */
     private static $errors = array();
 
     /**
      * Verbose output.
-     * 
+     *
      * @var boolean
      */
-    private static $isVerbose = false;
+    private static $isVerbose = FALSE;
 
     /**
      * {@link http://goo.gl/JrW54 Autoload} function of CssMin.
-     * 
+     *
      * @param string $class Name of the class
      * @return void
      */
@@ -2084,7 +2079,7 @@ class CssMin {
 
     /**
      * Return errors
-     * 
+     *
      * @return array of {CssError}.
      */
     public static function getErrors() {
@@ -2093,7 +2088,7 @@ class CssMin {
 
     /**
      * Returns if there were errors.
-     * 
+     *
      * @return boolean
      */
     public static function hasErrors() {
@@ -2102,7 +2097,7 @@ class CssMin {
 
     /**
      * Initialises CssMin.
-     * 
+     *
      * @return void
      */
     public static function initialise() {
@@ -2128,8 +2123,7 @@ class CssMin {
         // __autoload() breaks if spl_autoload_register() is used. 
         if (function_exists("spl_autoload_register") && !is_callable("__autoload")) {
             spl_autoload_register(array(__CLASS__, "autoload"));
-        }
-        // Otherwise include all class files
+        } // Otherwise include all class files
         else {
             foreach (self::$classIndex as $class => $file) {
                 if (!class_exists($class)) {
@@ -2141,13 +2135,13 @@ class CssMin {
 
     /**
      * Minifies CSS source.
-     * 
+     *
      * @param string $source CSS source
      * @param array $filters Filter configuration [optional]
      * @param array $plugins Plugin configuration [optional]
      * @return string Minified CSS
      */
-    public static function minify($source, array $filters = null, array $plugins = null) {
+    public static function minify($source, array $filters = NULL, array $plugins = NULL) {
         self::$errors = array();
         $minifier = new CssMinifier($source, $filters, $plugins);
         return $minifier->getMinified();
@@ -2155,12 +2149,12 @@ class CssMin {
 
     /**
      * Parse the CSS source.
-     * 
+     *
      * @param string $source CSS source
      * @param array $plugins Plugin configuration [optional]
      * @return array Array of aCssToken
      */
-    public static function parse($source, array $plugins = null) {
+    public static function parse($source, array $plugins = NULL) {
         self::$errors = array();
         $parser = new CssParser($source, $plugins);
         return $parser->getTokens();
@@ -2168,25 +2162,25 @@ class CssMin {
 
     /**
      * --
-     * 
+     *
      * @param boolean $to
      * @return boolean
      */
     public static function setVerbose($to) {
-        self::$isVerbose = (boolean) $to;
+        self::$isVerbose = (boolean)$to;
         return self::$isVerbose;
     }
 
     /**
      * --
-     * 
+     *
      * @param CssError $error
      * @return void
      */
     public static function triggerError(CssError $error) {
         self::$errors[] = $error;
         if (self::$isVerbose) {
-            trigger_error((string) $error, E_USER_WARNING);
+            trigger_error((string)$error, E_USER_WARNING);
         }
     }
 
@@ -2196,34 +2190,34 @@ class CssMin {
 CssMin::initialise();
 
 /**
- * This {@link aCssMinifierFilter minifier filter} import external css files defined with the @import at-rule into the 
- * current stylesheet. 
- * 
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * This {@link aCssMinifierFilter minifier filter} import external css files defined with the @import at-rule into the
+ * current stylesheet.
+ *
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssImportImportsMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Array with already imported external stylesheets.
-     * 
+     *
      * @var array
      */
     private $imported = array();
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value large than 0 will rebuild the array
      */
     public function apply(array &$tokens) {
         if (!isset($this->configuration["BasePath"]) || !is_dir($this->configuration["BasePath"])) {
-            CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Base path <code>" . ($this->configuration["BasePath"] ? $this->configuration["BasePath"] : "null") . "</code> is not a directory"));
+            CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Base path <code>" . ($this->configuration["BasePath"] ? $this->configuration["BasePath"] : "NULL") . "</code> is not a directory"));
             return 0;
         }
         for ($i = 0, $l = count($tokens); $i < $l; $i++) {
@@ -2231,12 +2225,11 @@ class CssImportImportsMinifierFilter extends aCssMinifierFilter {
                 $import = $this->configuration["BasePath"] . "/" . $tokens[$i]->Import;
                 // Import file was not found/is not a file
                 if (!is_file($import)) {
-                    CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Import file <code>" . $import . "</code> was not found.", (string) $tokens[$i]));
-                }
-                // Import file already imported; remove this @import at-rule to prevent recursions
+                    CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Import file <code>" . $import . "</code> was not found.", (string)$tokens[$i]));
+                } // Import file already imported; remove this @import at-rule to prevent recursions
                 elseif (in_array($import, $this->imported)) {
-                    CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Import file <code>" . $import . "</code> was already imported.", (string) $tokens[$i]));
-                    $tokens[$i] = null;
+                    CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Import file <code>" . $import . "</code> was already imported.", (string)$tokens[$i]));
+                    $tokens[$i] = NULL;
                 } else {
                     $this->imported[] = $import;
                     $parser = new CssParser(file_get_contents($import));
@@ -2252,8 +2245,7 @@ class CssImportImportsMinifierFilter extends aCssMinifierFilter {
                                 // @import at-rule defines no media type or only the "all" media type; set the media types to the one defined in the parent @import at-rule
                                 if (count($import[$ii]->MediaTypes) == 0 || (count($import[$ii]->MediaTypes) == 1 && $import[$ii]->MediaTypes[0] == "all")) {
                                     $import[$ii]->MediaTypes = $tokens[$i]->MediaTypes;
-                                }
-                                // @import at-rule defineds one or more media types; filter out media types not matching with the  parent @import at-rule
+                                } // @import at-rule defineds one or more media types; filter out media types not matching with the  parent @import at-rule
                                 elseif (count($import[$ii]->MediaTypes > 0)) {
                                     foreach ($import[$ii]->MediaTypes as $index => $mediaType) {
                                         if (!in_array($mediaType, $tokens[$i]->MediaTypes)) {
@@ -2263,7 +2255,7 @@ class CssImportImportsMinifierFilter extends aCssMinifierFilter {
                                     $import[$ii]->MediaTypes = array_values($import[$ii]->MediaTypes);
                                     // If there are no media types left in the @import at-rule remove the @import at-rule
                                     if (count($import[$ii]->MediaTypes) == 0) {
-                                        $import[$ii] = null;
+                                        $import[$ii] = NULL;
                                     }
                                 }
                             }
@@ -2364,36 +2356,36 @@ class CssImportImportsMinifierFilter extends aCssMinifierFilter {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for preserve parsing expression() declaration values.
- * 
- * This plugin return no {@link aCssToken CssToken} but ensures that expression() declaration values will get parsed 
+ *
+ * This plugin return no {@link aCssToken CssToken} but ensures that expression() declaration values will get parsed
  * properly.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssExpressionParserPlugin extends aCssParserPlugin {
 
     /**
      * Count of left braces.
-     * 
+     *
      * @var integer
      */
     private $leftBraces = 0;
 
     /**
      * Count of right braces.
-     * 
+     *
      * @var integer
      */
     private $rightBraces = 0;
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -2402,16 +2394,16 @@ class CssExpressionParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -2422,8 +2414,7 @@ class CssExpressionParserPlugin extends aCssParserPlugin {
         if ($char === "(" && strtolower(substr($this->parser->getSource(), $index - 10, 11)) === "expression(" && $state !== "T_EXPRESSION") {
             $this->parser->pushState("T_EXPRESSION");
             $this->leftBraces++;
-        }
-        // Count left braces
+        } // Count left braces
         elseif ($char === "(" && $state === "T_EXPRESSION") {
             $this->leftBraces++;
         }
@@ -2437,56 +2428,56 @@ class CssExpressionParserPlugin extends aCssParserPlugin {
             $this->parser->popState();
             return $index - 1;
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
 
 /**
  * CSS Error.
- * 
- * @package		CssMin
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssError {
 
     /**
      * File.
-     * 
+     *
      * @var string
      */
     public $File = "";
 
     /**
      * Line.
-     * 
+     *
      * @var integer
      */
     public $Line = 0;
 
     /**
      * Error message.
-     * 
+     *
      * @var string
      */
     public $Message = "";
 
     /**
      * Source.
-     * 
+     *
      * @var string
      */
     public $Source = "";
 
     /**
      * Constructor triggering the error.
-     * 
+     *
      * @param string $message Error message
      * @param string $source Corresponding line [optional]
      * @return void
@@ -2500,7 +2491,7 @@ class CssError {
 
     /**
      * Returns the error as formatted string.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -2511,61 +2502,61 @@ class CssError {
 
 /**
  * This {@link aCssMinifierPlugin} will convert a color value in rgb notation to hexadecimal notation.
- * 
+ *
  * Example:
  * <code>
  * color: rgb(200,60%,5);
  * </code>
- * 
+ *
  * Will get converted to:
  * <code>
  * color:#c89905;
  * </code>
  *
- * @package		CssMin/Minifier/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Minifier/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssConvertRgbColorsMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Regular expression matching the value.
-     * 
+     *
      * @var string
      */
     private $reMatch = "/rgb\s*\(\s*([0-9%]+)\s*,\s*([0-9%]+)\s*,\s*([0-9%]+)\s*\)/iS";
 
     /**
      * Implements {@link aCssMinifierPlugin::minify()}.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
     public function apply(aCssToken &$token) {
-        if (stripos($token->Value, "rgb") !== false && preg_match($this->reMatch, $token->Value, $m)) {
+        if (stripos($token->Value, "rgb") !== FALSE && preg_match($this->reMatch, $token->Value, $m)) {
             for ($i = 1, $l = count($m); $i < $l; $i++) {
-                if (strpos("%", $m[$i]) !== false) {
+                if (strpos("%", $m[$i]) !== FALSE) {
                     $m[$i] = substr($m[$i], 0, -1);
-                    $m[$i] = (int) (256 * ($m[$i] / 100));
+                    $m[$i] = (int)(256 * ($m[$i] / 100));
                 }
                 $m[$i] = str_pad(dechex($m[$i]), 2, "0", STR_PAD_LEFT);
             }
             $token->Value = str_replace($m[0], "#" . $m[1] . $m[2] . $m[3], $token->Value);
         }
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aMinifierPlugin::getTriggerTokens()}
-     * 
+     *
      * @return array
      */
     public function getTriggerTokens() {
         return array
-            (
+        (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -2576,49 +2567,49 @@ class CssConvertRgbColorsMinifierPlugin extends aCssMinifierPlugin {
 
 /**
  * This {@link aCssMinifierPlugin} will convert named color values to hexadecimal notation.
- * 
+ *
  * Example:
  * <code>
  * color: black;
  * border: 1px solid indigo;
  * </code>
- * 
+ *
  * Will get converted to:
  * <code>
  * color:#000;
  * border:1px solid #4b0082;
  * </code>
- * 
- * @package		CssMin/Minifier/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssConvertNamedColorsMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Regular expression matching the value.
-     * 
+     *
      * @var string
      */
-    private $reMatch = null;
+    private $reMatch = NULL;
 
     /**
      * Regular expression replacing the value.
-     * 
+     *
      * @var string
      */
     private $reReplace = "\"\${1}\" . \$this->transformation[strtolower(\"\${2}\")] . \"\${3}\"";
 
     /**
      * Transformation table used by the {@link CssConvertNamedColorsMinifierPlugin::$reReplace replace regular expression}.
-     * 
+     *
      * @var array
      */
     private $transformation = array
-        (
+    (
         "aliceblue" => "#f0f8ff",
         "antiquewhite" => "#faebd7",
         "aqua" => "#0ff",
@@ -2759,10 +2750,10 @@ class CssConvertNamedColorsMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Overwrites {@link aCssMinifierPlugin::__construct()}.
-     * 
+     *
      * The constructor will create the {@link CssConvertNamedColorsMinifierPlugin::$reReplace replace regular expression}
      * based on the {@link CssConvertNamedColorsMinifierPlugin::$transformation transformation table}.
-     * 
+     *
      * @param CssMinifier $minifier The CssMinifier object of this plugin.
      * @param array $configuration Plugin configuration [optional]
      * @return void
@@ -2774,7 +2765,7 @@ class CssConvertNamedColorsMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Implements {@link aCssMinifierPlugin::minify()}.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
@@ -2783,22 +2774,21 @@ class CssConvertNamedColorsMinifierPlugin extends aCssMinifierPlugin {
         // Declaration value equals a value in the transformation table => simple replace
         if (isset($this->transformation[$lcValue])) {
             $token->Value = $this->transformation[$lcValue];
-        }
-        // Declaration value contains a value in the transformation table => regular expression replace
+        } // Declaration value contains a value in the transformation table => regular expression replace
         elseif (preg_match($this->reMatch, $token->Value)) {
             $token->Value = preg_replace($this->reMatch, $this->reReplace, $token->Value);
         }
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aMinifierPlugin::getTriggerTokens()}
-     * 
+     *
      * @return array
      */
     public function getTriggerTokens() {
         return array
-            (
+        (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -2810,231 +2800,231 @@ class CssConvertNamedColorsMinifierPlugin extends aCssMinifierPlugin {
 /**
  * This {@link aCssMinifierFilter minifier filter} triggers on CSS Level 3 properties and will add declaration tokens
  * with browser-specific properties.
- * 
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
 
     /**
-     * Css property transformations table. Used to convert CSS3 and proprietary properties to the browser-specific 
+     * Css property transformations table. Used to convert CSS3 and proprietary properties to the browser-specific
      * counterparts.
-     * 
+     *
      * @var array
      */
     protected $transformations = array
-        (
+    (
         // Property						Array(Mozilla, Webkit, Opera, Internet Explorer); NULL values are placeholders and will get ignored
-        "animation" => array(null, "-webkit-animation", null, null),
-        "animation-delay" => array(null, "-webkit-animation-delay", null, null),
-        "animation-direction" => array(null, "-webkit-animation-direction", null, null),
-        "animation-duration" => array(null, "-webkit-animation-duration", null, null),
-        "animation-fill-mode" => array(null, "-webkit-animation-fill-mode", null, null),
-        "animation-iteration-count" => array(null, "-webkit-animation-iteration-count", null, null),
-        "animation-name" => array(null, "-webkit-animation-name", null, null),
-        "animation-play-state" => array(null, "-webkit-animation-play-state", null, null),
-        "animation-timing-function" => array(null, "-webkit-animation-timing-function", null, null),
-        "appearance" => array("-moz-appearance", "-webkit-appearance", null, null),
-        "backface-visibility" => array(null, "-webkit-backface-visibility", null, null),
-        "background-clip" => array(null, "-webkit-background-clip", null, null),
-        "background-composite" => array(null, "-webkit-background-composite", null, null),
-        "background-inline-policy" => array("-moz-background-inline-policy", null, null, null),
-        "background-origin" => array(null, "-webkit-background-origin", null, null),
-        "background-position-x" => array(null, null, null, "-ms-background-position-x"),
-        "background-position-y" => array(null, null, null, "-ms-background-position-y"),
-        "background-size" => array(null, "-webkit-background-size", null, null),
-        "behavior" => array(null, null, null, "-ms-behavior"),
-        "binding" => array("-moz-binding", null, null, null),
-        "border-after" => array(null, "-webkit-border-after", null, null),
-        "border-after-color" => array(null, "-webkit-border-after-color", null, null),
-        "border-after-style" => array(null, "-webkit-border-after-style", null, null),
-        "border-after-width" => array(null, "-webkit-border-after-width", null, null),
-        "border-before" => array(null, "-webkit-border-before", null, null),
-        "border-before-color" => array(null, "-webkit-border-before-color", null, null),
-        "border-before-style" => array(null, "-webkit-border-before-style", null, null),
-        "border-before-width" => array(null, "-webkit-border-before-width", null, null),
-        "border-border-bottom-colors" => array("-moz-border-bottom-colors", null, null, null),
-        "border-bottom-left-radius" => array("-moz-border-radius-bottomleft", "-webkit-border-bottom-left-radius", null, null),
-        "border-bottom-right-radius" => array("-moz-border-radius-bottomright", "-webkit-border-bottom-right-radius", null, null),
-        "border-end" => array("-moz-border-end", "-webkit-border-end", null, null),
-        "border-end-color" => array("-moz-border-end-color", "-webkit-border-end-color", null, null),
-        "border-end-style" => array("-moz-border-end-style", "-webkit-border-end-style", null, null),
-        "border-end-width" => array("-moz-border-end-width", "-webkit-border-end-width", null, null),
-        "border-fit" => array(null, "-webkit-border-fit", null, null),
-        "border-horizontal-spacing" => array(null, "-webkit-border-horizontal-spacing", null, null),
-        "border-image" => array("-moz-border-image", "-webkit-border-image", null, null),
-        "border-left-colors" => array("-moz-border-left-colors", null, null, null),
-        "border-radius" => array("-moz-border-radius", "-webkit-border-radius", null, null),
-        "border-border-right-colors" => array("-moz-border-right-colors", null, null, null),
-        "border-start" => array("-moz-border-start", "-webkit-border-start", null, null),
-        "border-start-color" => array("-moz-border-start-color", "-webkit-border-start-color", null, null),
-        "border-start-style" => array("-moz-border-start-style", "-webkit-border-start-style", null, null),
-        "border-start-width" => array("-moz-border-start-width", "-webkit-border-start-width", null, null),
-        "border-top-colors" => array("-moz-border-top-colors", null, null, null),
-        "border-top-left-radius" => array("-moz-border-radius-topleft", "-webkit-border-top-left-radius", null, null),
-        "border-top-right-radius" => array("-moz-border-radius-topright", "-webkit-border-top-right-radius", null, null),
-        "border-vertical-spacing" => array(null, "-webkit-border-vertical-spacing", null, null),
-        "box-align" => array("-moz-box-align", "-webkit-box-align", null, null),
-        "box-direction" => array("-moz-box-direction", "-webkit-box-direction", null, null),
-        "box-flex" => array("-moz-box-flex", "-webkit-box-flex", null, null),
-        "box-flex-group" => array(null, "-webkit-box-flex-group", null, null),
-        "box-flex-lines" => array(null, "-webkit-box-flex-lines", null, null),
-        "box-ordinal-group" => array("-moz-box-ordinal-group", "-webkit-box-ordinal-group", null, null),
-        "box-orient" => array("-moz-box-orient", "-webkit-box-orient", null, null),
-        "box-pack" => array("-moz-box-pack", "-webkit-box-pack", null, null),
-        "box-reflect" => array(null, "-webkit-box-reflect", null, null),
-        "box-shadow" => array("-moz-box-shadow", "-webkit-box-shadow", null, null),
-        "box-sizing" => array("-moz-box-sizing", null, null, null),
-        "color-correction" => array(null, "-webkit-color-correction", null, null),
-        "column-break-after" => array(null, "-webkit-column-break-after", null, null),
-        "column-break-before" => array(null, "-webkit-column-break-before", null, null),
-        "column-break-inside" => array(null, "-webkit-column-break-inside", null, null),
-        "column-count" => array("-moz-column-count", "-webkit-column-count", null, null),
-        "column-gap" => array("-moz-column-gap", "-webkit-column-gap", null, null),
-        "column-rule" => array("-moz-column-rule", "-webkit-column-rule", null, null),
-        "column-rule-color" => array("-moz-column-rule-color", "-webkit-column-rule-color", null, null),
-        "column-rule-style" => array("-moz-column-rule-style", "-webkit-column-rule-style", null, null),
-        "column-rule-width" => array("-moz-column-rule-width", "-webkit-column-rule-width", null, null),
-        "column-span" => array(null, "-webkit-column-span", null, null),
-        "column-width" => array("-moz-column-width", "-webkit-column-width", null, null),
-        "columns" => array(null, "-webkit-columns", null, null),
+        "animation" => array(NULL, "-webkit-animation", NULL, NULL),
+        "animation-delay" => array(NULL, "-webkit-animation-delay", NULL, NULL),
+        "animation-direction" => array(NULL, "-webkit-animation-direction", NULL, NULL),
+        "animation-duration" => array(NULL, "-webkit-animation-duration", NULL, NULL),
+        "animation-fill-mode" => array(NULL, "-webkit-animation-fill-mode", NULL, NULL),
+        "animation-iteration-count" => array(NULL, "-webkit-animation-iteration-count", NULL, NULL),
+        "animation-name" => array(NULL, "-webkit-animation-name", NULL, NULL),
+        "animation-play-state" => array(NULL, "-webkit-animation-play-state", NULL, NULL),
+        "animation-timing-function" => array(NULL, "-webkit-animation-timing-function", NULL, NULL),
+        "appearance" => array("-moz-appearance", "-webkit-appearance", NULL, NULL),
+        "backface-visibility" => array(NULL, "-webkit-backface-visibility", NULL, NULL),
+        "background-clip" => array(NULL, "-webkit-background-clip", NULL, NULL),
+        "background-composite" => array(NULL, "-webkit-background-composite", NULL, NULL),
+        "background-inline-policy" => array("-moz-background-inline-policy", NULL, NULL, NULL),
+        "background-origin" => array(NULL, "-webkit-background-origin", NULL, NULL),
+        "background-position-x" => array(NULL, NULL, NULL, "-ms-background-position-x"),
+        "background-position-y" => array(NULL, NULL, NULL, "-ms-background-position-y"),
+        "background-size" => array(NULL, "-webkit-background-size", NULL, NULL),
+        "behavior" => array(NULL, NULL, NULL, "-ms-behavior"),
+        "binding" => array("-moz-binding", NULL, NULL, NULL),
+        "border-after" => array(NULL, "-webkit-border-after", NULL, NULL),
+        "border-after-color" => array(NULL, "-webkit-border-after-color", NULL, NULL),
+        "border-after-style" => array(NULL, "-webkit-border-after-style", NULL, NULL),
+        "border-after-width" => array(NULL, "-webkit-border-after-width", NULL, NULL),
+        "border-before" => array(NULL, "-webkit-border-before", NULL, NULL),
+        "border-before-color" => array(NULL, "-webkit-border-before-color", NULL, NULL),
+        "border-before-style" => array(NULL, "-webkit-border-before-style", NULL, NULL),
+        "border-before-width" => array(NULL, "-webkit-border-before-width", NULL, NULL),
+        "border-border-bottom-colors" => array("-moz-border-bottom-colors", NULL, NULL, NULL),
+        "border-bottom-left-radius" => array("-moz-border-radius-bottomleft", "-webkit-border-bottom-left-radius", NULL, NULL),
+        "border-bottom-right-radius" => array("-moz-border-radius-bottomright", "-webkit-border-bottom-right-radius", NULL, NULL),
+        "border-end" => array("-moz-border-end", "-webkit-border-end", NULL, NULL),
+        "border-end-color" => array("-moz-border-end-color", "-webkit-border-end-color", NULL, NULL),
+        "border-end-style" => array("-moz-border-end-style", "-webkit-border-end-style", NULL, NULL),
+        "border-end-width" => array("-moz-border-end-width", "-webkit-border-end-width", NULL, NULL),
+        "border-fit" => array(NULL, "-webkit-border-fit", NULL, NULL),
+        "border-horizontal-spacing" => array(NULL, "-webkit-border-horizontal-spacing", NULL, NULL),
+        "border-image" => array("-moz-border-image", "-webkit-border-image", NULL, NULL),
+        "border-left-colors" => array("-moz-border-left-colors", NULL, NULL, NULL),
+        "border-radius" => array("-moz-border-radius", "-webkit-border-radius", NULL, NULL),
+        "border-border-right-colors" => array("-moz-border-right-colors", NULL, NULL, NULL),
+        "border-start" => array("-moz-border-start", "-webkit-border-start", NULL, NULL),
+        "border-start-color" => array("-moz-border-start-color", "-webkit-border-start-color", NULL, NULL),
+        "border-start-style" => array("-moz-border-start-style", "-webkit-border-start-style", NULL, NULL),
+        "border-start-width" => array("-moz-border-start-width", "-webkit-border-start-width", NULL, NULL),
+        "border-top-colors" => array("-moz-border-top-colors", NULL, NULL, NULL),
+        "border-top-left-radius" => array("-moz-border-radius-topleft", "-webkit-border-top-left-radius", NULL, NULL),
+        "border-top-right-radius" => array("-moz-border-radius-topright", "-webkit-border-top-right-radius", NULL, NULL),
+        "border-vertical-spacing" => array(NULL, "-webkit-border-vertical-spacing", NULL, NULL),
+        "box-align" => array("-moz-box-align", "-webkit-box-align", NULL, NULL),
+        "box-direction" => array("-moz-box-direction", "-webkit-box-direction", NULL, NULL),
+        "box-flex" => array("-moz-box-flex", "-webkit-box-flex", NULL, NULL),
+        "box-flex-group" => array(NULL, "-webkit-box-flex-group", NULL, NULL),
+        "box-flex-lines" => array(NULL, "-webkit-box-flex-lines", NULL, NULL),
+        "box-ordinal-group" => array("-moz-box-ordinal-group", "-webkit-box-ordinal-group", NULL, NULL),
+        "box-orient" => array("-moz-box-orient", "-webkit-box-orient", NULL, NULL),
+        "box-pack" => array("-moz-box-pack", "-webkit-box-pack", NULL, NULL),
+        "box-reflect" => array(NULL, "-webkit-box-reflect", NULL, NULL),
+        "box-shadow" => array("-moz-box-shadow", "-webkit-box-shadow", NULL, NULL),
+        "box-sizing" => array("-moz-box-sizing", NULL, NULL, NULL),
+        "color-correction" => array(NULL, "-webkit-color-correction", NULL, NULL),
+        "column-break-after" => array(NULL, "-webkit-column-break-after", NULL, NULL),
+        "column-break-before" => array(NULL, "-webkit-column-break-before", NULL, NULL),
+        "column-break-inside" => array(NULL, "-webkit-column-break-inside", NULL, NULL),
+        "column-count" => array("-moz-column-count", "-webkit-column-count", NULL, NULL),
+        "column-gap" => array("-moz-column-gap", "-webkit-column-gap", NULL, NULL),
+        "column-rule" => array("-moz-column-rule", "-webkit-column-rule", NULL, NULL),
+        "column-rule-color" => array("-moz-column-rule-color", "-webkit-column-rule-color", NULL, NULL),
+        "column-rule-style" => array("-moz-column-rule-style", "-webkit-column-rule-style", NULL, NULL),
+        "column-rule-width" => array("-moz-column-rule-width", "-webkit-column-rule-width", NULL, NULL),
+        "column-span" => array(NULL, "-webkit-column-span", NULL, NULL),
+        "column-width" => array("-moz-column-width", "-webkit-column-width", NULL, NULL),
+        "columns" => array(NULL, "-webkit-columns", NULL, NULL),
         "filter" => array(__CLASS__, "filter"),
-        "float-edge" => array("-moz-float-edge", null, null, null),
-        "font-feature-settings" => array("-moz-font-feature-settings", null, null, null),
-        "font-language-override" => array("-moz-font-language-override", null, null, null),
-        "font-size-delta" => array(null, "-webkit-font-size-delta", null, null),
-        "font-smoothing" => array(null, "-webkit-font-smoothing", null, null),
-        "force-broken-image-icon" => array("-moz-force-broken-image-icon", null, null, null),
-        "highlight" => array(null, "-webkit-highlight", null, null),
-        "hyphenate-character" => array(null, "-webkit-hyphenate-character", null, null),
-        "hyphenate-locale" => array(null, "-webkit-hyphenate-locale", null, null),
-        "hyphens" => array(null, "-webkit-hyphens", null, null),
-        "force-broken-image-icon" => array("-moz-image-region", null, null, null),
-        "ime-mode" => array(null, null, null, "-ms-ime-mode"),
-        "interpolation-mode" => array(null, null, null, "-ms-interpolation-mode"),
-        "layout-flow" => array(null, null, null, "-ms-layout-flow"),
-        "layout-grid" => array(null, null, null, "-ms-layout-grid"),
-        "layout-grid-char" => array(null, null, null, "-ms-layout-grid-char"),
-        "layout-grid-line" => array(null, null, null, "-ms-layout-grid-line"),
-        "layout-grid-mode" => array(null, null, null, "-ms-layout-grid-mode"),
-        "layout-grid-type" => array(null, null, null, "-ms-layout-grid-type"),
-        "line-break" => array(null, "-webkit-line-break", null, "-ms-line-break"),
-        "line-clamp" => array(null, "-webkit-line-clamp", null, null),
-        "line-grid-mode" => array(null, null, null, "-ms-line-grid-mode"),
-        "logical-height" => array(null, "-webkit-logical-height", null, null),
-        "logical-width" => array(null, "-webkit-logical-width", null, null),
-        "margin-after" => array(null, "-webkit-margin-after", null, null),
-        "margin-after-collapse" => array(null, "-webkit-margin-after-collapse", null, null),
-        "margin-before" => array(null, "-webkit-margin-before", null, null),
-        "margin-before-collapse" => array(null, "-webkit-margin-before-collapse", null, null),
-        "margin-bottom-collapse" => array(null, "-webkit-margin-bottom-collapse", null, null),
-        "margin-collapse" => array(null, "-webkit-margin-collapse", null, null),
-        "margin-end" => array("-moz-margin-end", "-webkit-margin-end", null, null),
-        "margin-start" => array("-moz-margin-start", "-webkit-margin-start", null, null),
-        "margin-top-collapse" => array(null, "-webkit-margin-top-collapse", null, null),
-        "marquee " => array(null, "-webkit-marquee", null, null),
-        "marquee-direction" => array(null, "-webkit-marquee-direction", null, null),
-        "marquee-increment" => array(null, "-webkit-marquee-increment", null, null),
-        "marquee-repetition" => array(null, "-webkit-marquee-repetition", null, null),
-        "marquee-speed" => array(null, "-webkit-marquee-speed", null, null),
-        "marquee-style" => array(null, "-webkit-marquee-style", null, null),
-        "mask" => array(null, "-webkit-mask", null, null),
-        "mask-attachment" => array(null, "-webkit-mask-attachment", null, null),
-        "mask-box-image" => array(null, "-webkit-mask-box-image", null, null),
-        "mask-clip" => array(null, "-webkit-mask-clip", null, null),
-        "mask-composite" => array(null, "-webkit-mask-composite", null, null),
-        "mask-image" => array(null, "-webkit-mask-image", null, null),
-        "mask-origin" => array(null, "-webkit-mask-origin", null, null),
-        "mask-position" => array(null, "-webkit-mask-position", null, null),
-        "mask-position-x" => array(null, "-webkit-mask-position-x", null, null),
-        "mask-position-y" => array(null, "-webkit-mask-position-y", null, null),
-        "mask-repeat" => array(null, "-webkit-mask-repeat", null, null),
-        "mask-repeat-x" => array(null, "-webkit-mask-repeat-x", null, null),
-        "mask-repeat-y" => array(null, "-webkit-mask-repeat-y", null, null),
-        "mask-size" => array(null, "-webkit-mask-size", null, null),
-        "match-nearest-mail-blockquote-color" => array(null, "-webkit-match-nearest-mail-blockquote-color", null, null),
-        "max-logical-height" => array(null, "-webkit-max-logical-height", null, null),
-        "max-logical-width" => array(null, "-webkit-max-logical-width", null, null),
-        "min-logical-height" => array(null, "-webkit-min-logical-height", null, null),
-        "min-logical-width" => array(null, "-webkit-min-logical-width", null, null),
-        "object-fit" => array(null, null, "-o-object-fit", null),
-        "object-position" => array(null, null, "-o-object-position", null),
+        "float-edge" => array("-moz-float-edge", NULL, NULL, NULL),
+        "font-feature-settings" => array("-moz-font-feature-settings", NULL, NULL, NULL),
+        "font-language-override" => array("-moz-font-language-override", NULL, NULL, NULL),
+        "font-size-delta" => array(NULL, "-webkit-font-size-delta", NULL, NULL),
+        "font-smoothing" => array(NULL, "-webkit-font-smoothing", NULL, NULL),
+        "force-broken-image-icon" => array("-moz-force-broken-image-icon", NULL, NULL, NULL),
+        "highlight" => array(NULL, "-webkit-highlight", NULL, NULL),
+        "hyphenate-character" => array(NULL, "-webkit-hyphenate-character", NULL, NULL),
+        "hyphenate-locale" => array(NULL, "-webkit-hyphenate-locale", NULL, NULL),
+        "hyphens" => array(NULL, "-webkit-hyphens", NULL, NULL),
+        "force-broken-image-icon" => array("-moz-image-region", NULL, NULL, NULL),
+        "ime-mode" => array(NULL, NULL, NULL, "-ms-ime-mode"),
+        "interpolation-mode" => array(NULL, NULL, NULL, "-ms-interpolation-mode"),
+        "layout-flow" => array(NULL, NULL, NULL, "-ms-layout-flow"),
+        "layout-grid" => array(NULL, NULL, NULL, "-ms-layout-grid"),
+        "layout-grid-char" => array(NULL, NULL, NULL, "-ms-layout-grid-char"),
+        "layout-grid-line" => array(NULL, NULL, NULL, "-ms-layout-grid-line"),
+        "layout-grid-mode" => array(NULL, NULL, NULL, "-ms-layout-grid-mode"),
+        "layout-grid-type" => array(NULL, NULL, NULL, "-ms-layout-grid-type"),
+        "line-break" => array(NULL, "-webkit-line-break", NULL, "-ms-line-break"),
+        "line-clamp" => array(NULL, "-webkit-line-clamp", NULL, NULL),
+        "line-grid-mode" => array(NULL, NULL, NULL, "-ms-line-grid-mode"),
+        "logical-height" => array(NULL, "-webkit-logical-height", NULL, NULL),
+        "logical-width" => array(NULL, "-webkit-logical-width", NULL, NULL),
+        "margin-after" => array(NULL, "-webkit-margin-after", NULL, NULL),
+        "margin-after-collapse" => array(NULL, "-webkit-margin-after-collapse", NULL, NULL),
+        "margin-before" => array(NULL, "-webkit-margin-before", NULL, NULL),
+        "margin-before-collapse" => array(NULL, "-webkit-margin-before-collapse", NULL, NULL),
+        "margin-bottom-collapse" => array(NULL, "-webkit-margin-bottom-collapse", NULL, NULL),
+        "margin-collapse" => array(NULL, "-webkit-margin-collapse", NULL, NULL),
+        "margin-end" => array("-moz-margin-end", "-webkit-margin-end", NULL, NULL),
+        "margin-start" => array("-moz-margin-start", "-webkit-margin-start", NULL, NULL),
+        "margin-top-collapse" => array(NULL, "-webkit-margin-top-collapse", NULL, NULL),
+        "marquee " => array(NULL, "-webkit-marquee", NULL, NULL),
+        "marquee-direction" => array(NULL, "-webkit-marquee-direction", NULL, NULL),
+        "marquee-increment" => array(NULL, "-webkit-marquee-increment", NULL, NULL),
+        "marquee-repetition" => array(NULL, "-webkit-marquee-repetition", NULL, NULL),
+        "marquee-speed" => array(NULL, "-webkit-marquee-speed", NULL, NULL),
+        "marquee-style" => array(NULL, "-webkit-marquee-style", NULL, NULL),
+        "mask" => array(NULL, "-webkit-mask", NULL, NULL),
+        "mask-attachment" => array(NULL, "-webkit-mask-attachment", NULL, NULL),
+        "mask-box-image" => array(NULL, "-webkit-mask-box-image", NULL, NULL),
+        "mask-clip" => array(NULL, "-webkit-mask-clip", NULL, NULL),
+        "mask-composite" => array(NULL, "-webkit-mask-composite", NULL, NULL),
+        "mask-image" => array(NULL, "-webkit-mask-image", NULL, NULL),
+        "mask-origin" => array(NULL, "-webkit-mask-origin", NULL, NULL),
+        "mask-position" => array(NULL, "-webkit-mask-position", NULL, NULL),
+        "mask-position-x" => array(NULL, "-webkit-mask-position-x", NULL, NULL),
+        "mask-position-y" => array(NULL, "-webkit-mask-position-y", NULL, NULL),
+        "mask-repeat" => array(NULL, "-webkit-mask-repeat", NULL, NULL),
+        "mask-repeat-x" => array(NULL, "-webkit-mask-repeat-x", NULL, NULL),
+        "mask-repeat-y" => array(NULL, "-webkit-mask-repeat-y", NULL, NULL),
+        "mask-size" => array(NULL, "-webkit-mask-size", NULL, NULL),
+        "match-nearest-mail-blockquote-color" => array(NULL, "-webkit-match-nearest-mail-blockquote-color", NULL, NULL),
+        "max-logical-height" => array(NULL, "-webkit-max-logical-height", NULL, NULL),
+        "max-logical-width" => array(NULL, "-webkit-max-logical-width", NULL, NULL),
+        "min-logical-height" => array(NULL, "-webkit-min-logical-height", NULL, NULL),
+        "min-logical-width" => array(NULL, "-webkit-min-logical-width", NULL, NULL),
+        "object-fit" => array(NULL, NULL, "-o-object-fit", NULL),
+        "object-position" => array(NULL, NULL, "-o-object-position", NULL),
         "opacity" => array(__CLASS__, "opacity"),
-        "outline-radius" => array("-moz-outline-radius", null, null, null),
-        "outline-bottom-left-radius" => array("-moz-outline-radius-bottomleft", null, null, null),
-        "outline-bottom-right-radius" => array("-moz-outline-radius-bottomright", null, null, null),
-        "outline-top-left-radius" => array("-moz-outline-radius-topleft", null, null, null),
-        "outline-top-right-radius" => array("-moz-outline-radius-topright", null, null, null),
-        "padding-after" => array(null, "-webkit-padding-after", null, null),
-        "padding-before" => array(null, "-webkit-padding-before", null, null),
-        "padding-end" => array("-moz-padding-end", "-webkit-padding-end", null, null),
-        "padding-start" => array("-moz-padding-start", "-webkit-padding-start", null, null),
-        "perspective" => array(null, "-webkit-perspective", null, null),
-        "perspective-origin" => array(null, "-webkit-perspective-origin", null, null),
-        "perspective-origin-x" => array(null, "-webkit-perspective-origin-x", null, null),
-        "perspective-origin-y" => array(null, "-webkit-perspective-origin-y", null, null),
-        "rtl-ordering" => array(null, "-webkit-rtl-ordering", null, null),
-        "scrollbar-3dlight-color" => array(null, null, null, "-ms-scrollbar-3dlight-color"),
-        "scrollbar-arrow-color" => array(null, null, null, "-ms-scrollbar-arrow-color"),
-        "scrollbar-base-color" => array(null, null, null, "-ms-scrollbar-base-color"),
-        "scrollbar-darkshadow-color" => array(null, null, null, "-ms-scrollbar-darkshadow-color"),
-        "scrollbar-face-color" => array(null, null, null, "-ms-scrollbar-face-color"),
-        "scrollbar-highlight-color" => array(null, null, null, "-ms-scrollbar-highlight-color"),
-        "scrollbar-shadow-color" => array(null, null, null, "-ms-scrollbar-shadow-color"),
-        "scrollbar-track-color" => array(null, null, null, "-ms-scrollbar-track-color"),
-        "stack-sizing" => array("-moz-stack-sizing", null, null, null),
-        "svg-shadow" => array(null, "-webkit-svg-shadow", null, null),
-        "tab-size" => array("-moz-tab-size", null, "-o-tab-size", null),
-        "table-baseline" => array(null, null, "-o-table-baseline", null),
-        "text-align-last" => array(null, null, null, "-ms-text-align-last"),
-        "text-autospace" => array(null, null, null, "-ms-text-autospace"),
-        "text-combine" => array(null, "-webkit-text-combine", null, null),
-        "text-decorations-in-effect" => array(null, "-webkit-text-decorations-in-effect", null, null),
-        "text-emphasis" => array(null, "-webkit-text-emphasis", null, null),
-        "text-emphasis-color" => array(null, "-webkit-text-emphasis-color", null, null),
-        "text-emphasis-position" => array(null, "-webkit-text-emphasis-position", null, null),
-        "text-emphasis-style" => array(null, "-webkit-text-emphasis-style", null, null),
-        "text-fill-color" => array(null, "-webkit-text-fill-color", null, null),
-        "text-justify" => array(null, null, null, "-ms-text-justify"),
-        "text-kashida-space" => array(null, null, null, "-ms-text-kashida-space"),
-        "text-overflow" => array(null, null, "-o-text-overflow", "-ms-text-overflow"),
-        "text-security" => array(null, "-webkit-text-security", null, null),
-        "text-size-adjust" => array(null, "-webkit-text-size-adjust", null, "-ms-text-size-adjust"),
-        "text-stroke" => array(null, "-webkit-text-stroke", null, null),
-        "text-stroke-color" => array(null, "-webkit-text-stroke-color", null, null),
-        "text-stroke-width" => array(null, "-webkit-text-stroke-width", null, null),
-        "text-underline-position" => array(null, null, null, "-ms-text-underline-position"),
-        "transform" => array("-moz-transform", "-webkit-transform", "-o-transform", null),
-        "transform-origin" => array("-moz-transform-origin", "-webkit-transform-origin", "-o-transform-origin", null),
-        "transform-origin-x" => array(null, "-webkit-transform-origin-x", null, null),
-        "transform-origin-y" => array(null, "-webkit-transform-origin-y", null, null),
-        "transform-origin-z" => array(null, "-webkit-transform-origin-z", null, null),
-        "transform-style" => array(null, "-webkit-transform-style", null, null),
-        "transition" => array("-moz-transition", "-webkit-transition", "-o-transition", null),
-        "transition-delay" => array("-moz-transition-delay", "-webkit-transition-delay", "-o-transition-delay", null),
-        "transition-duration" => array("-moz-transition-duration", "-webkit-transition-duration", "-o-transition-duration", null),
-        "transition-property" => array("-moz-transition-property", "-webkit-transition-property", "-o-transition-property", null),
-        "transition-timing-function" => array("-moz-transition-timing-function", "-webkit-transition-timing-function", "-o-transition-timing-function", null),
-        "user-drag" => array(null, "-webkit-user-drag", null, null),
-        "user-focus" => array("-moz-user-focus", null, null, null),
-        "user-input" => array("-moz-user-input", null, null, null),
-        "user-modify" => array("-moz-user-modify", "-webkit-user-modify", null, null),
-        "user-select" => array("-moz-user-select", "-webkit-user-select", null, null),
+        "outline-radius" => array("-moz-outline-radius", NULL, NULL, NULL),
+        "outline-bottom-left-radius" => array("-moz-outline-radius-bottomleft", NULL, NULL, NULL),
+        "outline-bottom-right-radius" => array("-moz-outline-radius-bottomright", NULL, NULL, NULL),
+        "outline-top-left-radius" => array("-moz-outline-radius-topleft", NULL, NULL, NULL),
+        "outline-top-right-radius" => array("-moz-outline-radius-topright", NULL, NULL, NULL),
+        "padding-after" => array(NULL, "-webkit-padding-after", NULL, NULL),
+        "padding-before" => array(NULL, "-webkit-padding-before", NULL, NULL),
+        "padding-end" => array("-moz-padding-end", "-webkit-padding-end", NULL, NULL),
+        "padding-start" => array("-moz-padding-start", "-webkit-padding-start", NULL, NULL),
+        "perspective" => array(NULL, "-webkit-perspective", NULL, NULL),
+        "perspective-origin" => array(NULL, "-webkit-perspective-origin", NULL, NULL),
+        "perspective-origin-x" => array(NULL, "-webkit-perspective-origin-x", NULL, NULL),
+        "perspective-origin-y" => array(NULL, "-webkit-perspective-origin-y", NULL, NULL),
+        "rtl-ordering" => array(NULL, "-webkit-rtl-ordering", NULL, NULL),
+        "scrollbar-3dlight-color" => array(NULL, NULL, NULL, "-ms-scrollbar-3dlight-color"),
+        "scrollbar-arrow-color" => array(NULL, NULL, NULL, "-ms-scrollbar-arrow-color"),
+        "scrollbar-base-color" => array(NULL, NULL, NULL, "-ms-scrollbar-base-color"),
+        "scrollbar-darkshadow-color" => array(NULL, NULL, NULL, "-ms-scrollbar-darkshadow-color"),
+        "scrollbar-face-color" => array(NULL, NULL, NULL, "-ms-scrollbar-face-color"),
+        "scrollbar-highlight-color" => array(NULL, NULL, NULL, "-ms-scrollbar-highlight-color"),
+        "scrollbar-shadow-color" => array(NULL, NULL, NULL, "-ms-scrollbar-shadow-color"),
+        "scrollbar-track-color" => array(NULL, NULL, NULL, "-ms-scrollbar-track-color"),
+        "stack-sizing" => array("-moz-stack-sizing", NULL, NULL, NULL),
+        "svg-shadow" => array(NULL, "-webkit-svg-shadow", NULL, NULL),
+        "tab-size" => array("-moz-tab-size", NULL, "-o-tab-size", NULL),
+        "table-baseline" => array(NULL, NULL, "-o-table-baseline", NULL),
+        "text-align-last" => array(NULL, NULL, NULL, "-ms-text-align-last"),
+        "text-autospace" => array(NULL, NULL, NULL, "-ms-text-autospace"),
+        "text-combine" => array(NULL, "-webkit-text-combine", NULL, NULL),
+        "text-decorations-in-effect" => array(NULL, "-webkit-text-decorations-in-effect", NULL, NULL),
+        "text-emphasis" => array(NULL, "-webkit-text-emphasis", NULL, NULL),
+        "text-emphasis-color" => array(NULL, "-webkit-text-emphasis-color", NULL, NULL),
+        "text-emphasis-position" => array(NULL, "-webkit-text-emphasis-position", NULL, NULL),
+        "text-emphasis-style" => array(NULL, "-webkit-text-emphasis-style", NULL, NULL),
+        "text-fill-color" => array(NULL, "-webkit-text-fill-color", NULL, NULL),
+        "text-justify" => array(NULL, NULL, NULL, "-ms-text-justify"),
+        "text-kashida-space" => array(NULL, NULL, NULL, "-ms-text-kashida-space"),
+        "text-overflow" => array(NULL, NULL, "-o-text-overflow", "-ms-text-overflow"),
+        "text-security" => array(NULL, "-webkit-text-security", NULL, NULL),
+        "text-size-adjust" => array(NULL, "-webkit-text-size-adjust", NULL, "-ms-text-size-adjust"),
+        "text-stroke" => array(NULL, "-webkit-text-stroke", NULL, NULL),
+        "text-stroke-color" => array(NULL, "-webkit-text-stroke-color", NULL, NULL),
+        "text-stroke-width" => array(NULL, "-webkit-text-stroke-width", NULL, NULL),
+        "text-underline-position" => array(NULL, NULL, NULL, "-ms-text-underline-position"),
+        "transform" => array("-moz-transform", "-webkit-transform", "-o-transform", NULL),
+        "transform-origin" => array("-moz-transform-origin", "-webkit-transform-origin", "-o-transform-origin", NULL),
+        "transform-origin-x" => array(NULL, "-webkit-transform-origin-x", NULL, NULL),
+        "transform-origin-y" => array(NULL, "-webkit-transform-origin-y", NULL, NULL),
+        "transform-origin-z" => array(NULL, "-webkit-transform-origin-z", NULL, NULL),
+        "transform-style" => array(NULL, "-webkit-transform-style", NULL, NULL),
+        "transition" => array("-moz-transition", "-webkit-transition", "-o-transition", NULL),
+        "transition-delay" => array("-moz-transition-delay", "-webkit-transition-delay", "-o-transition-delay", NULL),
+        "transition-duration" => array("-moz-transition-duration", "-webkit-transition-duration", "-o-transition-duration", NULL),
+        "transition-property" => array("-moz-transition-property", "-webkit-transition-property", "-o-transition-property", NULL),
+        "transition-timing-function" => array("-moz-transition-timing-function", "-webkit-transition-timing-function", "-o-transition-timing-function", NULL),
+        "user-drag" => array(NULL, "-webkit-user-drag", NULL, NULL),
+        "user-focus" => array("-moz-user-focus", NULL, NULL, NULL),
+        "user-input" => array("-moz-user-input", NULL, NULL, NULL),
+        "user-modify" => array("-moz-user-modify", "-webkit-user-modify", NULL, NULL),
+        "user-select" => array("-moz-user-select", "-webkit-user-select", NULL, NULL),
         "white-space" => array(__CLASS__, "whiteSpace"),
-        "window-shadow" => array("-moz-window-shadow", null, null, null),
-        "word-break" => array(null, null, null, "-ms-word-break"),
-        "word-wrap" => array(null, null, null, "-ms-word-wrap"),
-        "writing-mode" => array(null, "-webkit-writing-mode", null, "-ms-writing-mode"),
-        "zoom" => array(null, null, null, "-ms-zoom")
+        "window-shadow" => array("-moz-window-shadow", NULL, NULL, NULL),
+        "word-break" => array(NULL, NULL, NULL, "-ms-word-break"),
+        "word-wrap" => array(NULL, NULL, NULL, "-ms-word-wrap"),
+        "writing-mode" => array(NULL, "-webkit-writing-mode", NULL, "-ms-writing-mode"),
+        "zoom" => array(NULL, NULL, NULL, "-ms-zoom")
     );
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value large than 0 will rebuild the array
      */
@@ -3046,6 +3036,7 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
                 $tProperty = $tokens[$i]->Property;
                 if (isset($transformations[$tProperty])) {
                     $result = array();
+                    $tokens[$i]->IsLast = FALSE;
                     if (is_callable($transformations[$tProperty])) {
                         $result = call_user_func_array($transformations[$tProperty], array($tokens[$i]));
                         if (!is_array($result) && is_object($result)) {
@@ -3055,7 +3046,7 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
                         $tValue = $tokens[$i]->Value;
                         $tMediaTypes = $tokens[$i]->MediaTypes;
                         foreach ($transformations[$tProperty] as $property) {
-                            if ($property !== null) {
+                            if ($property !== NULL) {
                                 $result[] = new CssRulesetDeclarationToken($property, $tValue, $tMediaTypes);
                             }
                         }
@@ -3072,15 +3063,15 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
     }
 
     /**
-     * Transforms the Internet Explorer specific declaration property "filter" to Internet Explorer 8+ compatible 
-     * declaratiopn property "-ms-filter". 
-     * 
+     * Transforms the Internet Explorer specific declaration property "filter" to Internet Explorer 8+ compatible
+     * declaratiopn property "-ms-filter".
+     *
      * @param aCssToken $token
      * @return array
      */
     private static function filter($token) {
         $r = array
-            (
+        (
             new CssRulesetDeclarationToken("-ms-filter", "\"" . $token->Value . "\"", $token->MediaTypes),
         );
         return $r;
@@ -3088,15 +3079,15 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Transforms "opacity: {value}" into browser specific counterparts.
-     * 
+     *
      * @param aCssToken $token
      * @return array
      */
     private static function opacity($token) {
         // Calculate the value for Internet Explorer filter statement
-        $ieValue = (int) ((float) $token->Value * 100);
+        $ieValue = (int)((float)$token->Value * 100);
         $r = array
-            (
+        (
             // Internet Explorer >= 8
             new CssRulesetDeclarationToken("-ms-filter", "\"alpha(opacity=" . $ieValue . ")\"", $token->MediaTypes),
             // Internet Explorer >= 4 <= 7
@@ -3108,14 +3099,14 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Transforms "white-space: pre-wrap" into browser specific counterparts.
-     * 
+     *
      * @param aCssToken $token
      * @return array
      */
     private static function whiteSpace($token) {
         if (strtolower($token->Value) === "pre-wrap") {
             $r = array
-                (
+            (
                 // Firefox < 3
                 new CssRulesetDeclarationToken("white-space", "-moz-pre-wrap", $token->MediaTypes),
                 // Webkit
@@ -3137,19 +3128,19 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
 
 /**
  * This {@link aCssMinifierFilter minifier filter} will convert @keyframes at-rule block to browser specific counterparts.
- * 
- * @package		CssMin/Minifier/Filters
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Filters
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssConvertLevel3AtKeyframesMinifierFilter extends aCssMinifierFilter {
 
     /**
      * Implements {@link aCssMinifierFilter::filter()}.
-     * 
+     *
      * @param array $tokens Array of objects of type aCssToken
      * @return integer Count of added, changed or removed tokens; a return value larger than 0 will rebuild the array
      */
@@ -3177,7 +3168,7 @@ class CssConvertLevel3AtKeyframesMinifierFilter extends aCssMinifierFilter {
                         $t[0]->AtRuleName = $transformation;
                         $add = array_merge($add, $t);
                     }
-                    if (isset($this->configuration["RemoveSource"]) && $this->configuration["RemoveSource"] === true) {
+                    if (isset($this->configuration["RemoveSource"]) && $this->configuration["RemoveSource"] === TRUE) {
                         array_splice($tokens, $i, $ii - $i + 1, $add);
                     } else {
                         array_splice($tokens, $ii + 1, 0, $add);
@@ -3195,54 +3186,54 @@ class CssConvertLevel3AtKeyframesMinifierFilter extends aCssMinifierFilter {
 
 /**
  * This {@link aCssMinifierPlugin} will convert a color value in hsl notation to hexadecimal notation.
- * 
+ *
  * Example:
  * <code>
  * color: hsl(232,36%,48%);
  * </code>
- * 
+ *
  * Will get converted to:
  * <code>
  * color:#4e5aa7;
  * </code>
- * 
- * @package		CssMin/Minifier/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssConvertHslColorsMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Regular expression matching the value.
-     * 
+     *
      * @var string
      */
     private $reMatch = "/^hsl\s*\(\s*([0-9]+)\s*,\s*([0-9]+)\s*%\s*,\s*([0-9]+)\s*%\s*\)/iS";
 
     /**
      * Implements {@link aCssMinifierPlugin::minify()}.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
     public function apply(aCssToken &$token) {
-        if (stripos($token->Value, "hsl") !== false && preg_match($this->reMatch, $token->Value, $m)) {
+        if (stripos($token->Value, "hsl") !== FALSE && preg_match($this->reMatch, $token->Value, $m)) {
             $token->Value = str_replace($m[0], $this->hsl2hex($m[1], $m[2], $m[3]), $token->Value);
         }
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aMinifierPlugin::getTriggerTokens()}
-     * 
+     *
      * @return array
      */
     public function getTriggerTokens() {
         return array
-            (
+        (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -3251,9 +3242,9 @@ class CssConvertHslColorsMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Convert a HSL value to hexadecimal notation.
-     * 
+     *
      * Based on: {@link http://www.easyrgb.com/index.php?X=MATH&H=19#text19}.
-     * 
+     *
      * @param integer $hue Hue
      * @param integer $saturation Saturation
      * @param integer $lightness Lightnesss
@@ -3283,7 +3274,7 @@ class CssConvertHslColorsMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Apply hue to a rgb color value.
-     * 
+     *
      * @param integer $v1 Value 1
      * @param integer $v2 Value 2
      * @param integer $hue Hue
@@ -3303,7 +3294,7 @@ class CssConvertHslColorsMinifierPlugin extends aCssMinifierPlugin {
             return ($v2);
         }
         if ((3 * $hue) < 2) {
-            return ($v1 + ($v2 - $v1) * (( 2 / 3) - $hue) * 6);
+            return ($v1 + ($v2 - $v1) * ((2 / 3) - $hue) * 6);
         }
         return $v1;
     }
@@ -3312,71 +3303,71 @@ class CssConvertHslColorsMinifierPlugin extends aCssMinifierPlugin {
 
 /**
  * This {@link aCssMinifierPlugin} will convert the font-weight values normal and bold to their numeric notation.
- * 
+ *
  * Example:
  * <code>
  * font-weight: normal;
  * font: bold 11px monospace;
  * </code>
- * 
+ *
  * Will get converted to:
  * <code>
  * font-weight:400;
  * font:700 11px monospace;
  * </code>
  *
- * @package		CssMin/Minifier/Pluginsn
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Minifier/Pluginsn
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssConvertFontWeightMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Array of included declaration properties this plugin will process; others declaration properties will get
-     * ignored. 
-     * 
+     * ignored.
+     *
      * @var array
      */
     private $include = array
-        (
+    (
         "font",
         "font-weight"
     );
 
     /**
      * Regular expression matching the value.
-     * 
+     *
      * @var string
      */
-    private $reMatch = null;
+    private $reMatch = NULL;
 
     /**
      * Regular expression replace the value.
-     * 
+     *
      * @var string
      */
     private $reReplace = "\"\${1}\" . \$this->transformation[\"\${2}\"] . \"\${3}\"";
 
     /**
      * Transformation table used by the {@link CssConvertFontWeightMinifierPlugin::$reReplace replace regular expression}.
-     * 
+     *
      * @var array
      */
     private $transformation = array
-        (
+    (
         "normal" => "400",
         "bold" => "700"
     );
 
     /**
      * Overwrites {@link aCssMinifierPlugin::__construct()}.
-     * 
+     *
      * The constructor will create the {@link CssConvertFontWeightMinifierPlugin::$reReplace replace regular expression}
      * based on the {@link CssConvertFontWeightMinifierPlugin::$transformation transformation table}.
-     * 
+     *
      * @param CssMinifier $minifier The CssMinifier object of this plugin.
      * @return void
      */
@@ -3387,7 +3378,7 @@ class CssConvertFontWeightMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Implements {@link aCssMinifierPlugin::minify()}.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
@@ -3395,17 +3386,17 @@ class CssConvertFontWeightMinifierPlugin extends aCssMinifierPlugin {
         if (in_array($token->Property, $this->include) && preg_match($this->reMatch, $token->Value, $m)) {
             $token->Value = preg_replace($this->reMatch, $this->reReplace, $token->Value);
         }
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aMinifierPlugin::getTriggerTokens()}
-     * 
+     *
      * @return array
      */
     public function getTriggerTokens() {
         return array
-            (
+        (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -3416,39 +3407,39 @@ class CssConvertFontWeightMinifierPlugin extends aCssMinifierPlugin {
 
 /**
  * This {@link aCssMinifierPlugin} will compress several unit values to their short notations. Examples:
- * 
+ *
  * <code>
  * padding: 0.5em;
  * border: 0px;
  * margin: 0 0 0 0;
  * </code>
- * 
+ *
  * Will get compressed to:
- * 
+ *
  * <code>
  * padding:.5px;
  * border:0;
  * margin:0;
  * </code>
- * 
+ *
  * --
  *
- * @package		CssMin/Minifier/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Minifier/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssCompressUnitValuesMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Regular expression used for matching and replacing unit values.
-     * 
+     *
      * @var array
      */
     private $re = array
-        (
+    (
         "/(^| |-)0\.([0-9]+?)(0+)?(%|em|ex|px|in|cm|mm|pt|pc)/iS" => "\${1}.\${2}\${4}",
         "/(^| )-?(\.?)0(%|em|ex|px|in|cm|mm|pt|pc)/iS" => "\${1}0",
         "/(^0\s0\s0\s0)|(^0\s0\s0$)|(^0\s0$)/iS" => "0"
@@ -3456,14 +3447,14 @@ class CssCompressUnitValuesMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Regular expression matching the value.
-     * 
+     *
      * @var string
      */
     private $reMatch = "/(^| |-)0\.([0-9]+?)(0+)?(%|em|ex|px|in|cm|mm|pt|pc)|(^| )-?(\.?)0(%|em|ex|px|in|cm|mm|pt|pc)|(^0\s0\s0\s0$)|(^0\s0\s0$)|(^0\s0$)/iS";
 
     /**
      * Implements {@link aCssMinifierPlugin::minify()}.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
@@ -3473,17 +3464,17 @@ class CssCompressUnitValuesMinifierPlugin extends aCssMinifierPlugin {
                 $token->Value = preg_replace($reMatch, $reReplace, $token->Value);
             }
         }
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aMinifierPlugin::getTriggerTokens()}
-     * 
+     *
      * @return array
      */
     public function getTriggerTokens() {
         return array
-            (
+        (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -3494,43 +3485,43 @@ class CssCompressUnitValuesMinifierPlugin extends aCssMinifierPlugin {
 
 /**
  * This {@link aCssMinifierPlugin} compress the content of expresssion() declaration values.
- * 
- * For compression of expressions {@link https://github.com/rgrove/jsmin-php/ JSMin} will get used. JSMin have to be 
- * already included or loadable via {@link http://goo.gl/JrW54 PHP autoloading}. 
- * 
- * @package		CssMin/Minifier/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * For compression of expressions {@link https://github.com/rgrove/jsmin-php/ JSMin} will get used. JSMin have to be
+ * already included or loadable via {@link http://goo.gl/JrW54 PHP autoloading}.
+ *
+ * @package        CssMin/Minifier/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssCompressExpressionValuesMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Implements {@link aCssMinifierPlugin::minify()}.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
     public function apply(aCssToken &$token) {
-        if (class_exists("JSMin") && stripos($token->Value, "expression(") !== false) {
+        if (class_exists("JSMin") && stripos($token->Value, "expression(") !== FALSE) {
             $value = $token->Value;
             $value = substr($token->Value, stripos($token->Value, "expression(") + 10);
             $value = trim(JSMin::minify($value));
             $token->Value = "expression(" . $value . ")";
         }
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aMinifierPlugin::getTriggerTokens()}
-     * 
+     *
      * @return array
      */
     public function getTriggerTokens() {
         return array
-            (
+        (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -3540,59 +3531,59 @@ class CssCompressExpressionValuesMinifierPlugin extends aCssMinifierPlugin {
 }
 
 /**
- * This {@link aCssMinifierPlugin} will convert hexadecimal color value with 6 chars to their 3 char hexadecimal 
- * notation (if possible). 
- * 
+ * This {@link aCssMinifierPlugin} will convert hexadecimal color value with 6 chars to their 3 char hexadecimal
+ * notation (if possible).
+ *
  * Example:
  * <code>
  * color: #aabbcc;
  * </code>
- * 
+ *
  * Will get converted to:
  * <code>
  * color:#abc;
  * </code>
- * 
- * @package		CssMin/Minifier/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Minifier/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssCompressColorValuesMinifierPlugin extends aCssMinifierPlugin {
 
     /**
      * Regular expression matching 6 char hexadecimal color values.
-     * 
+     *
      * @var string
      */
     private $reMatch = "/\#([0-9a-f]{6})/iS";
 
     /**
      * Implements {@link aCssMinifierPlugin::minify()}.
-     * 
+     *
      * @param aCssToken $token Token to process
      * @return boolean Return TRUE to break the processing of this token; FALSE to continue
      */
     public function apply(aCssToken &$token) {
-        if (strpos($token->Value, "#") !== false && preg_match($this->reMatch, $token->Value, $m)) {
+        if (strpos($token->Value, "#") !== FALSE && preg_match($this->reMatch, $token->Value, $m)) {
             $value = strtolower($m[1]);
             if ($value[0] == $value[1] && $value[2] == $value[3] && $value[4] == $value[5]) {
                 $token->Value = str_replace($m[0], "#" . $value[0] . $value[2] . $value[4], $token->Value);
             }
         }
-        return false;
+        return FALSE;
     }
 
     /**
      * Implements {@link aMinifierPlugin::getTriggerTokens()}
-     * 
+     *
      * @return array
      */
     public function getTriggerTokens() {
         return array
-            (
+        (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -3603,27 +3594,27 @@ class CssCompressColorValuesMinifierPlugin extends aCssMinifierPlugin {
 
 /**
  * This {@link aCssToken CSS token} represents a CSS comment.
- * 
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssCommentToken extends aCssToken {
 
     /**
      * Comment as Text.
-     * 
+     *
      * @var string
      */
     public $Comment = "";
 
     /**
      * Set the properties of a comment token.
-     * 
-     * @param string $comment Comment including comment delimiters 
+     *
+     * @param string $comment Comment including comment delimiters
      * @return void
      */
     public function __construct($comment) {
@@ -3632,7 +3623,7 @@ class CssCommentToken extends aCssToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -3643,21 +3634,21 @@ class CssCommentToken extends aCssToken {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for parsing comments.
- * 
+ *
  * Adds a {@link CssCommentToken} to the parser if a comment was found.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssCommentParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -3666,23 +3657,23 @@ class CssCommentParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
-        return false;
+        return FALSE;
     }
 
     /**
      * Stored buffer for restore.
-     * 
+     *
      * @var string
      */
     private $restoreBuffer = "";
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -3699,9 +3690,9 @@ class CssCommentParserPlugin extends aCssParserPlugin {
             $this->parser->appendToken(new CssCommentToken("/*" . $this->parser->getAndClearBuffer()));
             $this->parser->setBuffer($this->restoreBuffer);
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
@@ -3709,35 +3700,35 @@ class CssCommentParserPlugin extends aCssParserPlugin {
 /**
  * This {@link aCssToken CSS token} represents the start of a @variables at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtVariablesStartToken extends aCssAtBlockStartToken {
 
     /**
      * Media types of the @variables at-rule block.
-     * 
+     *
      * @var array
      */
     public $MediaTypes = array();
 
     /**
      * Set the properties of a @variables at-rule token.
-     * 
+     *
      * @param array $mediaTypes Media types
      * @return void
      */
-    public function __construct($mediaTypes = null) {
+    public function __construct($mediaTypes = NULL) {
         $this->MediaTypes = $mediaTypes ? $mediaTypes : array("all");
     }
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -3748,22 +3739,22 @@ class CssAtVariablesStartToken extends aCssAtBlockStartToken {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for parsing @variables at-rule block with including declarations.
- * 
- * Found @variables at-rule blocks will add a {@link CssAtVariablesStartToken} and {@link CssAtVariablesEndToken} to the 
+ *
+ * Found @variables at-rule blocks will add a {@link CssAtVariablesStartToken} and {@link CssAtVariablesEndToken} to the
  * parser; including declarations as {@link CssAtVariablesDeclarationToken}.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtVariablesParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -3772,7 +3763,7 @@ class CssAtVariablesParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
@@ -3781,7 +3772,7 @@ class CssAtVariablesParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -3793,8 +3784,7 @@ class CssAtVariablesParserPlugin extends aCssParserPlugin {
             $this->parser->pushState("T_AT_VARIABLES::PREPARE");
             $this->parser->clearBuffer();
             return $index + 10;
-        }
-        // Start of @variables declarations
+        } // Start of @variables declarations
         elseif ($char === "{" && $state === "T_AT_VARIABLES::PREPARE") {
             $this->parser->setState("T_AT_VARIABLES");
             $mediaTypes = array_filter(array_map("trim", explode(",", $this->parser->getAndClearBuffer("{"))));
@@ -3804,12 +3794,11 @@ class CssAtVariablesParserPlugin extends aCssParserPlugin {
         if ($char === ":" && $state === "T_AT_VARIABLES") {
             $this->buffer = $this->parser->getAndClearBuffer(":");
             $this->parser->pushState("T_AT_VARIABLES_DECLARATION");
-        }
-        // Unterminated @variables declaration
+        } // Unterminated @variables declaration
         elseif ($char === ":" && $state === "T_AT_VARIABLES_DECLARATION") {
             // Ignore Internet Explorer filter declarations
             if ($this->buffer === "filter") {
-                return false;
+                return FALSE;
             }
             CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Unterminated @variables declaration", $this->buffer . ":" . $this->parser->getBuffer() . "_"));
         }
@@ -3818,9 +3807,9 @@ class CssAtVariablesParserPlugin extends aCssParserPlugin {
             $value = $this->parser->getAndClearBuffer(";}");
             if (strtolower(substr($value, -10, 10)) === "!important") {
                 $value = trim(substr($value, 0, -10));
-                $isImportant = true;
+                $isImportant = TRUE;
             } else {
-                $isImportant = false;
+                $isImportant = FALSE;
             }
             $this->parser->popState();
             $this->parser->appendToken(new CssAtVariablesDeclarationToken($this->buffer, $value, $isImportant));
@@ -3832,9 +3821,9 @@ class CssAtVariablesParserPlugin extends aCssParserPlugin {
             $this->parser->clearBuffer();
             $this->parser->appendToken(new CssAtVariablesEndToken());
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
@@ -3842,18 +3831,18 @@ class CssAtVariablesParserPlugin extends aCssParserPlugin {
 /**
  * This {@link aCssToken CSS token} represents the end of a @variables at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtVariablesEndToken extends aCssAtBlockEndToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -3864,19 +3853,19 @@ class CssAtVariablesEndToken extends aCssAtBlockEndToken {
 
 /**
  * This {@link aCssToken CSS token} represents a declaration of a @variables at-rule block.
- * 
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtVariablesDeclarationToken extends aCssDeclarationToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -3888,25 +3877,25 @@ class CssAtVariablesDeclarationToken extends aCssDeclarationToken {
 /**
  * This {@link aCssToken CSS token} represents the start of a @page at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtPageStartToken extends aCssAtBlockStartToken {
 
     /**
      * Selector.
-     * 
+     *
      * @var string
      */
     public $Selector = "";
 
     /**
      * Sets the properties of the @page at-rule.
-     * 
+     *
      * @param string $selector Selector
      * @return void
      */
@@ -3916,7 +3905,7 @@ class CssAtPageStartToken extends aCssAtBlockStartToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -3927,22 +3916,22 @@ class CssAtPageStartToken extends aCssAtBlockStartToken {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for parsing @page at-rule block with including declarations.
- * 
- * Found @page at-rule blocks will add a {@link CssAtPageStartToken} and {@link CssAtPageEndToken} to the 
+ *
+ * Found @page at-rule blocks will add a {@link CssAtPageStartToken} and {@link CssAtPageEndToken} to the
  * parser; including declarations as {@link CssAtPageDeclarationToken}.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtPageParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -3951,7 +3940,7 @@ class CssAtPageParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
@@ -3960,7 +3949,7 @@ class CssAtPageParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -3972,8 +3961,7 @@ class CssAtPageParserPlugin extends aCssParserPlugin {
             $this->parser->pushState("T_AT_PAGE::SELECTOR");
             $this->parser->clearBuffer();
             return $index + 5;
-        }
-        // Start of @page declarations
+        } // Start of @page declarations
         elseif ($char === "{" && $state === "T_AT_PAGE::SELECTOR") {
             $selector = $this->parser->getAndClearBuffer("{");
             $this->parser->setState("T_AT_PAGE");
@@ -3983,13 +3971,13 @@ class CssAtPageParserPlugin extends aCssParserPlugin {
         // Start of @page declaration
         elseif ($char === ":" && $state === "T_AT_PAGE") {
             $this->parser->pushState("T_AT_PAGE_DECLARATION");
-            $this->buffer = $this->parser->getAndClearBuffer(":", true);
+            $this->buffer = $this->parser->getAndClearBuffer(":", TRUE);
         }
         // Unterminated @font-face declaration
         elseif ($char === ":" && $state === "T_AT_PAGE_DECLARATION") {
             // Ignore Internet Explorer filter declarations
             if ($this->buffer === "filter") {
-                return false;
+                return FALSE;
             }
             CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Unterminated @page declaration", $this->buffer . ":" . $this->parser->getBuffer() . "_"));
         }
@@ -3998,9 +3986,9 @@ class CssAtPageParserPlugin extends aCssParserPlugin {
             $value = $this->parser->getAndClearBuffer(";}");
             if (strtolower(substr($value, -10, 10)) == "!important") {
                 $value = trim(substr($value, 0, -10));
-                $isImportant = true;
+                $isImportant = TRUE;
             } else {
-                $isImportant = false;
+                $isImportant = FALSE;
             }
             $this->parser->popState();
             $this->parser->appendToken(new CssAtPageDeclarationToken($this->buffer, $value, $isImportant));
@@ -4017,9 +4005,9 @@ class CssAtPageParserPlugin extends aCssParserPlugin {
             $this->parser->clearBuffer();
             $this->parser->appendToken(new CssAtPageEndToken());
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
@@ -4027,46 +4015,46 @@ class CssAtPageParserPlugin extends aCssParserPlugin {
 /**
  * This {@link aCssToken CSS token} represents the end of a @page at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtPageEndToken extends aCssAtBlockEndToken {
-    
+
 }
 
 /**
  * This {@link aCssToken CSS token} represents a declaration of a @page at-rule block.
- * 
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtPageDeclarationToken extends aCssDeclarationToken {
-    
+
 }
 
 /**
  * This {@link aCssToken CSS token} represents the start of a @media at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtMediaStartToken extends aCssAtBlockStartToken {
 
     /**
      * Sets the properties of the @media at-rule.
-     * 
+     *
      * @param array $mediaTypes Media types
      * @return void
      */
@@ -4076,7 +4064,7 @@ class CssAtMediaStartToken extends aCssAtBlockStartToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -4087,23 +4075,23 @@ class CssAtMediaStartToken extends aCssAtBlockStartToken {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for parsing @media at-rule block.
- * 
- * Found @media at-rule blocks will add a {@link CssAtMediaStartToken} and {@link CssAtMediaEndToken} to the parser. 
+ *
+ * Found @media at-rule blocks will add a {@link CssAtMediaStartToken} and {@link CssAtMediaEndToken} to the parser.
  * This plugin will also set the the current media types using {@link CssParser::setMediaTypes()} and
  * {@link CssParser::unsetMediaTypes()}.
  *
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtMediaParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -4112,7 +4100,7 @@ class CssAtMediaParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
@@ -4121,7 +4109,7 @@ class CssAtMediaParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -4143,9 +4131,9 @@ class CssAtMediaParserPlugin extends aCssParserPlugin {
             $this->parser->unsetMediaTypes();
             $this->parser->popState();
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
@@ -4153,50 +4141,50 @@ class CssAtMediaParserPlugin extends aCssParserPlugin {
 /**
  * This {@link aCssToken CSS token} represents the end of a @media at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtMediaEndToken extends aCssAtBlockEndToken {
-    
+
 }
 
 /**
  * This {@link aCssToken CSS token} represents the start of a @keyframes at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtKeyframesStartToken extends aCssAtBlockStartToken {
 
     /**
      * Name of the at-rule.
-     * 
+     *
      * @var string
      */
     public $AtRuleName = "keyframes";
 
     /**
      * Name
-     * 
+     *
      * @var string
      */
     public $Name = "";
 
     /**
      * Sets the properties of the @page at-rule.
-     * 
+     *
      * @param string $selector Selector
      * @return void
      */
-    public function __construct($name, $atRuleName = null) {
+    public function __construct($name, $atRuleName = NULL) {
         $this->Name = $name;
         if (!is_null($atRuleName)) {
             $this->AtRuleName = $atRuleName;
@@ -4205,7 +4193,7 @@ class CssAtKeyframesStartToken extends aCssAtBlockStartToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -4216,27 +4204,27 @@ class CssAtKeyframesStartToken extends aCssAtBlockStartToken {
 
 /**
  * This {@link aCssToken CSS token} represents the start of a ruleset of a @keyframes at-rule block.
- * 
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtKeyframesRulesetStartToken extends aCssRulesetStartToken {
 
     /**
      * Array of selectors.
-     * 
+     *
      * @var array
      */
     public $Selectors = array();
 
     /**
      * Set the properties of a ruleset token.
-     * 
-     * @param array $selectors Selectors of the ruleset 
+     *
+     * @param array $selectors Selectors of the ruleset
      * @return void
      */
     public function __construct(array $selectors = array()) {
@@ -4245,7 +4233,7 @@ class CssAtKeyframesRulesetStartToken extends aCssRulesetStartToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -4256,41 +4244,41 @@ class CssAtKeyframesRulesetStartToken extends aCssRulesetStartToken {
 
 /**
  * This {@link aCssToken CSS token} represents the end of a ruleset of a @keyframes at-rule block.
- * 
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtKeyframesRulesetEndToken extends aCssRulesetEndToken {
-    
+
 }
 
 /**
  * This {@link aCssToken CSS token} represents a ruleset declaration of a @keyframes at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtKeyframesRulesetDeclarationToken extends aCssDeclarationToken {
-    
+
 }
 
 /**
  * {@link aCssParserPlugin Parser plugin} for parsing @keyframes at-rule blocks, rulesets and declarations.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtKeyframesParserPlugin extends aCssParserPlugin {
 
@@ -4301,14 +4289,14 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
 
     /**
      * Selectors.
-     * 
+     *
      * @var array
      */
     private $selectors = array();
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -4317,7 +4305,7 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
@@ -4326,7 +4314,7 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -4339,8 +4327,7 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
             $this->parser->pushState("T_AT_KEYFRAMES::NAME");
             $this->parser->clearBuffer();
             return $index + 10;
-        }
-        // Start of @keyframes at-rule block (@-moz-keyframes)
+        } // Start of @keyframes at-rule block (@-moz-keyframes)
         elseif ($char === "@" && $state === "T_DOCUMENT" && strtolower(substr($this->parser->getSource(), $index, 15)) === "@-moz-keyframes") {
             $this->atRuleName = "-moz-keyframes";
             $this->parser->pushState("T_AT_KEYFRAMES::NAME");
@@ -4364,8 +4351,7 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
         // Start of @keyframe ruleset and selectors
         if ($char === "," && $state === "T_AT_KEYFRAMES_RULESETS") {
             $this->selectors[] = $this->parser->getAndClearBuffer(",{");
-        }
-        // Start of a @keyframes ruleset
+        } // Start of a @keyframes ruleset
         elseif ($char === "{" && $state === "T_AT_KEYFRAMES_RULESETS") {
             if ($this->parser->getBuffer() !== "") {
                 $this->selectors[] = $this->parser->getAndClearBuffer(",{");
@@ -4377,13 +4363,13 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
         // Start of @keyframes ruleset declaration
         elseif ($char === ":" && $state === "T_AT_KEYFRAMES_RULESET") {
             $this->parser->pushState("T_AT_KEYFRAMES_RULESET_DECLARATION");
-            $this->buffer = $this->parser->getAndClearBuffer(":;", true);
+            $this->buffer = $this->parser->getAndClearBuffer(":;", TRUE);
         }
         // Unterminated @keyframes ruleset declaration
         elseif ($char === ":" && $state === "T_AT_KEYFRAMES_RULESET_DECLARATION") {
             // Ignore Internet Explorer filter declarations
             if ($this->buffer === "filter") {
-                return false;
+                return FALSE;
             }
             CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Unterminated @keyframes ruleset declaration", $this->buffer . ":" . $this->parser->getBuffer() . "_"));
         }
@@ -4392,9 +4378,9 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
             $value = $this->parser->getAndClearBuffer(";}");
             if (strtolower(substr($value, -10, 10)) === "!important") {
                 $value = trim(substr($value, 0, -10));
-                $isImportant = true;
+                $isImportant = TRUE;
             } else {
-                $isImportant = false;
+                $isImportant = FALSE;
             }
             $this->parser->popState();
             $this->parser->appendToken(new CssAtKeyframesRulesetDeclarationToken($this->buffer, $value, $isImportant));
@@ -4418,9 +4404,9 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
             $this->parser->popState();
             $this->parser->appendToken(new CssAtKeyframesEndToken());
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
@@ -4428,46 +4414,46 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
 /**
  * This {@link aCssToken CSS token} represents the end of a @keyframes at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtKeyframesEndToken extends aCssAtBlockEndToken {
-    
+
 }
 
 /**
  * This {@link aCssToken CSS token} represents a @import at-rule.
- * 
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1.b1 (2001-02-22)
+ *
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1.b1 (2001-02-22)
  */
 class CssAtImportToken extends aCssToken {
 
     /**
      * Import path of the @import at-rule.
-     * 
+     *
      * @var string
      */
     public $Import = "";
 
     /**
      * Media types of the @import at-rule.
-     * 
+     *
      * @var array
      */
     public $MediaTypes = array();
 
     /**
      * Set the properties of a @import at-rule token.
-     * 
+     *
      * @param string $import Import path
      * @param array $mediaTypes Media types
      * @return void
@@ -4479,7 +4465,7 @@ class CssAtImportToken extends aCssToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -4490,21 +4476,21 @@ class CssAtImportToken extends aCssToken {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for parsing @import at-rule.
- * 
+ *
  * If a @import at-rule was found this plugin will add a {@link CssAtImportToken} to the parser.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtImportParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -4513,7 +4499,7 @@ class CssAtImportParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
@@ -4522,7 +4508,7 @@ class CssAtImportParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -4535,9 +4521,9 @@ class CssAtImportParserPlugin extends aCssParserPlugin {
             return $index + 7;
         } elseif (($char === ";" || $char === "\n") && $state === "T_AT_IMPORT") {
             $this->buffer = $this->parser->getAndClearBuffer(";");
-            $pos = false;
+            $pos = FALSE;
             foreach (array(")", "\"", "'") as $needle) {
-                if (($pos = strrpos($this->buffer, $needle)) !== false) {
+                if (($pos = strrpos($this->buffer, $needle)) !== FALSE) {
                     break;
                 }
             }
@@ -4554,9 +4540,9 @@ class CssAtImportParserPlugin extends aCssParserPlugin {
             }
             $this->parser->popState();
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
@@ -4564,18 +4550,18 @@ class CssAtImportParserPlugin extends aCssParserPlugin {
 /**
  * This {@link aCssToken CSS token} represents the start of a @font-face at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtFontFaceStartToken extends aCssAtBlockStartToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -4586,22 +4572,22 @@ class CssAtFontFaceStartToken extends aCssAtBlockStartToken {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for parsing @font-face at-rule block with including declarations.
- * 
- * Found @font-face at-rule blocks will add a {@link CssAtFontFaceStartToken} and {@link CssAtFontFaceEndToken} to the 
+ *
+ * Found @font-face at-rule blocks will add a {@link CssAtFontFaceStartToken} and {@link CssAtFontFaceEndToken} to the
  * parser; including declarations as {@link CssAtFontFaceDeclarationToken}.
- * 
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtFontFaceParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -4610,7 +4596,7 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
@@ -4619,7 +4605,7 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -4631,8 +4617,7 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin {
             $this->parser->pushState("T_AT_FONT_FACE::PREPARE");
             $this->parser->clearBuffer();
             return $index + 10;
-        }
-        // Start of @font-face declarations
+        } // Start of @font-face declarations
         elseif ($char === "{" && $state === "T_AT_FONT_FACE::PREPARE") {
             $this->parser->setState("T_AT_FONT_FACE");
             $this->parser->clearBuffer();
@@ -4641,13 +4626,13 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin {
         // Start of @font-face declaration
         elseif ($char === ":" && $state === "T_AT_FONT_FACE") {
             $this->parser->pushState("T_AT_FONT_FACE_DECLARATION");
-            $this->buffer = $this->parser->getAndClearBuffer(":", true);
+            $this->buffer = $this->parser->getAndClearBuffer(":", TRUE);
         }
         // Unterminated @font-face declaration
         elseif ($char === ":" && $state === "T_AT_FONT_FACE_DECLARATION") {
             // Ignore Internet Explorer filter declarations
             if ($this->buffer === "filter") {
-                return false;
+                return FALSE;
             }
             CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Unterminated @font-face declaration", $this->buffer . ":" . $this->parser->getBuffer() . "_"));
         }
@@ -4656,9 +4641,9 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin {
             $value = $this->parser->getAndClearBuffer(";}");
             if (strtolower(substr($value, -10, 10)) === "!important") {
                 $value = trim(substr($value, 0, -10));
-                $isImportant = true;
+                $isImportant = TRUE;
             } else {
-                $isImportant = false;
+                $isImportant = FALSE;
             }
             $this->parser->popState();
             $this->parser->appendToken(new CssAtFontFaceDeclarationToken($this->buffer, $value, $isImportant));
@@ -4675,9 +4660,9 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin {
             $this->parser->clearBuffer();
             $this->parser->popState();
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
@@ -4685,53 +4670,53 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin {
 /**
  * This {@link aCssToken CSS token} represents the end of a @font-face at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtFontFaceEndToken extends aCssAtBlockEndToken {
-    
+
 }
 
 /**
  * This {@link aCssToken CSS token} represents a declaration of a @font-face at-rule block.
  *
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtFontFaceDeclarationToken extends aCssDeclarationToken {
-    
+
 }
 
 /**
  * This {@link aCssToken CSS token} represents a @charset at-rule.
- * 
- * @package		CssMin/Tokens
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ *
+ * @package        CssMin/Tokens
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtCharsetToken extends aCssToken {
 
     /**
      * Charset of the @charset at-rule.
-     * 
+     *
      * @var string
      */
     public $Charset = "";
 
     /**
-     * Set the properties of @charset at-rule token. 
-     * 
+     * Set the properties of @charset at-rule token.
+     *
      * @param string $charset Charset of the @charset at-rule token
      * @return void
      */
@@ -4741,7 +4726,7 @@ class CssAtCharsetToken extends aCssToken {
 
     /**
      * Implements {@link aCssToken::__toString()}.
-     * 
+     *
      * @return string
      */
     public function __toString() {
@@ -4752,21 +4737,21 @@ class CssAtCharsetToken extends aCssToken {
 
 /**
  * {@link aCssParserPlugin Parser plugin} for parsing @charset at-rule.
- * 
+ *
  * If a @charset at-rule was found this plugin will add a {@link CssAtCharsetToken} to the parser.
  *
- * @package		CssMin/Parser/Plugins
- * @link		http://code.google.com/p/cssmin/
- * @author		Joe Scylla <joe.scylla@gmail.com>
- * @copyright	2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
- * @license		http://opensource.org/licenses/mit-license.php MIT License
- * @version		3.0.1
+ * @package        CssMin/Parser/Plugins
+ * @link        http://code.google.com/p/cssmin/
+ * @author        Joe Scylla <joe.scylla@gmail.com>
+ * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ * @version        3.0.1
  */
 class CssAtCharsetParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerChars()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerChars() {
@@ -4775,7 +4760,7 @@ class CssAtCharsetParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::getTriggerStates()}.
-     * 
+     *
      * @return array
      */
     public function getTriggerStates() {
@@ -4784,7 +4769,7 @@ class CssAtCharsetParserPlugin extends aCssParserPlugin {
 
     /**
      * Implements {@link aCssParserPlugin::parse()}.
-     * 
+     *
      * @param integer $index Current index
      * @param string $char Current char
      * @param string $previousChar Previous char
@@ -4800,9 +4785,9 @@ class CssAtCharsetParserPlugin extends aCssParserPlugin {
             $this->parser->popState();
             $this->parser->appendToken(new CssAtCharsetToken($charset));
         } else {
-            return false;
+            return FALSE;
         }
-        return true;
+        return TRUE;
     }
 
 }
