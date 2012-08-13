@@ -50,7 +50,7 @@ abstract class CSS {
           dump($tree);
           exit; */
 
-        $less->setFormatter($settings['compress'] ? 'compressed' : 'indent');
+        $less->setFormatter($settings['compress'] ? 'compressed' : 'classic');
 
         $css = $less->parse(isset($css) ? $css : file_get_contents($settings['absolute_path']), $settings['data']);
 

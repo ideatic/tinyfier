@@ -5,7 +5,7 @@
         <title>css_optimizer test</title>
         <link rel="stylesheet" href="CodeMirror/codemirror.css">
         <script src="CodeMirror/codemirror.js"></script>
-        <link type="text/css" rel="stylesheet" href="../tinyfier/tinyfier.php/test/index.less" />
+        <link type="text/css" rel="stylesheet" href="../tinyfier/tinyfier.php/tool/index.less" />
     </head>
     <body>
         <header>

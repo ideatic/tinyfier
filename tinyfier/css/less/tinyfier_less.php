@@ -48,8 +48,8 @@ class tinyfier_less extends lessc {
      * Rewrite URLs in the document for put them right
      */
     protected function lib_url($arg) {
-        list($type, $value) = $arg;
-        $url = $this->_remove_quotes(trim($value));
+        list($type, $dummy, $value) = $arg;
+        $url = $this->_remove_quotes(trim($value[0]));
 
         if (strpos($url, 'data:') !== 0) { //Don't rewrite embedded images
             if ($url[0] != '/' && strpos($url, 'http://') !== 0) { //Rewrite relative URL from tinyfier script path
@@ -61,15 +61,15 @@ class tinyfier_less extends lessc {
             }
         }
 
-        return array($type, "url('$url')");
+        return array($type, '', array("url('$url')"));
     }
 
     /**
      * Embeds the image in the stylesheet
      */
     protected function lib_inline($arg) {
-        list($type, $value) = $arg;
-        $url = $this->_remove_quotes(trim($value));
+        list($type, $dummy, $value) = $arg;
+        $url = $this->_remove_quotes(trim($value[0]));
 
         if (strpos($url, 'data:') !== 0) {
             $local_path = $this->_local_url($url);
@@ -80,7 +80,7 @@ class tinyfier_less extends lessc {
             $content = @file_get_contents($local_path) or die("Can't retrieve $url content (looked in $local_path)");
             $url = "data:image/$ext;base64," . base64_encode($content);
         }
-        return array($type, "url('$url')");
+        return array($type, '', array("url('$url')"));
     }
 
     /**
@@ -91,7 +91,8 @@ class tinyfier_less extends lessc {
         $filter = $url = '';
         $filter_args = array();
         foreach ($arguments[2] as $argument) {
-            list($type, $value) = $argument;
+            list($type, $dummy, $value) = $argument;
+            $value = $value[0];
             switch ($type) {
                 case 'string':
                     $value = $this->_remove_quotes(trim($value));
@@ -119,7 +120,7 @@ class tinyfier_less extends lessc {
         $format = in_array($image->format, array('gif', 'png', 'jpg')) ? $image->format : 'png';
         $path = $this->_get_cache_path('filter_' . $filter, $format);
         $image->save($path, $format, TRUE);
-        return array('string', "url('{$this->_get_cache_url($path)}')");
+        return array('string', '', array("url('{$this->_get_cache_url($path)}')"));
     }
 
     /**
@@ -155,11 +156,11 @@ class tinyfier_less extends lessc {
                     }
                     $color = array($list_data[$color_index][1], $list_data[$color_index][2], $list_data[$color_index][3]);
                     $position = $list_data[$position_index][1];
-                    $unit = $list_data[$position_index][0];
+                    $unit = $list_data[$position_index][2];
                     $color_stops[] = array($position, $unit, $color);
                     break;
                 case 'string': //Gradient type
-                    $gradient_type = strtolower($this->_remove_quotes($argument[1]));
+                    $gradient_type = strtolower($this->_remove_quotes($argument[2][0]));
                     if ($gradient_type == 'vertical' && !$size_changed) {
                         $gradient_width = 1;
                         $gradient_height = 50;
@@ -168,7 +169,7 @@ class tinyfier_less extends lessc {
                         $gradient_height = 1;
                     }
                     break;
-                case 'px': //Image size (first time received: width, other times: height)
+                case 'number': //Image size (first time received: width, other times: height)
                     if (!$size_changed) {
                         if ($gradient_type == 'vertical') //If the gradient is vertical, we only need the height parameter
                             $gradient_height = $argument[1];
@@ -188,6 +189,7 @@ class tinyfier_less extends lessc {
         require_once 'gd/gd_gradients.php';
         require_once 'gd/gd_image.php';
         $gd = new gd_gradients();
+        // var_dump($arguments,$gradient_width, $gradient_height, $color_stops, $gradient_type, FALSE, $back_color);die;
         $image = $gd->generate_gradient($gradient_width, $gradient_height, $color_stops, $gradient_type, FALSE, $back_color);
         $path = $this->_get_cache_path('gradient', 'png');
         $image->save($path, 'png', TRUE);
@@ -235,7 +237,7 @@ background: radial-gradient(center, ellipse cover, $css_color_positions);";
             $css = "background: url('{$this->_get_cache_url($path)}') $back_color;";
         }
 
-        return array('string', substr($css, 11)); //Remove the first "background:"
+        return array('string', '', array(substr($css, 11))); //Remove the first "background:"
     }
 
     /**
@@ -243,8 +245,9 @@ background: radial-gradient(center, ellipse cover, $css_color_positions);";
      */
     protected function lib_sprite($arg) {
         //Get parameters
-        $url = $this->_remove_quotes(trim($arg[2][0][1]));
-        $group = $this->_remove_quotes(trim($arg[2][1][1]));
+        $url = $this->_remove_quotes(trim($arg[2][0][2][0]));
+        $group = $this->_remove_quotes(trim($arg[2][1][2][0]));
+
 
         //Get sprite
         require_once 'gd/gd_sprite.php';
@@ -258,7 +261,7 @@ background: radial-gradient(center, ellipse cover, $css_color_positions);";
         $mark = 'CSSSPRITE_' . $group . '_' . md5($file);
 
         $this->_sprites[$group]->add_image($file, $mark);
-        return array('string', $mark);
+        return array('string', '', array($mark));
     }
 
     /**
