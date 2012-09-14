@@ -3,26 +3,47 @@
 require_once 'lessc.inc.php';
 
 /**
- * Custom lessphp extension for add new functionality
+ * Process a .less file with lessphp library, adding some new functionality
  */
 class tinyfier_less extends lessc {
 
+    /**
+     * @var lessc 
+     */
     private $_settings;
     private $_sprites = array();
 
-    public function __construct($file, $settings) {
-        parent::__construct($file);
-        $this->_settings = $settings;
-    }
-
-    public function parse($str = NULL, $initial_variables = NULL) {
+    public function process($str = NULL, $settings = NULL) {
         $this->_sprites = array();
+        $this->_settings = $settings;
 
-        //Process with lessphp base class
-        $result = parent::parse($str, $initial_variables);
+        //Prepare compiler
+
+        $this->registerFunction('gradient', array($this, 'lib_gradient'));
+        $this->registerFunction('sprite', array($this, 'lib_sprite'));
+        $this->registerFunction('inline', array($this, 'lib_inline'));
+        $this->registerFunction('url', array($this, 'lib_url'));
+        $this->registerFunction('filter', array($this, 'lib_filter'));
+
+        if ($settings['compress']) {
+            $this->setFormatter('compressed');
+            $this->setPreserveComments(false);
+        } else {
+            $this->setFormatter('classic');
+            $this->setPreserveComments(true);
+        }
+
+
+        if (!empty($settings['data']))
+            $this->setVariables($settings['data']);
+
+        if (isset($settings['absolute_path']))
+            $this->addImportDir(dirname($settings['absolute_path']));
+
+        //Compile with lessphp
+        $result = isset($str) ? $this->compile($str) : $this->compileFile($settings['absolute_path']);
 
         //Finalize and create sprites
-        $replacements = array();
         foreach ($this->_sprites as $group => $sprite) {
             /* @var $sprite gd_sprite */
             //Build sprite image
@@ -47,7 +68,7 @@ class tinyfier_less extends lessc {
     /**
      * Rewrite URLs in the document for put them right
      */
-    protected function lib_url($arg) {
+    public function lib_url($arg) {
         list($type, $dummy, $value) = $arg;
         $url = $this->_remove_quotes(trim($value[0]));
 
@@ -67,7 +88,7 @@ class tinyfier_less extends lessc {
     /**
      * Embeds the image in the stylesheet
      */
-    protected function lib_inline($arg) {
+    public function lib_inline($arg) {
         list($type, $dummy, $value) = $arg;
         $url = $this->_remove_quotes(trim($value[0]));
 
@@ -86,31 +107,29 @@ class tinyfier_less extends lessc {
     /**
      * Generate a desaturate version for the image argument
      */
-    protected function lib_filter($arguments) {
+    public function lib_filter($arguments) {
         //Process input arguments
         $filter = $url = '';
         $filter_args = array();
         foreach ($arguments[2] as $argument) {
-            list($type, $dummy, $value) = $argument;
-            $value = $value[0];
-            switch ($type) {
+            switch ($argument[0]) {
                 case 'string':
-                    $value = $this->_remove_quotes(trim($value));
+                    $value = $this->_remove_quotes(trim($argument[2][0]));
                     if (empty($url))
                         $url = $value;
                     else
                         $filter = $value;
                     break;
 
-                default:
-                    $filter_args[] = $value;
+                case 'number':
+                    $filter_args[] = $argument[1];
                     break;
             }
         }
 
         //Find local file
         $local_path = $this->_local_url($url);
-
+        
         //Apply filter
         require_once 'gd/gd_image.php';
         $image = new gd_image($local_path);
@@ -126,7 +145,7 @@ class tinyfier_less extends lessc {
     /**
      * Generates a gradient compatible with old browsers
      */
-    protected function lib_gradient($arguments) {
+    public function lib_gradient($arguments) {
         $color_stops = array();
         $gradient_type = 'vertical';
         $gradient_width = 1;
@@ -243,7 +262,7 @@ background: radial-gradient(center, ellipse cover, $css_color_positions);";
     /**
      * Create an image sprite
      */
-    protected function lib_sprite($arg) {
+    public function lib_sprite($arg) {
         //Get parameters
         $url = $this->_remove_quotes(trim($arg[2][0][2][0]));
         $group = $this->_remove_quotes(trim($arg[2][1][2][0]));

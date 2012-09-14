@@ -22,7 +22,7 @@ abstract class CSS {
      * Process CSS code
      *
      * Available settings:
-     *   'pretty': if TRUE, adds line breaks and indentation to its output code to make the code easier for humans to read
+     *   'compress': if FALSE, adds line breaks and indentation to its output code to make the code easier for humans to read
      *   'absolute_path': absolute path to the file
      *   'relative_path': relative path from the document root
      *   'cache_path': cache folder
@@ -39,30 +39,18 @@ abstract class CSS {
 
         // 1. Process the file with LESS    
         require_once 'less/tinyfier_less.php';
-        $less = new tinyfier_less('', $settings);
-        $less->importDir = dirname($settings['absolute_path']);
-
-        /*
-          include 'D:\Escritorio\Javi\Dropbox\Programacion\otros\dump\Dump.php';
-          header('Content-Type: text/html');
-          Dump::config('http://localhost/otros/dump/dump-static/', array(), 10);
-          $tree = $less->parseTree(isset($css) ? $css : file_get_contents($settings['absolute_path']));
-          dump($tree);
-          exit; */
-
-        $less->setFormatter($settings['compress'] ? 'compressed' : 'classic');
-
-        $css = $less->parse(isset($css) ? $css : file_get_contents($settings['absolute_path']), $settings['data']);
+        $less = new tinyfier_less();
+        $css = $less->process($css, $settings);
 
         // 2. Optimize, add vendor prefix and remove hacks        
         require_once 'css_optimizer.php';
         $optimizer = new css_optimizer(array(
-            'compress' => $settings['compress'],
-            'optimize' => $settings['optimize'],
-            'extra_optimize' => $settings['extra_optimize'],
-            'remove_ie_hacks' => FALSE, //$settings['ie_compatible'] == FALSE,
-            'prefix' => $settings['prefix'],
-        ));
+                    'compress' => $settings['compress'],
+                    'optimize' => $settings['optimize'],
+                    'extra_optimize' => $settings['extra_optimize'],
+                    'remove_ie_hacks' => FALSE, //$settings['ie_compatible'] == FALSE,
+                    'prefix' => $settings['prefix'],
+                ));
         $css = $optimizer->process($css);
 
 
