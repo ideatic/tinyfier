@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tinyfier 0.2 (https://github.com/javiermarinros/Tinyfier)
+ * Tinyfier 0.3 (https://github.com/javiermarinros/Tinyfier)
  *
  * @author Javier Marín <www.digitalestudio.es>
  * @license http://opensource.org/licenses/bsd-license.php  New BSD License
