@@ -72,7 +72,7 @@ class tinyfier_less extends lessc {
         list($type, $dummy, $value) = $arg;
         $url = $this->_remove_quotes(trim($value[0]));
 
-        if (strpos($url, 'data:') !== 0) { //Don't rewrite embedded images
+        if (strpos($url, 'data:') !== 0 && !empty($url)) { //Don't rewrite embedded images
             if ($url[0] != '/' && strpos($url, 'http://') !== 0) { //Rewrite relative URL from tinyfier script path
                 if ($this->_settings['relative_path'][0] == '/') {
                     $url = $this->_clear_path(dirname($this->_settings['relative_path']) . '/' . $url);
@@ -248,10 +248,10 @@ class tinyfier_less extends lessc {
                     break;
             }
             $css = "background: url('{$this->_get_cache_url($path)}') $repeat $back_color; /* Old browsers */
-background: linear-gradient($position, $css_color_positions);";
+background-image: linear-gradient($position, $css_color_positions);";
         } else if ($gradient_type == 'radial') {
             $css = "background: url('{$this->_get_cache_url($path)}') no-repeat $back_color; /* Old browsers */
-background: radial-gradient(center, ellipse cover, $css_color_positions);";
+background-image: radial-gradient(center, ellipse cover, $css_color_positions);";
         } else { //It is necessary to use images
             $css = "background: url('{$this->_get_cache_url($path)}') $back_color;";
         }

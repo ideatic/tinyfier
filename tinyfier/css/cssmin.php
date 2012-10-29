@@ -2998,7 +2998,7 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
         "text-stroke-color" => array(NULL, "-webkit-text-stroke-color", NULL, NULL),
         "text-stroke-width" => array(NULL, "-webkit-text-stroke-width", NULL, NULL),
         "text-underline-position" => array(NULL, NULL, NULL, "-ms-text-underline-position"),
-        "transform" => array("-moz-transform", "-webkit-transform", "-o-transform", NULL),
+        "transform" => array("-moz-transform", "-webkit-transform", "-o-transform", "-ms-transform"),
         "transform-origin" => array("-moz-transform-origin", "-webkit-transform-origin", "-o-transform-origin", NULL),
         "transform-origin-x" => array(NULL, "-webkit-transform-origin-x", NULL, NULL),
         "transform-origin-y" => array(NULL, "-webkit-transform-origin-y", NULL, NULL),
