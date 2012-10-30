@@ -5,7 +5,7 @@
  *
  * @package Tinyfier
  */
-abstract class JS {
+abstract class TinyfierJS {
 
     /**
      * Compress javascript code

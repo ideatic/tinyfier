@@ -5,7 +5,7 @@
  *
  * @package Tinyfier
  */
-abstract class HTML {
+abstract class TinyfierHTML {
 
     private static $_settings;
 
@@ -29,8 +29,8 @@ abstract class HTML {
             require_once dirname(dirname(__FILE__)) . '/js/js.php';
 
             return Minify_HTML::minify($html, array(
-                'cssMinifier' => 'HTML::CompressInlineCSS',
-                'jsMinifier' => 'HTML::CompressInlineJS'
+                'cssMinifier' => 'TinyfierHTML::CompressInlineCSS',
+                'jsMinifier' => 'TinyfierHTML::CompressInlineJS'
             ));
         } else {
             return Minify_HTML::minify($html);
@@ -46,7 +46,7 @@ abstract class HTML {
         if (self::_has_mark($css)) {
             return $css;
         } else {
-            return CSS::process($css, array(
+            return TinyfierCSS::process($css, array(
                 'use_less' => FALSE,
                 'ie_compatible' => TRUE
             ));
@@ -62,7 +62,7 @@ abstract class HTML {
         if (self::_has_mark($js)) {
             return $js;
         } else {
-            return JS::compress($js);
+            return TinyfierJS::compress($js);
         }
     }
 

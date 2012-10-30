@@ -5,7 +5,7 @@
  *
  * @package Tinyfier
  */
-abstract class CSS {
+abstract class TinyfierCSS {
 
     /**
      * Process a CSS file

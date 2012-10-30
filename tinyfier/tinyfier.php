@@ -158,7 +158,7 @@ if (!file_exists($cache_file) || $debug || $recache
             }
 
             //Compress
-            $source = JS::compress(implode('', $source), array(
+            $source = TinyfierJS::compress(implode('', $source), array(
                         'pretty' => $debug,
                         'gclosure' => !$debug //No usar Google Closure en modo debug
                     ));
@@ -172,7 +172,7 @@ if (!file_exists($cache_file) || $debug || $recache
                     $source[] = "\n\n\n/* $relative_path */\n\n\n";
                 }
 
-                $source[] = CSS::process(NULL, array(
+                $source[] = TinyfierCSS::process(NULL, array(
                             'absolute_path' => $absolute_path,
                             'relative_path' => $relative_path,
                             'cache_path' => $cache_dir,
