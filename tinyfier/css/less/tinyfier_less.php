@@ -18,7 +18,6 @@ class tinyfier_less extends lessc {
         $this->_settings = $settings;
 
         //Prepare compiler
-
         $this->registerFunction('gradient', array($this, 'lib_gradient'));
         $this->registerFunction('sprite', array($this, 'lib_sprite'));
         $this->registerFunction('inline', array($this, 'lib_inline'));
@@ -129,7 +128,7 @@ class tinyfier_less extends lessc {
 
         //Find local file
         $local_path = $this->_local_url($url);
-        
+
         //Apply filter
         require_once 'gd/gd_image.php';
         $image = new gd_image($local_path);
@@ -138,7 +137,7 @@ class tinyfier_less extends lessc {
         //Save image and generate CSS
         $format = in_array($image->format, array('gif', 'png', 'jpg')) ? $image->format : 'png';
         $path = $this->_get_cache_path('filter_' . $filter, $format);
-        $image->save($path, $format, TRUE);
+        $image->save($path, $format, TRUE, 90, $this->_settings['optimize_images']);
         return array('string', '', array("url('{$this->_get_cache_url($path)}')"));
     }
 
@@ -211,7 +210,7 @@ class tinyfier_less extends lessc {
         // var_dump($arguments,$gradient_width, $gradient_height, $color_stops, $gradient_type, FALSE, $back_color);die;
         $image = $gd->generate_gradient($gradient_width, $gradient_height, $color_stops, $gradient_type, FALSE, $back_color);
         $path = $this->_get_cache_path('gradient', 'png');
-        $image->save($path, 'png', TRUE);
+        $image->save($path, 'png', TRUE, 100, $this->_settings['optimize_images']);
 
         //Create CSS code
         $css_color_positions = array();

@@ -1,5 +1,6 @@
 /nbproject/
 /TODO.txt
 /tinyfier/cache/*
+!readme.txt
 /tinyfier/error_log.txt
 /tinyfier/tcompiler.php

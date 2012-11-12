@@ -16,6 +16,7 @@ if (!isset($cache_dir))
 $auto_compatibility_mode = TRUE; // Detect automatically IE7-
 $max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 604800; //Max time for user caché (default: 1 week)
 $separator = ','; //Source files separator
+$optimize_images = TRUE; //Optimize images using external APIs like Yahoo Smush.it
 
 $debug = isset($_GET['debug']); //Debug mode, useful during development
 $recache = isset($_GET['recache']); //Disable cache
@@ -178,7 +179,8 @@ if (!file_exists($cache_file) || $debug || $recache
                             'cache_path' => $cache_dir,
                             'compress' => !$debug,
                             'data' => $vars,
-                            'ie_compatible' => $compatible_mode
+                            'ie_compatible' => $compatible_mode,
+                            'optimize_images' => $optimize_images,
                         ));
             }
             //Combine

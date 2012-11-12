@@ -12,14 +12,13 @@ class gd_image {
             $this->_handle = $path_or_handle;
     }
 
-
     /**
      * Save a image on the specified path
      * @param string $path
      * @param bool $check_is_equal Check, before save, that the file exists and it's equal to the current image
-     * @return bool Image write (TRUE); error or image skipped (FALSE)
+     * @return bool Image written (TRUE); error or image skipped (FALSE)
      */
-    public function save($path, $format = 'png', $check_is_equal = TRUE, $quality = 90) {
+    public function save($path, $format = 'png', $check_is_equal = TRUE, $quality = 90, $optimize = TRUE) {
         //Check if image exists and is equal
         if ($check_is_equal && file_exists($path) && self::compare_images($this->_handle, $path)) {
             return FALSE; //Same images, don't overwrite
@@ -29,15 +28,52 @@ class gd_image {
         switch ($format) {
             case 'jpg':
             case 'jpeg':
-                return imagejpeg($this->_handle, $path, $quality);
+                $success = imagejpeg($this->_handle, $path, $quality);
+                break;
 
             case 'gif':
-                return imagegif($this->_handle, $path);
+                $success = imagegif($this->_handle, $path);
+                break;
 
             default:
                 imagesavealpha($this->_handle, TRUE);
-                return imagepng($this->_handle, $path, 9, PNG_ALL_FILTERS);
+                $success = imagepng($this->_handle, $path, 9, PNG_ALL_FILTERS);
+                break;
         }
+
+        //Optimize
+        if ($optimize && $success) {
+            $this->_smush($path);
+        }
+
+        return $success;
+    }
+
+    private function _smush($file) {
+        if (!function_exists('curl_init'))
+            return FALSE;
+
+        //Prepare cUrl
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'http://www.smushit.com/ysmush.it/ws.php?');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array('files' => '@' . $file));
+        $json_str = curl_exec($ch);
+        curl_close($ch);
+
+        //Parse response and save file
+        $json = json_decode($json_str);
+
+        if (is_null($json) || isset($json->error)) {
+            return FALSE;
+        }
+
+        $compressed = file_get_contents($json->dest);
+        $success = $compressed ? file_put_contents($file, $compressed) : FALSE;
+
+        return $success;
     }
 
     /**
