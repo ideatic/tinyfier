@@ -14,9 +14,10 @@
 if (!isset($cache_dir))
     $cache_dir = dirname(__FILE__) . '/cache'; //Path to cache folder
 $auto_compatibility_mode = TRUE; // Detect automatically IE7-
-$max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 604800; //Max time for user caché (default: 1 week)
+$max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 604800; //Max time for user cache (default: 1 week)
 $separator = ','; //Source files separator
-$optimize_images = TRUE; //Optimize images using external APIs like Yahoo Smush.it
+$optimize_images = TRUE; //Optimize images using external APIs like Yahoo Smush.it and TinyPNG.org
+$tinypng_api_key = '';
 
 $debug = isset($_GET['debug']); //Debug mode, useful during development
 $recache = isset($_GET['recache']); //Disable cache

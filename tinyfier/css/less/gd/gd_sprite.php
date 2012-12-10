@@ -77,8 +77,9 @@ class gd_sprite {
         }
 
         //Crear sprite
-        $sprite = imagecreateTRUEcolor($w, $h);
+        $sprite = imagecreatetruecolor($w, $h);
         imagealphablending($sprite, FALSE); //Soporte de transparencias
+        imagefill($sprite, 0, 0, imagecolorallocatealpha($sprite, 0, 0, 0, 127)); //Fondo transparente
         foreach ($this->_images as $image) {
             imagecopy($sprite, $image->handle, $image->left, $image->top, 0, 0, $image->width, $image->height);
         }
@@ -109,29 +110,35 @@ class gd_sprite_image {
      * @var mixed
      */
     public $handle;
+
     /**
      * Ancho de la imagen
      * @var int
      */
     public $width;
+
     /**
      * Altura de la imagen
      * @var int
      */
     public $height;
+
     /**
      * Número de píxeles respecto al border superior donde se mostrará la imagen
      * @var int
      */
     public $top;
+
     /**
      * Número de píxeles respecto al border izquierdo donde se mostrará la imagen
      * @var int
      */
     public $left;
+
     /**
      * Información asociada a esta imagen
      * @var mixed
      */
     public $tag;
+
 }
