@@ -32,7 +32,7 @@ $recache = isset($_GET['recache']); //Disable cache
  */
 //Set error reporting
 error_reporting(E_ALL & ~E_STRICT);
-ini_set('display_errors', FALSE);
+ini_set('display_errors', $debug);
 ini_set('log_errors', 'On');
 ini_set('error_log', isset($error_log) ? $error_log : dirname(__FILE__) . '/error_log.txt');
 
@@ -186,7 +186,7 @@ if (!file_exists($cache_file) || $debug || $recache
                             'compress' => !$debug,
                             'data' => $vars,
                             'ie_compatible' => $compatible_mode,
-                            'optimize_images' => $optimize_images,
+                            'optimize_images' => !$debug && $optimize_images,
                 ));
             }
             //Combine

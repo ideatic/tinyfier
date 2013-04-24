@@ -152,10 +152,10 @@ class tinyfier_less extends lessc {
         $width_unit = trim($arg[2][1][2]);
         $height = isset($arg[2][2]) ? $this->_remove_quotes(trim($arg[2][2][1])) : NULL;
         $height_unit = isset($arg[2][2]) ? trim($arg[2][2][2]) : 'px';
-        $keep_aspect =  (isset($arg[2][3]) ? $this->_remove_quotes(trim($arg[2][3][1])) : TRUE);
+        $keep_aspect = (isset($arg[2][3]) ? $this->_remove_quotes(trim($arg[2][3][1])) : TRUE);
         if (strtolower($keep_aspect) == 'false')
             $keep_aspect = FALSE;
-        
+
 
         //Find local file
         $local_path = $this->_local_path($url);
@@ -168,6 +168,9 @@ class tinyfier_less extends lessc {
             $width = round($image->width() * ($width / 100.0));
         if ($height_unit == '%')
             $height = round($image->height() * ($height / 100.0));
+
+        if ($width == $image->width() && $height == $image->height())//Resize not necessary
+            return array('string', '', array("url('$url')"));
 
         $image->resize($width, $height, $keep_aspect);
 
@@ -302,7 +305,6 @@ background-image: radial-gradient(center, ellipse cover, $css_color_positions);"
         //Get parameters
         $url = $this->_remove_quotes(trim($arg[2][0][2][0]));
         $group = $this->_remove_quotes(trim($arg[2][1][2][0]));
-
 
         //Get sprite
         require_once 'gd/gd_sprite.php';

@@ -1,13 +1,12 @@
 <?php
 
 /**
- * Funcionalidad para la creación de sprites de imágenes utilizadas en hojas de estilos CSS
+ * Tool for CSS sprites creation
  */
 class gd_sprite {
 
     /**
-     * Array con las imágenes añadidas al sprite
-     * @var gd_sprite_image
+     * @var gd_sprite_image[]
      */
     private $_images;
 
@@ -16,10 +15,10 @@ class gd_sprite {
     }
 
     /**
-     * Añade una nueva imagen al sprite
+     * Adds a new image to the sprite
      */
     public function add_image($path, $tag = NULL) {
-        //Comprobar que el archivo no está ya incluido
+        //Check if the file is already included
         foreach ($this->_images as $image) {
             if ($image->path == $path)
                 return;
@@ -31,7 +30,7 @@ class gd_sprite {
     }
 
     /**
-     * Crea el sprite CSS en memoria y devuelve su identificador
+     * Build the CSS sprite in memory
      * @return gd_image
      */
     public function build() {
@@ -45,7 +44,7 @@ class gd_sprite {
     }
 
     /**
-     * Obtiene las imágenes incluidas en este sprite en un array de objetos gd_sprite_image
+     * Images added to the sprite
      * @return gd_sprite_image[]
      */
     public function images() {
@@ -53,7 +52,7 @@ class gd_sprite {
     }
 
     /**
-     * Organiza las imágenes del sprite
+     * Sort the images of the sprite
      */
     private function _sort_images() {
         $y = 0;
@@ -65,7 +64,7 @@ class gd_sprite {
     }
 
     /**
-     * Dibuja el sprite en una nueva imagen y la devuelve
+     * Draw the images on the sprite
      */
     private function _draw_sprite() {
         //Calcular tamaño del sprite
@@ -100,43 +99,43 @@ class gd_sprite_image {
     }
 
     /**
-     * Ruta del archivo original que forma esta imagen
+     * Original path to the image file
      * @var string
      */
     public $path;
 
     /**
-     * Identificador de la imagen para su manipulación
+     * Image handler
      * @var mixed
      */
     public $handle;
 
     /**
-     * Ancho de la imagen
+     * Image width
      * @var int
      */
     public $width;
 
     /**
-     * Altura de la imagen
+     * Image height
      * @var int
      */
     public $height;
 
     /**
-     * Número de píxeles respecto al border superior donde se mostrará la imagen
+     * Top margin of the image in the sprite
      * @var int
      */
     public $top;
 
     /**
-     * Número de píxeles respecto al border izquierdo donde se mostrará la imagen
+     * Left margin of the image in the sprite
      * @var int
      */
     public $left;
 
     /**
-     * Información asociada a esta imagen
+     * Information related to the image
      * @var mixed
      */
     public $tag;
