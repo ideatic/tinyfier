@@ -56,3 +56,26 @@
      }
 
  }
+
+#resized {
+
+     div{
+         height:125px;
+         width:200px;
+         float: left;
+     }
+
+     .original{
+         background: url('images/lion.jpg');
+     }
+     .small{
+         background: resize('images/lion.jpg',32px,32px);
+     }
+     .big{
+         background: resize('images/lion.jpg',150%);
+     }
+     .stretched{
+         background: resize('images/lion.jpg',100px,10px,false);
+     }
+
+}

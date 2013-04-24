@@ -106,6 +106,57 @@ class gd_image {
     }
 
     /**
+     * Return the current image width
+     * @return int
+     */
+    public function width() {
+        return imagesx($this->_handle);
+    }
+
+    /**
+     * Return the current image height 
+     * @return int
+     */
+    public function height() {
+        return imagesy($this->_handle);
+    }
+
+    /**
+     * Resizes the current image
+     * @param int $width
+     * @param int $height
+     * @param boolean $keep_aspect
+     */
+    public function resize($width, $height = NULL, $keep_aspect = TRUE) {
+        $current_width = $this->width($this->_handle);
+        $current_height = $this->height($this->_handle);
+
+        if (!isset($height)) {
+            $height = $keep_aspect ? PHP_INT_MAX : $current_height;
+        }
+
+        //Adjust final size
+        if ($keep_aspect) {
+            $aspect_ratio = min($width / $current_width, $height / $current_height);
+            $dest_width = round($current_width * $aspect_ratio);
+            $dest_height = round($current_height * $aspect_ratio);
+        } else {
+            $dest_width = $width;
+            $dest_height = $height;
+        }
+
+        //Resize image
+        $thumb = imagecreatetruecolor($dest_width, $dest_height);
+        imagealphablending($thumb, FALSE);
+        $success = imagecopyresampled($thumb, $this->_handle, 0, 0, 0, 0, $dest_width, $dest_height, $current_width, $current_height);
+        imagedestroy($this->_handle);
+
+        $this->_handle = $thumb;
+
+        return $success;
+    }
+
+    /**
      * Apply a filter on the selected image
      * @see http://php.net/manual/function.imagefilter.php
      * @param string $path
@@ -221,8 +272,7 @@ class gd_image {
             $image_b = self::load_image_handle($image_b);
 
         //Comparar tamaños
-        if (imagesx($image_a) != imagesx($image_b) || imagesy($image_a) != imagesy($image_b)
-                || imagesx($image_a) * imagesy($image_a) > 1000 * 1000)
+        if (imagesx($image_a) != imagesx($image_b) || imagesy($image_a) != imagesy($image_b) || imagesx($image_a) * imagesy($image_a) > 1000 * 1000)
             return FALSE;
 
         //Comparar píxeles

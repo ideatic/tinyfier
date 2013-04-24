@@ -92,7 +92,7 @@ class tinyfier_less extends lessc {
         $url = $this->_remove_quotes(trim($value[0]));
 
         if (strpos($url, 'data:') !== 0) {
-            $local_path = $this->_local_url($url);
+            $local_path = $this->_local_path($url);
             $ext = pathinfo($local_path, PATHINFO_EXTENSION);
             if (!in_array($ext, array('png', 'gif', 'jpg', 'jpeg'))) {
                 die("The file extension '$ext' is not allowed for inline images");
@@ -104,7 +104,7 @@ class tinyfier_less extends lessc {
     }
 
     /**
-     * Generate a desaturate version for the image argument
+     * Resize the selected image
      */
     public function lib_filter($arguments) {
         //Process input arguments
@@ -127,7 +127,7 @@ class tinyfier_less extends lessc {
         }
 
         //Find local file
-        $local_path = $this->_local_url($url);
+        $local_path = $this->_local_path($url);
 
         //Apply filter
         require_once 'gd/gd_image.php';
@@ -137,6 +137,43 @@ class tinyfier_less extends lessc {
         //Save image and generate CSS
         $format = in_array($image->format, array('gif', 'png', 'jpg')) ? $image->format : 'png';
         $path = $this->_get_cache_path('filter_' . $filter, $format);
+        $image->save($path, $format, TRUE, 90, $this->_settings['optimize_images']);
+        return array('string', '', array("url('{$this->_get_cache_url($path)}')"));
+    }
+
+    /**
+     * Apply a filter on the selected image
+     * @see http://php.net/manual/function.imagefilter.php
+     */
+    public function lib_resize($arg) {
+        //Get parameters
+        $url = $this->_remove_quotes(trim($arg[2][0][2][0]));
+        $width = $this->_remove_quotes(trim($arg[2][1][1]));
+        $width_unit = trim($arg[2][1][2]);
+        $height = isset($arg[2][2]) ? $this->_remove_quotes(trim($arg[2][2][1])) : NULL;
+        $height_unit = isset($arg[2][2]) ? trim($arg[2][2][2]) : 'px';
+        $keep_aspect =  (isset($arg[2][3]) ? $this->_remove_quotes(trim($arg[2][3][1])) : TRUE);
+        if (strtolower($keep_aspect) == 'false')
+            $keep_aspect = FALSE;
+        
+
+        //Find local file
+        $local_path = $this->_local_path($url);
+
+        //Apply filter
+        require_once 'gd/gd_image.php';
+        $image = new gd_image($local_path);
+
+        if ($width_unit == '%')
+            $width = round($image->width() * ($width / 100.0));
+        if ($height_unit == '%')
+            $height = round($image->height() * ($height / 100.0));
+
+        $image->resize($width, $height, $keep_aspect);
+
+        //Save image and generate CSS
+        $format = in_array($image->format, array('gif', 'png', 'jpg')) ? $image->format : 'png';
+        $path = $this->_get_cache_path('resize', $format);
         $image->save($path, $format, TRUE, 90, $this->_settings['optimize_images']);
         return array('string', '', array("url('{$this->_get_cache_url($path)}')"));
     }
@@ -275,7 +312,7 @@ background-image: radial-gradient(center, ellipse cover, $css_color_positions);"
         }
 
         //Add image to sprite
-        $file = $this->_local_url($url);
+        $file = $this->_local_path($url);
         $mark = 'CSSSPRITE_' . $group . '_' . md5($file);
 
         $this->_sprites[$group]->add_image($file, $mark);
@@ -286,7 +323,12 @@ background-image: radial-gradient(center, ellipse cover, $css_color_positions);"
      * Convert a document URL into a local path
      * @return string
      */
-    private function _local_url($url) {
+    private function _local_path($url) {
+        //Remove url() if found
+        if (stripos($url, 'url(') === 0) {
+            $url = $this->_remove_quotes(substr($url, 4, -1));
+        }
+
         if ($url[0] == '/') { //Relative to DOCUMENT_ROOT
             $url = realpath($_SERVER['DOCUMENT_ROOT'] . $url);
         } elseif (strpos($url, 'http://') !== 0) { //Relative to the document
