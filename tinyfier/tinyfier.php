@@ -13,11 +13,16 @@
  */
 if (!isset($cache_dir))
     $cache_dir = dirname(__FILE__) . '/cache'; //Path to cache folder
-$auto_compatibility_mode = TRUE; // Detect automatically IE7-
-$max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 604800; //Max time for user cache (default: 1 week)
-$separator = ','; //Source files separator
-$optimize_images = TRUE; //Optimize images using external APIs like Yahoo Smush.it and TinyPNG.org
-$tinypng_api_key = '';
+if (!isset($auto_compatibility_mode))
+    $auto_compatibility_mode = TRUE; // Detect automatically IE7-
+if (!isset($max_age))
+    $max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 604800; //Max time for user cache (default: 1 week)
+if (!isset($separator))
+    $separator = ','; //Source files separator
+if (!isset($optimize_images))
+    $optimize_images = TRUE; //Optimize images using external APIs like Yahoo Smush.it and TinyPNG.org
+if (!isset($tinypng_api_key))
+    $tinypng_api_key = '';
 
 $debug = isset($_GET['debug']); //Debug mode, useful during development
 $recache = isset($_GET['recache']); //Disable cache
@@ -163,7 +168,7 @@ if (!file_exists($cache_file) || $debug || $recache
             $source = TinyfierJS::compress(implode('', $source), array(
                         'pretty' => $debug,
                         'gclosure' => !$debug //No usar Google Closure en modo debug
-                    ));
+            ));
         } elseif ($type == 'css' || $type == 'less') { //Process and compress, then combine
             require 'css/css.php';
 
@@ -182,7 +187,7 @@ if (!file_exists($cache_file) || $debug || $recache
                             'data' => $vars,
                             'ie_compatible' => $compatible_mode,
                             'optimize_images' => $optimize_images,
-                        ));
+                ));
             }
             //Combine
             $source = trim(implode('', $source));
@@ -205,6 +210,10 @@ if (!file_exists($cache_file) || $debug || $recache
             file_put_contents("$cache_dir/$cache_id.gzip", gzencode($source, 9, FORCE_GZIP)) === FALSE ||
             file_put_contents("$cache_dir/$cache_id.deflate", gzencode($source, 9, FORCE_DEFLATE)) === FALSE
     ) {
+        //Check if cache folder exists, and if not, create it
+        if (!is_dir($cache_dir)) {
+            mkdir($cache_dir, 0755);
+        }
         header('HTTP/1.1 500 Internal Server Error');
         die('Error writing cache');
     }

@@ -87,8 +87,8 @@ class css_optimizer {
             'AddVendorPrefix' => $this->_settings['prefix'],
             'CustomConvertLevel3Properties' => $this->_settings['prefix'],
             'RemoveIEHacks' => $this->_settings['remove_ie_hacks'],
-            //   'OptimizeSelectorsCompressionRatio' => $this->_settings['extra_optimize'],
-            //  'OptimizeRulesCompressionRatio' => $this->_settings['extra_optimize'],
+                //   'OptimizeSelectorsCompressionRatio' => $this->_settings['extra_optimize'],
+                //  'OptimizeRulesCompressionRatio' => $this->_settings['extra_optimize'],
         );
 
 
@@ -101,7 +101,7 @@ class css_optimizer {
 
         if (!$this->_settings['compress']) { //Format result
             $formatter = new CssOtbsFormatter($minifier->getMinifiedTokens(), "\t", 25);
-            $min = (string)$formatter;
+            $min = (string) $formatter;
         } else {
             $min = $minifier->getMinified();
         }
@@ -160,6 +160,7 @@ class CssCustomCompressColorValuesMinifierPlugin extends CssCompressColorValuesM
 }
 
 class CssCustomConvertLevel3PropertiesMinifierFilter extends CssConvertLevel3PropertiesMinifierFilter {
+
     private static $config;
 
     function __construct(CssMinifier $minifier, array $configuration = array()) {
@@ -311,8 +312,10 @@ class CssAddVendorPrefixMinifierFilter extends aCssMinifierFilter {
                         if (!empty($matches)) {
                             $first = reset($matches);
                             $last = end($matches);
-                            $gradient_type = stripos($value, 'top') !== FALSE ? 0 : 1;
-                            $result[] = new CssRulesetDeclarationToken("filter", "progid:DXImageTransform.Microsoft.gradient( startColorstr='{$this->ie_color($first['color'])}', endColorstr='{$this->ie_color($last['color'])}',GradientType=$gradient_type)", $tokens[$i]->MediaTypes);
+                            if ($first[0] == '#' && $last[0] == '#') {//Colors must be in HEX format
+                                $gradient_type = stripos($value, 'top') !== FALSE ? 0 : 1;
+                                $result[] = new CssRulesetDeclarationToken("filter", "progid:DXImageTransform.Microsoft.gradient( startColorstr='{$this->ie_color($first['color'])}', endColorstr='{$this->ie_color($last['color'])}',GradientType=$gradient_type)", $tokens[$i]->MediaTypes);
+                            }
                         }
                     }
                 }
@@ -353,10 +356,14 @@ class CssAddVendorPrefixMinifierFilter extends aCssMinifierFilter {
 
     private function ie_color($color) {
         $color = trim($color);
-        if (preg_match('/#\d+/', $color) && strlen($color) == 4) {
-            return "#$color[1]$color[1]$color[2]$color[2]$color[3]$color[3]";
+        if (preg_match('/#[0-9a-f]+/i', $color)) {
+            if (strlen($color) == 4) {
+                $color = "#FF$color[1]$color[1]$color[2]$color[2]$color[3]$color[3]";
+            } elseif (strlen($color) == 7) {
+                $color = "#FF$color[1]$color[2]$color[3]$color[4]$color[5]$color[6]";
+            }
         }
-        return $color;
+        return strtoupper($color);
     }
 
 }

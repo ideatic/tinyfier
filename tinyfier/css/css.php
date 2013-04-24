@@ -45,12 +45,12 @@ abstract class TinyfierCSS {
         // 2. Optimize, add vendor prefix and remove hacks        
         require_once 'css_optimizer.php';
         $optimizer = new css_optimizer(array(
-                    'compress' => $settings['compress'],
-                    'optimize' => $settings['optimize'],
-                    'extra_optimize' => $settings['extra_optimize'],
-                    'remove_ie_hacks' => FALSE, //$settings['ie_compatible'] == FALSE,
-                    'prefix' => $settings['prefix'],
-                ));
+            'compress' => $settings['compress'],
+            'optimize' => $settings['optimize'],
+            'extra_optimize' => $settings['extra_optimize'],
+            'remove_ie_hacks' => FALSE, //$settings['ie_compatible'] == FALSE,
+            'prefix' => $settings['prefix'],
+        ));
         $css = $optimizer->process($css);
 
 
@@ -69,6 +69,7 @@ abstract class TinyfierCSS {
             'compress' => TRUE,
             'optimize' => TRUE,
             'extra_optimize' => FALSE,
+            'optimize_images' => TRUE,
             'ie_compatible' => FALSE,
             'data' => NULL,
             'prefix' => array(

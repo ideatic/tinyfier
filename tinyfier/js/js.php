@@ -63,7 +63,7 @@ abstract class TinyfierJS {
         //Generate POST data
         $post = array(
             'output_info' => 'compiled_code',
-            'output_format' => 'text',
+            'output_format' => 'json',
             'compilation_level' => $level == 0 ? 'WHITESPACE_ONLY' : ($level == 2 ? 'ADVANCED_OPTIMIZATIONS' : 'SIMPLE_OPTIMIZATIONS'),
             'js_code' => $source,
         );
@@ -75,14 +75,19 @@ abstract class TinyfierJS {
         $ch = curl_init('http://closure-compiler.appspot.com/compile');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_POST, TRUE);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post) . '&output_info=errors');
         $output = curl_exec($ch);
         curl_close($ch);
-
-        if ($output === FALSE || stripos($output, 'error') === 0) {
+        if ($output === FALSE)
             return FALSE;
-        }
-        return $output;
+
+
+        $compilation_result = json_decode($output,TRUE);
+        
+        if (!$compilation_result || !empty($compilation_result['errors']))
+            return FALSE;
+
+        return $compilation_result['compiledCode'];
     }
 
 }

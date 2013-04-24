@@ -213,13 +213,16 @@ class gd_image {
      * @return bool
      */
     public static function compare_images($image_a, $image_b) {
+        @set_time_limit(0);
+
         if (is_string($image_a))
             $image_a = self::load_image_handle($image_a);
         if (is_string($image_b))
             $image_b = self::load_image_handle($image_b);
 
         //Comparar tamaños
-        if (imagesx($image_a) != imagesx($image_b) || imagesy($image_a) != imagesy($image_b))
+        if (imagesx($image_a) != imagesx($image_b) || imagesy($image_a) != imagesy($image_b)
+                || imagesx($image_a) * imagesy($image_a) > 1000 * 1000)
             return FALSE;
 
         //Comparar píxeles
