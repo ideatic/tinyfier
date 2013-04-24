@@ -83,6 +83,16 @@ Another cool function of `Tinyfier` is the ability for work with image filters.
 
 Internally, `Tinyfier` uses the php function [imagefilter](http://www.php.net/manual/function.imagefilter.php), so you can use all the filters available for it (negate, grayscale, brightness, blur, pixelate and more).
 
+#### Resize images
+
+If you have to show your image or sprite in differents size, it's as easy as use:
+
+>     #lion:hover {
+>        background: resize('images/lion.jpg', 50%);
+>     }
+
+The filter `resize` can take up to 4 arguments: image url, width (in either px or %), height, and a boolean value than enables or disables aspect ratio (true / false)
+
 #### More
 
 Please, look in the test file for more examples for using Tinyfier in your project. It's really easy!
