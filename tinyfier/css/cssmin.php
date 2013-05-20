@@ -66,7 +66,7 @@ abstract class aCssToken {
  * @version        3.0.1
  */
 abstract class aCssRulesetStartToken extends aCssToken {
-
+    
 }
 
 /**
@@ -406,7 +406,7 @@ abstract class aCssDeclarationToken extends aCssToken {
  * @version        3.0.1
  */
 abstract class aCssAtBlockStartToken extends aCssToken {
-
+    
 }
 
 /**
@@ -489,24 +489,14 @@ class CssWhitesmithsFormatter extends aCssFormatter {
                 $r[] = $indent . implode(", ", $token->Selectors);
                 $r[] = $this->indent . $indent . "{";
                 $level++;
-            } elseif ($class == "CssAtFontFaceDeclarationToken"
-                || $class === "CssAtKeyframesRulesetDeclarationToken"
-                || $class === "CssAtPageDeclarationToken"
-                || $class == "CssAtVariablesDeclarationToken"
-                || $class === "CssRulesetDeclarationToken"
+            } elseif ($class == "CssAtFontFaceDeclarationToken" || $class === "CssAtKeyframesRulesetDeclarationToken" || $class === "CssAtPageDeclarationToken" || $class == "CssAtVariablesDeclarationToken" || $class === "CssRulesetDeclarationToken"
             ) {
                 $declaration = $indent . $token->Property . ": ";
                 if ($this->padding) {
                     $declaration = str_pad($declaration, $this->padding, " ", STR_PAD_RIGHT);
                 }
                 $r[] = $declaration . $token->Value . ($token->IsImportant ? " !important" : "") . ";";
-            } elseif ($class === "CssAtFontFaceEndToken"
-                || $class === "CssAtMediaEndToken"
-                || $class === "CssAtKeyframesEndToken"
-                || $class === "CssAtKeyframesRulesetEndToken"
-                || $class === "CssAtPageEndToken"
-                || $class === "CssAtVariablesEndToken"
-                || $class === "CssRulesetEndToken"
+            } elseif ($class === "CssAtFontFaceEndToken" || $class === "CssAtMediaEndToken" || $class === "CssAtKeyframesEndToken" || $class === "CssAtKeyframesRulesetEndToken" || $class === "CssAtPageEndToken" || $class === "CssAtVariablesEndToken" || $class === "CssRulesetEndToken"
             ) {
                 $r[] = $indent . "}";
                 $level--;
@@ -591,7 +581,7 @@ class CssVariablesMinifierPlugin extends aCssMinifierPlugin {
                     }
                 }
                 // If no value was found trigger an error and replace the token with a CssNullToken
-                CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": No value found for variable <code>" . $variable . "</code> in media types <code>" . implode(", ", $mediaTypes) . "</code>", (string)$token));
+                CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": No value found for variable <code>" . $variable . "</code> in media types <code>" . implode(", ", $mediaTypes) . "</code>", (string) $token));
                 $token = new CssNullToken();
                 return TRUE;
             }
@@ -606,7 +596,7 @@ class CssVariablesMinifierPlugin extends aCssMinifierPlugin {
      */
     public function getTriggerTokens() {
         return array
-        (
+            (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -1120,7 +1110,7 @@ class CssRulesetParserPlugin extends aCssParserPlugin {
  * @version        3.0.1
  */
 class CssRulesetEndToken extends aCssRulesetEndToken {
-
+    
 }
 
 /**
@@ -1184,8 +1174,8 @@ class CssRemoveLastDelarationSemiColonMinifierFilter extends aCssMinifierFilter 
             $current = get_class($tokens[$i]);
             $next = isset($tokens[$i + 1]) ? get_class($tokens[$i + 1]) : FALSE;
             if (($current === "CssRulesetDeclarationToken" && $next === "CssRulesetEndToken") ||
-                ($current === "CssAtFontFaceDeclarationToken" && $next === "CssAtFontFaceEndToken") ||
-                ($current === "CssAtPageDeclarationToken" && $next === "CssAtPageEndToken")
+                    ($current === "CssAtFontFaceDeclarationToken" && $next === "CssAtFontFaceEndToken") ||
+                    ($current === "CssAtPageDeclarationToken" && $next === "CssAtPageEndToken")
             ) {
                 $tokens[$i]->IsLast = TRUE;
             }
@@ -1220,7 +1210,7 @@ class CssRemoveEmptyRulesetsMinifierFilter extends aCssMinifierFilter {
             $current = get_class($tokens[$i]);
             $next = isset($tokens[$i + 1]) ? get_class($tokens[$i + 1]) : FALSE;
             if (($current === "CssRulesetStartToken" && $next === "CssRulesetEndToken") ||
-                ($current === "CssAtKeyframesRulesetStartToken" && $next === "CssAtKeyframesRulesetEndToken" && !array_intersect(array("from", "0%", "to", "100%"), array_map("strtolower", $tokens[$i]->Selectors)))
+                    ($current === "CssAtKeyframesRulesetStartToken" && $next === "CssAtKeyframesRulesetEndToken" && !array_intersect(array("from", "0%", "to", "100%"), array_map("strtolower", $tokens[$i]->Selectors)))
             ) {
                 $tokens[$i] = NULL;
                 $tokens[$i + 1] = NULL;
@@ -1258,9 +1248,9 @@ class CssRemoveEmptyAtBlocksMinifierFilter extends aCssMinifierFilter {
             $current = get_class($tokens[$i]);
             $next = isset($tokens[$i + 1]) ? get_class($tokens[$i + 1]) : FALSE;
             if (($current === "CssAtFontFaceStartToken" && $next === "CssAtFontFaceEndToken") ||
-                ($current === "CssAtKeyframesStartToken" && $next === "CssAtKeyframesEndToken") ||
-                ($current === "CssAtPageStartToken" && $next === "CssAtPageEndToken") ||
-                ($current === "CssAtMediaStartToken" && $next === "CssAtMediaEndToken")
+                    ($current === "CssAtKeyframesStartToken" && $next === "CssAtKeyframesEndToken") ||
+                    ($current === "CssAtPageStartToken" && $next === "CssAtPageEndToken") ||
+                    ($current === "CssAtMediaStartToken" && $next === "CssAtMediaEndToken")
             ) {
                 $tokens[$i] = NULL;
                 $tokens[$i + 1] = NULL;
@@ -1383,7 +1373,7 @@ class CssParser {
      */
     public function __construct($source = NULL, array $plugins = NULL) {
         $plugins = array_merge(array
-        (
+            (
             "Comment" => TRUE,
             "String" => TRUE,
             "Url" => TRUE,
@@ -1396,7 +1386,7 @@ class CssParser {
             "AtMedia" => TRUE,
             "AtPage" => TRUE,
             "AtVariables" => TRUE
-        ), is_array($plugins) ? $plugins : array());
+                ), is_array($plugins) ? $plugins : array());
         // Create plugin instances
         foreach ($plugins as $name => $config) {
             if ($config !== FALSE) {
@@ -1759,24 +1749,14 @@ class CssOtbsFormatter extends aCssFormatter {
             } elseif ($class === "CssRulesetStartToken" || $class === "CssAtKeyframesRulesetStartToken") {
                 $r[] = $indent . implode(", ", $token->Selectors) . " {";
                 $level++;
-            } elseif ($class == "CssAtFontFaceDeclarationToken"
-                || $class === "CssAtKeyframesRulesetDeclarationToken"
-                || $class === "CssAtPageDeclarationToken"
-                || $class == "CssAtVariablesDeclarationToken"
-                || $class === "CssRulesetDeclarationToken"
+            } elseif ($class == "CssAtFontFaceDeclarationToken" || $class === "CssAtKeyframesRulesetDeclarationToken" || $class === "CssAtPageDeclarationToken" || $class == "CssAtVariablesDeclarationToken" || $class === "CssRulesetDeclarationToken"
             ) {
                 $declaration = $indent . $token->Property . ": ";
                 if ($this->padding) {
                     $declaration = str_pad($declaration, $this->padding, " ", STR_PAD_RIGHT);
                 }
                 $r[] = $declaration . $token->Value . ($token->IsImportant ? " !important" : "") . ";";
-            } elseif ($class === "CssAtFontFaceEndToken"
-                || $class === "CssAtMediaEndToken"
-                || $class === "CssAtKeyframesEndToken"
-                || $class === "CssAtKeyframesRulesetEndToken"
-                || $class === "CssAtPageEndToken"
-                || $class === "CssAtVariablesEndToken"
-                || $class === "CssRulesetEndToken"
+            } elseif ($class === "CssAtFontFaceEndToken" || $class === "CssAtMediaEndToken" || $class === "CssAtKeyframesEndToken" || $class === "CssAtKeyframesRulesetEndToken" || $class === "CssAtPageEndToken" || $class === "CssAtVariablesEndToken" || $class === "CssRulesetEndToken"
             ) {
                 $level--;
                 $r[] = str_repeat($indent, $level) . "}";
@@ -1856,7 +1836,7 @@ class CssMinifier {
      */
     public function __construct($source = NULL, array $filters = NULL, array $plugins = NULL) {
         $filters = array_merge(array
-        (
+            (
             "ImportImports" => FALSE,
             "RemoveComments" => TRUE,
             "RemoveEmptyRulesets" => TRUE,
@@ -1865,9 +1845,9 @@ class CssMinifier {
             "ConvertLevel3AtKeyframes" => FALSE,
             "Variables" => TRUE,
             "RemoveLastDelarationSemiColon" => TRUE
-        ), is_array($filters) ? $filters : array());
+                ), is_array($filters) ? $filters : array());
         $plugins = array_merge(array
-        (
+            (
             "Variables" => TRUE,
             "ConvertFontWeight" => FALSE,
             "ConvertHslColors" => FALSE,
@@ -1876,7 +1856,7 @@ class CssMinifier {
             "CompressColorValues" => FALSE,
             "CompressUnitValues" => FALSE,
             "CompressExpressionValues" => FALSE
-        ), is_array($plugins) ? $plugins : array());
+                ), is_array($plugins) ? $plugins : array());
         // Filters
         foreach ($filters as $name => $config) {
             if ($config !== FALSE) {
@@ -2001,7 +1981,7 @@ class CssMinifier {
         }
         // Stringify the tokens
         for ($i = 0; $i < $tokenCount; $i++) {
-            $r .= (string)$tokens[$i];
+            $r .= (string) $tokens[$i];
         }
         $this->minified = $r;
         $this->minified_tokens = $tokens;
@@ -2167,7 +2147,7 @@ class CssMin {
      * @return boolean
      */
     public static function setVerbose($to) {
-        self::$isVerbose = (boolean)$to;
+        self::$isVerbose = (boolean) $to;
         return self::$isVerbose;
     }
 
@@ -2180,7 +2160,7 @@ class CssMin {
     public static function triggerError(CssError $error) {
         self::$errors[] = $error;
         if (self::$isVerbose) {
-            trigger_error((string)$error, E_USER_WARNING);
+            trigger_error((string) $error, E_USER_WARNING);
         }
     }
 
@@ -2225,10 +2205,10 @@ class CssImportImportsMinifierFilter extends aCssMinifierFilter {
                 $import = $this->configuration["BasePath"] . "/" . $tokens[$i]->Import;
                 // Import file was not found/is not a file
                 if (!is_file($import)) {
-                    CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Import file <code>" . $import . "</code> was not found.", (string)$tokens[$i]));
+                    CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Import file <code>" . $import . "</code> was not found.", (string) $tokens[$i]));
                 } // Import file already imported; remove this @import at-rule to prevent recursions
                 elseif (in_array($import, $this->imported)) {
-                    CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Import file <code>" . $import . "</code> was already imported.", (string)$tokens[$i]));
+                    CssMin::triggerError(new CssError(__FILE__, __LINE__, __METHOD__ . ": Import file <code>" . $import . "</code> was already imported.", (string) $tokens[$i]));
                     $tokens[$i] = NULL;
                 } else {
                     $this->imported[] = $import;
@@ -2540,7 +2520,7 @@ class CssConvertRgbColorsMinifierPlugin extends aCssMinifierPlugin {
             for ($i = 1, $l = count($m); $i < $l; $i++) {
                 if (strpos("%", $m[$i]) !== FALSE) {
                     $m[$i] = substr($m[$i], 0, -1);
-                    $m[$i] = (int)(256 * ($m[$i] / 100));
+                    $m[$i] = (int) (256 * ($m[$i] / 100));
                 }
                 $m[$i] = str_pad(dechex($m[$i]), 2, "0", STR_PAD_LEFT);
             }
@@ -2556,7 +2536,7 @@ class CssConvertRgbColorsMinifierPlugin extends aCssMinifierPlugin {
      */
     public function getTriggerTokens() {
         return array
-        (
+            (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -2609,7 +2589,7 @@ class CssConvertNamedColorsMinifierPlugin extends aCssMinifierPlugin {
      * @var array
      */
     private $transformation = array
-    (
+        (
         "aliceblue" => "#f0f8ff",
         "antiquewhite" => "#faebd7",
         "aqua" => "#0ff",
@@ -2788,7 +2768,7 @@ class CssConvertNamedColorsMinifierPlugin extends aCssMinifierPlugin {
      */
     public function getTriggerTokens() {
         return array
-        (
+            (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -2817,7 +2797,7 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
      * @var array
      */
     protected $transformations = array
-    (
+        (
         // Property						Array(Mozilla, Webkit, Opera, Internet Explorer); NULL values are placeholders and will get ignored
         "animation" => array(NULL, "-webkit-animation", NULL, NULL),
         "animation-delay" => array(NULL, "-webkit-animation-delay", NULL, NULL),
@@ -3032,8 +3012,14 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
         $r = 0;
         $transformations = &$this->transformations;
         for ($i = 0, $l = count($tokens); $i < $l; $i++) {
-            if (get_class($tokens[$i]) === "CssRulesetDeclarationToken") {
+            $class_name = get_class($tokens[$i]);
+            if ($class_name === "CssRulesetDeclarationToken" || $class_name === "CssAtKeyframesRulesetDeclarationToken") {
                 $tProperty = $tokens[$i]->Property;
+
+
+                if (!isset($tokens[$i]->MediaTypes))
+                    $tokens[$i]->MediaTypes = NULL;
+
                 if (isset($transformations[$tProperty])) {
                     $result = array();
                     $tokens[$i]->IsLast = FALSE;
@@ -3044,13 +3030,15 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
                         }
                     } else {
                         $tValue = $tokens[$i]->Value;
+
                         $tMediaTypes = $tokens[$i]->MediaTypes;
                         foreach ($transformations[$tProperty] as $property) {
-                            if ($property !== NULL) {
-                                $result[] = new CssRulesetDeclarationToken($property, $tValue, $tMediaTypes);
+                            if ($property !== NULL) { 
+                                $result[] = new $class_name($property, $tValue, $tMediaTypes);
                             }
                         }
                     }
+
                     if (count($result) > 0) {
                         array_splice($tokens, $i + 1, 0, $result);
                         $i += count($result);
@@ -3071,7 +3059,7 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
      */
     private static function filter($token) {
         $r = array
-        (
+            (
             new CssRulesetDeclarationToken("-ms-filter", "\"" . $token->Value . "\"", $token->MediaTypes),
         );
         return $r;
@@ -3085,9 +3073,9 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
      */
     private static function opacity($token) {
         // Calculate the value for Internet Explorer filter statement
-        $ieValue = (int)((float)$token->Value * 100);
+        $ieValue = (int) ((float) $token->Value * 100);
         $r = array
-        (
+            (
             // Internet Explorer >= 8
             new CssRulesetDeclarationToken("-ms-filter", "\"alpha(opacity=" . $ieValue . ")\"", $token->MediaTypes),
             // Internet Explorer >= 4 <= 7
@@ -3106,7 +3094,7 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter {
     private static function whiteSpace($token) {
         if (strtolower($token->Value) === "pre-wrap") {
             $r = array
-            (
+                (
                 // Firefox < 3
                 new CssRulesetDeclarationToken("white-space", "-moz-pre-wrap", $token->MediaTypes),
                 // Webkit
@@ -3168,6 +3156,7 @@ class CssConvertLevel3AtKeyframesMinifierFilter extends aCssMinifierFilter {
                         $t[0]->AtRuleName = $transformation;
                         $add = array_merge($add, $t);
                     }
+
                     if (isset($this->configuration["RemoveSource"]) && $this->configuration["RemoveSource"] === TRUE) {
                         array_splice($tokens, $i, $ii - $i + 1, $add);
                     } else {
@@ -3233,7 +3222,7 @@ class CssConvertHslColorsMinifierPlugin extends aCssMinifierPlugin {
      */
     public function getTriggerTokens() {
         return array
-        (
+            (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -3332,7 +3321,7 @@ class CssConvertFontWeightMinifierPlugin extends aCssMinifierPlugin {
      * @var array
      */
     private $include = array
-    (
+        (
         "font",
         "font-weight"
     );
@@ -3357,7 +3346,7 @@ class CssConvertFontWeightMinifierPlugin extends aCssMinifierPlugin {
      * @var array
      */
     private $transformation = array
-    (
+        (
         "normal" => "400",
         "bold" => "700"
     );
@@ -3396,7 +3385,7 @@ class CssConvertFontWeightMinifierPlugin extends aCssMinifierPlugin {
      */
     public function getTriggerTokens() {
         return array
-        (
+            (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -3439,7 +3428,7 @@ class CssCompressUnitValuesMinifierPlugin extends aCssMinifierPlugin {
      * @var array
      */
     private $re = array
-    (
+        (
         "/(^| |-)0\.([0-9]+?)(0+)?(%|em|ex|px|in|cm|mm|pt|pc)/iS" => "\${1}.\${2}\${4}",
         "/(^| )-?(\.?)0(%|em|ex|px|in|cm|mm|pt|pc)/iS" => "\${1}0",
         "/(^0\s0\s0\s0)|(^0\s0\s0$)|(^0\s0$)/iS" => "0"
@@ -3474,7 +3463,7 @@ class CssCompressUnitValuesMinifierPlugin extends aCssMinifierPlugin {
      */
     public function getTriggerTokens() {
         return array
-        (
+            (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -3521,7 +3510,7 @@ class CssCompressExpressionValuesMinifierPlugin extends aCssMinifierPlugin {
      */
     public function getTriggerTokens() {
         return array
-        (
+            (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -3583,7 +3572,7 @@ class CssCompressColorValuesMinifierPlugin extends aCssMinifierPlugin {
      */
     public function getTriggerTokens() {
         return array
-        (
+            (
             "CssAtFontFaceDeclarationToken",
             "CssAtPageDeclarationToken",
             "CssRulesetDeclarationToken"
@@ -4023,7 +4012,7 @@ class CssAtPageParserPlugin extends aCssParserPlugin {
  * @version        3.0.1
  */
 class CssAtPageEndToken extends aCssAtBlockEndToken {
-
+    
 }
 
 /**
@@ -4037,7 +4026,7 @@ class CssAtPageEndToken extends aCssAtBlockEndToken {
  * @version        3.0.1
  */
 class CssAtPageDeclarationToken extends aCssDeclarationToken {
-
+    
 }
 
 /**
@@ -4149,7 +4138,7 @@ class CssAtMediaParserPlugin extends aCssParserPlugin {
  * @version        3.0.1
  */
 class CssAtMediaEndToken extends aCssAtBlockEndToken {
-
+    
 }
 
 /**
@@ -4253,7 +4242,7 @@ class CssAtKeyframesRulesetStartToken extends aCssRulesetStartToken {
  * @version        3.0.1
  */
 class CssAtKeyframesRulesetEndToken extends aCssRulesetEndToken {
-
+    
 }
 
 /**
@@ -4267,7 +4256,7 @@ class CssAtKeyframesRulesetEndToken extends aCssRulesetEndToken {
  * @version        3.0.1
  */
 class CssAtKeyframesRulesetDeclarationToken extends aCssDeclarationToken {
-
+    
 }
 
 /**
@@ -4433,7 +4422,7 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin {
  * @version        3.0.1
  */
 class CssAtKeyframesEndToken extends aCssAtBlockEndToken {
-
+    
 }
 
 /**
@@ -4689,7 +4678,7 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin {
  * @version        3.0.1
  */
 class CssAtFontFaceEndToken extends aCssAtBlockEndToken {
-
+    
 }
 
 /**
@@ -4703,7 +4692,7 @@ class CssAtFontFaceEndToken extends aCssAtBlockEndToken {
  * @version        3.0.1
  */
 class CssAtFontFaceDeclarationToken extends aCssDeclarationToken {
-
+    
 }
 
 /**

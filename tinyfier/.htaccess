@@ -5,8 +5,8 @@ DirectoryIndex tinyfier.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     
-    # Rewrite URLs like "/tinyfier/f=..." to "/tinyfier/tinyfier.php?f=..."
-    RewriteRule ^(f=.*) tinyfier.php?$1 [L,NE]
+    # Rewrite URLs like "/tinyfier/..." to "/tinyfier/tinyfier.php?f=..."
+    RewriteRule ^(.*) tinyfier.php?f=$1 [L,NE]
 </IfModule>
 
 <IfModule mod_env.c>

@@ -165,9 +165,9 @@ if (!file_exists($cache_file) || $debug || $recache
             }
 
             //Compress
-            $source = TinyfierJS::compress(implode('', $source), array(
+            $source = TinyfierJS::process(implode(';', $source), array(
                         'pretty' => $debug,
-                        'gclosure' => !$debug //No usar Google Closure en modo debug
+                        'gclosure' => strlen($source) > 750 && !$debug //No usar Google Closure en modo debug o para javascript pequeños
             ));
         } elseif ($type == 'css' || $type == 'less') { //Process and compress, then combine
             require 'css/css.php';

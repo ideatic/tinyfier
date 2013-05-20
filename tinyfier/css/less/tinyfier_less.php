@@ -72,7 +72,7 @@ class tinyfier_less extends lessc {
         $url = $this->_remove_quotes(trim($value[0]));
 
         if (strpos($url, 'data:') !== 0 && !empty($url)) { //Don't rewrite embedded images
-            if ($url[0] != '/' && strpos($url, 'http://') !== 0) { //Rewrite relative URL from tinyfier script path
+            if ($url[0] != '/' && strpos($url, 'http://') !== 0) {
                 if ($this->_settings['relative_path'][0] == '/') {
                     $url = $this->_clear_path(dirname($this->_settings['relative_path']) . '/' . $url);
                 } else {
@@ -286,16 +286,17 @@ class tinyfier_less extends lessc {
                     $position = $gradient_type;
                     break;
             }
-            $css = "background: url('{$this->_get_cache_url($path)}') $repeat $back_color; /* Old browsers */
+            $css = "background-repeat: $repeat;
+background-image: url('{$this->_get_cache_url($path)}'); /* Old browsers */
 background-image: linear-gradient($position, $css_color_positions);";
         } else if ($gradient_type == 'radial') {
-            $css = "background: url('{$this->_get_cache_url($path)}') no-repeat $back_color; /* Old browsers */
+            $css = "background-image: url('{$this->_get_cache_url($path)}'); /* Old browsers */
 background-image: radial-gradient(center, ellipse cover, $css_color_positions);";
         } else { //It is necessary to use images
-            $css = "background: url('{$this->_get_cache_url($path)}') $back_color;";
+            $css = "background-image: url('{$this->_get_cache_url($path)}');";
         }
 
-        return array('string', '', array(substr($css, 11))); //Remove the first "background:"
+        return array('string', '', array("$back_color;$css")); 
     }
 
     /**
@@ -331,12 +332,26 @@ background-image: radial-gradient(center, ellipse cover, $css_color_positions);"
             $url = $this->_remove_quotes(substr($url, 4, -1));
         }
 
-        if ($url[0] == '/') { //Relative to DOCUMENT_ROOT
-            $url = realpath($_SERVER['DOCUMENT_ROOT'] . $url);
-        } elseif (strpos($url, 'http://') !== 0) { //Relative to the document
-            $url = realpath(dirname($this->_settings['absolute_path']) . '/' . $url);
+        if (strcasecmp($url, $this->_get_cache_url(basename($url))) === 0) {
+            $path = $this->_settings['cache_path'] . '/' . basename($url);
+        } else {
+            $path = $url;
+            if ($url[0] == '/') { //Relative to SCRIPT_FILENAME
+                $path = realpath(dirname(dirname($_SERVER['SCRIPT_FILENAME'])) . $url);
+
+                if (!$path) { //Relative to DOCUMENT_ROOT
+                    $path = realpath($_SERVER['DOCUMENT_ROOT'] . $url);
+                }
+            } elseif (strpos($url, 'http://') !== 0) { //Relative to the document
+                $path = realpath(dirname($this->_settings['absolute_path']) . '/' . $url);
+            }
         }
-        return $url;
+
+        if (!$path) {
+            throw new Exception("Image $url not found");
+        }
+
+        return $path;
     }
 
     /**

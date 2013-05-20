@@ -22,6 +22,7 @@ abstract class TinyfierCSS {
      * Process CSS code
      *
      * Available settings:
+     *   'less': enable/disable LESS parser
      *   'compress': if FALSE, adds line breaks and indentation to its output code to make the code easier for humans to read
      *   'absolute_path': absolute path to the file
      *   'relative_path': relative path from the document root
@@ -38,9 +39,11 @@ abstract class TinyfierCSS {
         $settings = $settings + self::default_settings();
 
         // 1. Process the file with LESS    
-        require_once 'less/tinyfier_less.php';
-        $less = new tinyfier_less();
-        $css = $less->process($css, $settings);
+        if ($settings['less']) {
+            require_once 'less/tinyfier_less.php';
+            $less = new tinyfier_less();
+            $css = $less->process($css, $settings);
+        }
 
         // 2. Optimize, add vendor prefix and remove hacks        
         require_once 'css_optimizer.php';
@@ -63,6 +66,7 @@ abstract class TinyfierCSS {
 
     public static function default_settings() {
         return array(
+            'less' => TRUE,
             'absolute_path' => '',
             'relative_path' => '',
             'cache_path' => '',

@@ -1,5 +1,5 @@
 # Tinyfier v0.3
-#### <http://www.digitalestudio.es/proyectos/tinyfier/>
+#### <http://www.tinyfier.com>
 
 `Tinyfier` is a CSS and Javascript preprocessing and minification tool. 
 It combines multiple CSS or Javascript files, add extra functionality to CSS, removes unnecessary whitespace and comments, and serves them with gzip encoding and optimal client-side cache headers.

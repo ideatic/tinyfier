@@ -18,16 +18,13 @@ abstract class TinyfierJS {
      * @param array $settings
      * @return string
      */
-    public static function compress($source, array $settings = array()) {
+    public static function process($source, array $settings = array(), &$errors = array(), &$warnings = NULL) {
         //Default settings
-        $settings = $settings + array(
-            'gclosure' => TRUE,
-            'pretty' => FALSE
-        );
+        $settings = $settings + self::default_settings();
 
         //Compress using Google Closure compiler
-        if ($settings['gclosure'] && strlen($source) > 750) {
-            $compiled = self::_compress_google_closure($source, 1, $settings['pretty']);
+        if ($settings['gclosure']) {
+            $compiled = self::_compress_google_closure($source, $settings['level'], $settings['pretty'], $errors, $warnings);
             if ($compiled !== FALSE)
                 return $compiled;
         }
@@ -39,24 +36,33 @@ abstract class TinyfierJS {
             require_once 'jsminplus.php';
             ob_start(); //Capture output, JSMinPlus echo errors by default
             $result = JSMinPlus::minify($source);
-            $errors = ob_get_clean();
-            if (empty($errors)) { //Success
+            $errors_str = ob_get_clean();
+            if (empty($errors_str)) { //Success
                 return $result;
             } else { //Return original source
+                $errors[] = $errors_str;
                 return $source;
             }
         }
+    }
+
+    public static function default_settings() {
+        return array(
+            'gclosure' => TRUE,
+            'level' => 2,
+            'pretty' => FALSE
+        );
     }
 
     /**
      * Compiles javascript code using the Google Closure Compiler API
      * @see http://code.google.com/intl/es/closure/compiler/docs/api-ref.html
      * @param string $source
-     * @param int $level (0: WHITESPACE_ONLY, 1: SIMPLE_OPTIMIZATIONS, 2: ADVANCED_OPTIMIZATIONS)
+     * @param int $level (1: WHITESPACE_ONLY, 2: SIMPLE_OPTIMIZATIONS, 3: ADVANCED_OPTIMIZATIONS)
      * @param bool $pretty
      * @return mixed Code compressed, FALSE if error
      */
-    private static function _compress_google_closure($source, $level = 1, $pretty = FALSE) {
+    private static function _compress_google_closure($source, $level = 2, $pretty = FALSE, &$errors = array(), &$warnings = NULL) {
         if (!function_exists('curl_exec'))
             return FALSE;
 
@@ -64,7 +70,8 @@ abstract class TinyfierJS {
         $post = array(
             'output_info' => 'compiled_code',
             'output_format' => 'json',
-            'compilation_level' => $level == 0 ? 'WHITESPACE_ONLY' : ($level == 2 ? 'ADVANCED_OPTIMIZATIONS' : 'SIMPLE_OPTIMIZATIONS'),
+            'warning_level' => isset($warnings) ? 'VERBOSE' : 'QUIET',
+            'compilation_level' => $level == 1 ? 'WHITESPACE_ONLY' : ($level > 2 ? 'ADVANCED_OPTIMIZATIONS' : 'SIMPLE_OPTIMIZATIONS'),
             'js_code' => $source,
         );
         if ($pretty) {
@@ -75,19 +82,31 @@ abstract class TinyfierJS {
         $ch = curl_init('http://closure-compiler.appspot.com/compile');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_POST, TRUE);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post) . '&output_info=errors');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post) . '&output_info=warnings&output_info=errors');
         $output = curl_exec($ch);
         curl_close($ch);
         if ($output === FALSE)
             return FALSE;
 
+        $compilation_result = json_decode($output, TRUE);
 
-        $compilation_result = json_decode($output,TRUE);
-        
-        if (!$compilation_result || !empty($compilation_result['errors']))
+
+        if (!$compilation_result) {
             return FALSE;
+        }
 
-        return $compilation_result['compiledCode'];
+        if (!empty($compilation_result['errors'])) {
+            foreach ($compilation_result['errors'] as $error) {
+                $errors[] = "{$error['type']}: {$error['error']} at line {$error['lineno']}, character {$error['charno']}";
+            }
+        }
+        if (isset($warnings) && !empty($compilation_result['warnings'])) {
+            foreach ($compilation_result['warnings'] as $warning) {
+                $warnings[] = "{$warning['type']}: {$warning['warning']} at line {$warning['lineno']}, character {$warning['charno']}";
+            }
+        }
+
+        return empty($errors) ? $compilation_result['compiledCode'] : FALSE;
     }
 
 }

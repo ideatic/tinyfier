@@ -15,7 +15,7 @@ abstract class TinyfierHTML {
      * @param boolean $compress_all Compress embedded css and js code
      * @return string
      */
-    public static function Process($html, array $settings = array()) {
+    public static function process($html, array $settings = array()) {
 
         $settings = self::$_settings = $settings + array(
             'compress_all' => TRUE,
@@ -29,8 +29,8 @@ abstract class TinyfierHTML {
             require_once dirname(dirname(__FILE__)) . '/js/js.php';
 
             return Minify_HTML::minify($html, array(
-                'cssMinifier' => 'TinyfierHTML::CompressInlineCSS',
-                'jsMinifier' => 'TinyfierHTML::CompressInlineJS'
+                'cssMinifier' => 'TinyfierHTML::_compress_inline_css',
+                'jsMinifier' => 'TinyfierHTML::_compress_inline_js'
             ));
         } else {
             return Minify_HTML::minify($html);
@@ -42,7 +42,7 @@ abstract class TinyfierHTML {
      * Only por internal usage.
      * @access private
      */
-    public static function CompressInlineCSS($css) {
+    public static function _compress_inline_css($css) {
         if (self::_has_mark($css)) {
             return $css;
         } else {
@@ -58,11 +58,11 @@ abstract class TinyfierHTML {
      * Only por internal usage.
      * @access private
      */
-    public static function CompressInlineJS($js) {
+    public static function _compress_inline_js($js) {
         if (self::_has_mark($js)) {
             return $js;
         } else {
-            return TinyfierJS::compress($js);
+            return TinyfierJS::process($js);
         }
     }
 
