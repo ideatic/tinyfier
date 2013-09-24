@@ -90,7 +90,6 @@ abstract class TinyfierJS {
 
         $compilation_result = json_decode($output, TRUE);
 
-
         if (!$compilation_result) {
             return FALSE;
         }
@@ -98,6 +97,11 @@ abstract class TinyfierJS {
         if (!empty($compilation_result['errors'])) {
             foreach ($compilation_result['errors'] as $error) {
                 $errors[] = "{$error['type']}: {$error['error']} at line {$error['lineno']}, character {$error['charno']}";
+            }
+        }
+        if (!empty($compilation_result['serverErrors'])) {
+            foreach ($compilation_result['serverErrors'] as $error) {
+                $errors[] = "{$error['code']}: {$error['error']}";
             }
         }
         if (isset($warnings) && !empty($compilation_result['warnings'])) {

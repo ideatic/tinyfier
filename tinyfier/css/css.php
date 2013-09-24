@@ -25,7 +25,7 @@ abstract class TinyfierCSS {
      *   'less': enable/disable LESS parser
      *   'compress': if FALSE, adds line breaks and indentation to its output code to make the code easier for humans to read
      *   'absolute_path': absolute path to the file
-     *   'relative_path': relative path from the document root
+     *   'relative_path': relative path to the file given to tinyfier
      *   'cache_path': cache folder
      *   'ie_compatible': boolean value that indicates if the generated css will be compatible with old IE versions
      *   'data': array with the vars passed to the css parser for use in the code
@@ -44,9 +44,10 @@ abstract class TinyfierCSS {
             $less = new tinyfier_less();
             $css = $less->process($css, $settings);
         }
+        
 
         // 2. Optimize, add vendor prefix and remove hacks        
-        require_once 'css_optimizer.php';
+        require_once 'css_optimizer/css_optimizer.php';
         $optimizer = new css_optimizer(array(
             'compress' => $settings['compress'],
             'optimize' => $settings['optimize'],
@@ -57,9 +58,9 @@ abstract class TinyfierCSS {
         $css = $optimizer->process($css);
 
 
-        if ($settings['compress']) { //Remove trailing semicolons
+   /*     if ($settings['compress']) { //Remove trailing semicolons
             $css = str_replace(';}', '}', $css);
-        }
+        }*/
 
         return $css;
     }
@@ -76,12 +77,7 @@ abstract class TinyfierCSS {
             'optimize_images' => TRUE,
             'ie_compatible' => FALSE,
             'data' => NULL,
-            'prefix' => array(
-                'webkit' => TRUE,
-                'mozilla' => TRUE,
-                'opera' => TRUE,
-                'microsoft' => TRUE,
-            ),
+            'prefix' => 'all'
         );
     }
 

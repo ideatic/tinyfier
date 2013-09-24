@@ -69,19 +69,26 @@ class tinyfier_less extends lessc {
      */
     public function lib_url($arg) {
         list($type, $dummy, $value) = $arg;
-        $url = $this->_remove_quotes(trim($value[0]));
+        $url = $rewrited = $this->_remove_quotes(trim($value[0]));
 
         if (strpos($url, 'data:') !== 0 && !empty($url)) { //Don't rewrite embedded images
             if ($url[0] != '/' && strpos($url, 'http://') !== 0) {
                 if ($this->_settings['relative_path'][0] == '/') {
-                    $url = $this->_clear_path(dirname($this->_settings['relative_path']) . '/' . $url);
+                    $rewrited = $this->_clear_path(dirname($this->_settings['relative_path']) . '/' . $url);
                 } else {
-                    $url = $this->_clear_path(dirname(dirname($_SERVER['SCRIPT_NAME'])) . '/' . dirname($this->_settings['relative_path']) . '/' . $url);
+                    //  $rewrited = $this->_clear_path(dirname(dirname($_SERVER['SCRIPT_NAME'])) . '/' . dirname($this->_settings['relative_path']) . '/' . $url);
+                    //Find tinyfier.php on REQUEST_URI
+                    if (preg_match('#^.*(tinyfier.php|tinyfier/\?)#i', $_SERVER['REQUEST_URI'], $matches))
+                        $tinyfier = $matches[0];
+                    else
+                        $tinyfier = $_SERVER['SCRIPT_NAME'];
+
+                    $rewrited = $this->_clear_path(dirname($tinyfier) . '/../' . dirname($this->_settings['relative_path']) . '/' . $url);
                 }
             }
         }
 
-        return array($type, '', array("url('$url')"));
+        return array($type, '', array("url('$rewrited')"));
     }
 
     /**
@@ -268,12 +275,12 @@ class tinyfier_less extends lessc {
             switch ($gradient_type) {
                 case 'vertical':
                     $repeat = 'repeat-x';
-                    $position = 'top';
+                    $position = 'to bottom';
                     break;
 
                 case 'horizontal':
                     $repeat = 'repeat-y';
-                    $position = 'left';
+                    $position = 'to right';
                     break;
 
                 case 'diagonal':
@@ -291,12 +298,12 @@ background-image: url('{$this->_get_cache_url($path)}'); /* Old browsers */
 background-image: linear-gradient($position, $css_color_positions);";
         } else if ($gradient_type == 'radial') {
             $css = "background-image: url('{$this->_get_cache_url($path)}'); /* Old browsers */
-background-image: radial-gradient(center, ellipse cover, $css_color_positions);";
+background-image: radial-gradient(ellipse at center, $css_color_positions);";
         } else { //It is necessary to use images
             $css = "background-image: url('{$this->_get_cache_url($path)}');";
         }
 
-        return array('string', '', array("$back_color;$css")); 
+        return array('string', '', array("$back_color;$css"));
     }
 
     /**

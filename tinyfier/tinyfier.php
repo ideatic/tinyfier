@@ -41,6 +41,8 @@ if (isset($_GET['f'])) {
     $input_string = $_GET['f'];
 } else if (isset($_SERVER['PATH_INFO'])) {
     $input_string = $_SERVER['PATH_INFO'][0] == '/' ? substr($_SERVER['PATH_INFO'], 1) : $_SERVER['PATH_INFO'];
+} else if (isset($_SERVER['ORIG_PATH_INFO'])) {
+    $input_string = $_SERVER['ORIG_PATH_INFO'][0] == '/' ? substr($_SERVER['ORIG_PATH_INFO'], 1) : $_SERVER['ORIG_PATH_INFO'];
 } else {
     die('Input not found');
 }
@@ -134,7 +136,13 @@ if (strpos($ua, 'Mozilla/4.0 (compatible; MSIE ') === 0 && strpos($ua, 'Opera') 
 //Send HTTP headers
 header('Vary: Accept-Encoding');
 header('Content-Type: ' . ($type == 'js' ? 'text/javascript' : 'text/css'));
-if (!$debug) {
+if ($debug || $recache) {
+    header("Expires: on, 01 Jan 1970 00:00:00 GMT");
+    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+    header("Cache-Control: no-store, no-cache, must-revalidate");
+    header("Cache-Control: post-check=0, pre-check=0", false);
+    header("Pragma: no-cache");
+} else {
     header("Cache-Control: max-age={$max_age}, public");
     header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', $_SERVER['REQUEST_TIME'] + $max_age));
 }
@@ -147,8 +155,7 @@ $cache_prefix = 'tynifier_' . md5($input_string);
 $cache_id = $cache_prefix . '_' . $last_modified . ($compatible_mode ? '_compatible' : '') . '.' . $type;
 $cache_file = $cache_dir . '/' . $cache_id . ($encoding != 'none' ? ".$encoding" : '');
 
-if (!file_exists($cache_file) || $debug || $recache
-) :
+if (!file_exists($cache_file) || $debug || $recache) :
 
     //Process source code
     try {
@@ -165,7 +172,8 @@ if (!file_exists($cache_file) || $debug || $recache
             }
 
             //Compress
-            $source = TinyfierJS::process(implode(';', $source), array(
+            $source = implode(';', $source);
+            $source = TinyfierJS::process($source, array(
                         'pretty' => $debug,
                         'gclosure' => strlen($source) > 750 && !$debug //No usar Google Closure en modo debug o para javascript pequeños
             ));
