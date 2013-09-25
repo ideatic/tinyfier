@@ -146,7 +146,7 @@ class css_optimizer {
                     "bold" => "700"
                 );
                 foreach ($transformation as $s => $r) {
-                    $property->value = preg_replace('#(^|\s)+(' . preg_quote($s, '#') . ')(\s|$)+#i', $r, $property->value);
+                    $property->value = trim(preg_replace('#(^|\s)+(' . preg_quote($s, '#') . ')(\s|$)+#i', " $r ", $property->value));
                 }
             }
 
@@ -257,15 +257,20 @@ class css_optimizer {
                 $properties = array();
                 $siblings = $property->siblings('css_property', TRUE);
                 foreach ($shorthand_properties as $name) {
+                    $found = FALSE;
                     foreach ($siblings as $sibling) {
                         if ($sibling->name == $name) {
                             $properties[] = $sibling;
                             $found = TRUE;
+                            break;
                         }
+                    }
+                    if (!$found) {
+                        break;
                     }
                 }
 
-                if (count($properties) == count($shorthand_properties)) {
+                if ($found && count($properties) == count($shorthand_properties)) {
                     //Replace with shorthand
                     $values = array();
                     foreach ($properties as $p) {
@@ -311,7 +316,7 @@ class css_optimizer {
                 $sibling_content = $sibling_content->render();
 
                 if ($reference == $sibling_content) {
-                    $group->name.=','.$sibling->name;
+                    $group->name.=',' . $sibling->name;
                     $sibling->remove();
                 }
             }
