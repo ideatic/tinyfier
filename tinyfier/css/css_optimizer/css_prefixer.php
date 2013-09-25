@@ -82,6 +82,7 @@ class css_prefixer {
      */
     private function _apply_transformation($property, $vendors_ids) {
         $transformation = $this->_transformations[$property->name];
+        $applied = FALSE;
         if (is_callable($transformation)) {
             call_user_func($transformation, $property, $this);
         } else {
@@ -102,12 +103,12 @@ class css_prefixer {
                     //Create vendor prefix
                     if (!$already_defined) {
                         $property->insert_after(new css_property($new_name, $property->value));
-                        return TRUE;
+                        $applied = TRUE;
                     }
                 }
             }
         }
-        return FALSE;
+        return $applied;
     }
 
     private function _prefix_keyframe(css_group $keyframe, $apply_list) {
@@ -147,7 +148,7 @@ class css_prefixer {
      */
     private static function filter(css_property $property, css_prefixer $prefixer) {
         if ($prefixer->msie)
-            $property->insert_after('-ms-filter', $property->value);
+            $property->insert_after('-ms-filter', "'$property->value'");
     }
 
     /**
@@ -292,6 +293,10 @@ class css_prefixer {
         'border-image' => array('-moz-border-image', '-webkit-border-image', NULL, NULL),
         'border-left-colors' => array('-moz-border-left-colors', NULL, NULL, NULL),
         'border-radius' => array('-moz-border-radius', '-webkit-border-radius', NULL, NULL),
+        'border-top-right-radius' => array('-moz-border-radius-topright', '-webkit-border-top-right-radius', NULL, NULL),
+        'border-top-left-radius' => array('-moz-border-radius-topleft', '-webkit-border-top-left-radius', NULL, NULL),
+        'border-bottom-right-radius' => array('-moz-border-radius-bottomright', '-webkit-border-bottom-right-radius', NULL, NULL),
+        'border-bottom-left-radius' => array('-moz-border-radius-bottomleft', '-webkit-border-bottom-left-radius', NULL, NULL),
         'border-border-right-colors' => array('-moz-border-right-colors', NULL, NULL, NULL),
         'border-start' => array('-moz-border-start', '-webkit-border-start', NULL, NULL),
         'border-start-color' => array('-moz-border-start-color', '-webkit-border-start-color', NULL, NULL),
