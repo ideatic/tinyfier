@@ -211,7 +211,12 @@ class css_element {
     }
 
     public function make_clone() {
-        return unserialize(serialize($this));
+        //unreference parent to avoid memory leaking on huge files
+        $parent = $this->parent;
+        $this->parent = NULL;
+        $copy = unserialize(serialize($this));
+        $this->parent = $parent;
+        return $copy;
     }
 
 }
@@ -306,4 +311,3 @@ class css_property extends css_element {
     }
 
 }
-

@@ -23,10 +23,11 @@ abstract class TinyfierJS {
         $settings = $settings + self::default_settings();
 
         //Compress using Google Closure compiler
-        if ($settings['gclosure']) {
+        if ($settings['external_services'] && $settings['gclosure']) {
             $compiled = self::_compress_google_closure($source, $settings['level'], $settings['pretty'], $errors, $warnings);
-            if ($compiled !== FALSE)
+            if ($compiled !== FALSE) {
                 return $compiled;
+            }
         }
 
         //Compile using JSMinPlus
@@ -46,10 +47,15 @@ abstract class TinyfierJS {
         }
     }
 
+    const LEVEL_WHITESPACE_ONLY = 'WHITESPACE_ONLY';
+    const LEVEL_SIMPLE_OPTIMIZATIONS = 'SIMPLE_OPTIMIZATIONS';
+    const LEVEL_ADVANCED_OPTIMIZATIONS = 'ADVANCED_OPTIMIZATIONS';
+
     public static function default_settings() {
         return array(
+            'external_services' => TRUE, //Use external compressors (like gclosure)
             'gclosure' => TRUE,
-            'level' => 2,
+            'level' => self::LEVEL_SIMPLE_OPTIMIZATIONS,
             'pretty' => FALSE
         );
     }
@@ -58,20 +64,21 @@ abstract class TinyfierJS {
      * Compiles javascript code using the Google Closure Compiler API
      * @see http://code.google.com/intl/es/closure/compiler/docs/api-ref.html
      * @param string $source
-     * @param int $level (1: WHITESPACE_ONLY, 2: SIMPLE_OPTIMIZATIONS, 3: ADVANCED_OPTIMIZATIONS)
+     * @param int $level One of LEVEL_* constants
      * @param bool $pretty
      * @return mixed Code compressed, FALSE if error
      */
-    private static function _compress_google_closure($source, $level = 2, $pretty = FALSE, &$errors = array(), &$warnings = NULL) {
-        if (!function_exists('curl_exec'))
+    private static function _compress_google_closure($source, $level = self::LEVEL_SIMPLE_OPTIMIZATIONS, $pretty = FALSE, &$errors = array(), &$warnings = NULL) {
+        if (!function_exists('curl_exec')) {
             return FALSE;
+        }
 
         //Generate POST data
         $post = array(
             'output_info' => 'compiled_code',
             'output_format' => 'json',
             'warning_level' => isset($warnings) ? 'VERBOSE' : 'QUIET',
-            'compilation_level' => $level == 1 ? 'WHITESPACE_ONLY' : ($level > 2 ? 'ADVANCED_OPTIMIZATIONS' : 'SIMPLE_OPTIMIZATIONS'),
+            'compilation_level' => $level,
             'js_code' => $source,
         );
         if ($pretty) {
@@ -85,8 +92,9 @@ abstract class TinyfierJS {
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post) . '&output_info=warnings&output_info=errors');
         $output = curl_exec($ch);
         curl_close($ch);
-        if ($output === FALSE)
+        if ($output === FALSE) {
             return FALSE;
+        }
 
         $compilation_result = json_decode($output, TRUE);
 

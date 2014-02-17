@@ -221,11 +221,11 @@ class css_optimizer {
                 'line-height',
                 'font-family'
             ),
-            'border' => array(
-                'border-width',
-                'border-style',
-                'border-color'
-            ),
+            /*   'border' => array( //Problem with multiple border -> border-style: solid; border-width: 100px 100px 0 100px; border-color: #007bff transparent transparent transparent;
+              'border-width',
+              'border-style',
+              'border-color'
+              ), */
             'margin' => array(
                 'margin-top',
                 'margin-right',
@@ -242,6 +242,12 @@ class css_optimizer {
                 'list-style-type',
                 'list-style-position',
                 'list-style-image',
+            ),
+            'border-width' => array(
+                'border-top-width',
+                'border-right-width',
+                'border-bottom-width',
+                'border-left-width',
             ),
             'border-radius' => array(
                 'border-top-left-radius',

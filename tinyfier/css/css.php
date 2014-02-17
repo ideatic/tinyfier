@@ -44,7 +44,6 @@ abstract class TinyfierCSS {
             $less = new tinyfier_less();
             $css = $less->process($css, $settings);
         }
-        
 
         // 2. Optimize, add vendor prefix and remove hacks        
         require_once 'css_optimizer/css_optimizer.php';
@@ -58,9 +57,9 @@ abstract class TinyfierCSS {
         $css = $optimizer->process($css);
 
 
-   /*     if ($settings['compress']) { //Remove trailing semicolons
-            $css = str_replace(';}', '}', $css);
-        }*/
+        /*     if ($settings['compress']) { //Remove trailing semicolons
+          $css = str_replace(';}', '}', $css);
+          } */
 
         return $css;
     }

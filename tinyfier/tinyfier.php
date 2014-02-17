@@ -48,6 +48,7 @@ if (isset($_GET['f'])) {
 }
 
 //Check that source files are safe and well-formed
+$input_string = str_replace("\x00", '', (string) $input_string);//Protect null bytes (http://www.php.net/manual/en/security.filesystem.nullbytes.php)
 if (empty($input_string) || strpos($input_string, '//') !== FALSE || strpos($input_string, '\\') !== FALSE || strpos($input_string, './') !== FALSE) {
     header('HTTP/1.0 400 Bad Request');
     die('Invalid source files');
@@ -198,7 +199,7 @@ if (!file_exists($cache_file) || $debug || $recache) :
                 ));
             }
             //Combine
-            $source = trim(implode('', $source));
+            $source = implode("\n", $source);
         } else {
             header('HTTP/1.0 400 Bad Request');
             die('Invalid source type');

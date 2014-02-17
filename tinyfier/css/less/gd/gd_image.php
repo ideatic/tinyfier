@@ -57,52 +57,79 @@ class gd_image {
             return FALSE;
         $compressed = FALSE;
         if ($format == 'png' && !empty($tinypng_api_key)) {
-            //Optimize using TinyPNG
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
-            curl_setopt($ch, CURLOPT_URL, 'http://api.tinypng.org/api/shrink');
-            curl_setopt($ch, CURLOPT_POST, TRUE);
-            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_USERPWD, "api:$tinypng_api_key");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($file));
-            $json_str = curl_exec($ch);
-
-            //Parse response and save file
-            if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
-                $json = json_decode($json_str);
-
-                if (!is_null($json)) {
-                    $compressed = file_get_contents($json->output->url);
-                }
-            }
-
-            curl_close($ch);
+            $compressed = $this->_compress_tinypng($file, $tinypng_api_key);
         }
 
         if (!$compressed) {
-            //Optimize using Yahoo Smush.it TinyPNG
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
-            curl_setopt($ch, CURLOPT_URL, 'http://www.smushit.com/ysmush.it/ws.php?');
-            curl_setopt($ch, CURLOPT_POST, TRUE);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, array('files' => '@' . $file));
-            $json_str = curl_exec($ch);
-
-            //Parse response and save file
-            $json = json_decode($json_str);
-
-            if (!is_null($json) && !isset($json->error)) {
-                $compressed = file_get_contents($json->dest);
-            }
-
-            curl_close($ch);
+            $compressed = $this->_compress_smushit($file);
         }
 
         $success = $compressed ? file_put_contents($file, $compressed) : FALSE;
 
         return $success;
+    }
+
+    private function _compress_tinypng($file, $apikey) {
+        //Optimize using TinyPNG
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_URL, 'https://api.tinypng.com/shrink');
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, "api:$apikey");
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($file));
+        $response = curl_exec($ch);
+
+        //Parse response and save 
+        if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
+            curl_close($ch);
+            return $response;
+        } else {
+            curl_close($ch);
+
+            $json = json_decode($response);
+
+            if ($json && isset($json->error)) {
+                trigger_error("tinypng error: $json->error, $json->message.");
+            } else if ($json && isset($json->output->url)) {
+                return file_get_contents($json->output->url);
+            } else {
+                trigger_error("tinypng error: undefined, '$response'");
+            }
+        }
+
+
+        return FALSE;
+    }
+
+    private function _compress_smushit($file) {
+        //Optimize using Yahoo Smush.it
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_URL, 'http://www.smushit.com/ysmush.it/ws.php');
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array(
+            'files' => file_get_contents($file),
+        ));
+        $json_str = curl_exec($ch);
+
+        //Parse response and save file
+        $json = json_decode($json_str);
+
+        if ($json && !isset($json->error)) {
+            curl_close($ch);
+            return file_get_contents($json->dest);
+        } else {
+            trigger_error("smushit error: $json_str");
+        }
+
+        curl_close($ch);
+
+        return FALSE;
     }
 
     /**
