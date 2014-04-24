@@ -5,7 +5,7 @@
 
 ### Usage
 
-#### Optimization on-the-fly
+#### Optimization on-the-fly (assets_loader)
 
 With `Tinyfier` you can combine multiple CSS or Javascript files, add extra functionality to CSS (using LESS), remove unnecessary whitespace and comments, and serve them with gzip encoding and optimal client-side cache headers.
 
