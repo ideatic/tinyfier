@@ -27,11 +27,6 @@ abstract class Tinyfier_HTML_Tool {
         );
 
         if ($settings['compress_all']) {
-            require_once dirname(dirname(__FILE__)) . '/CSS/Tool.php';
-            require_once dirname(dirname(__FILE__)) . '/JS/Tool.php';
-
-
-
             return Minify_HTML::minify($html, array(
                         'cssMinifier' => array(__CLASS__, '_compress_inline_css'),
                         'jsMinifier' => array(__CLASS__, '_compress_inline_js')

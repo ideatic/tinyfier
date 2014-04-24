@@ -28,15 +28,12 @@ abstract class Tinyfier_JS_Tool {
             }
         }
 
-        //Compile using JSMinPlus
+        //Compile using JShrink
         if ($settings['pretty']) {
             return $source;
         } else {
-            require_once 'jsminplus.php';
-
-            //Remember: modify JSMinPlus::minify to not catch errors
             try {
-                $result = JSMinPlus::minify($source);
+                $result = JShrink\Minifier::minify($source);
             } catch (Exception $e) {
                 $errors[] = $e->getMessage();
                 return $source;

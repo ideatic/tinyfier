@@ -6,6 +6,9 @@
 /*
  * Configuration
  */
+if (!isset($lib_path)) {//Path where look for Tinyfier files
+    $lib_path = dirname(dirname(__FILE__));
+}
 if (!isset($cache_dir)) {
     $cache_dir = dirname(__FILE__) . '/cache'; //Path to cache folder
 }
@@ -60,10 +63,10 @@ $vars = array();
 $type = NULL;
 $valid_extensions = array('js', 'css', 'less');
 foreach ($input_data as $input) {
-    if(empty($input)){
+    if (empty($input)) {
         continue;
     }
-    
+
     if (strpos($input, '=') !== FALSE) { //Input data
         $parts = explode('=', urldecode($input));
         $vars[$parts[0]] = $parts[1];
@@ -149,7 +152,7 @@ if (!file_exists($cache_file) || $debug || $recache) :
 
     //Process source code
     try {
-    require 'autoloader.php';
+        require $lib_path . '/vendor/autoload.php';
         if ($type == 'js') { //Combine, then compress
             //Combine
             $source = array();
@@ -200,10 +203,10 @@ if (!file_exists($cache_file) || $debug || $recache) :
 
     //Save cache
     for ($try = 0; $try < 2; $try++) {
-        $writing_error=file_put_contents("$cache_dir/$cache_id", $source) === FALSE ||
+        $writing_error = file_put_contents("$cache_dir/$cache_id", $source) === FALSE ||
                 file_put_contents("$cache_dir/$cache_id.gzip", gzencode($source, 9, FORCE_GZIP)) === FALSE ||
                 file_put_contents("$cache_dir/$cache_id.deflate", gzencode($source, 9, FORCE_DEFLATE)) === FALSE;
-        
+
         if ($writing_error) {
             if ($try == 0) {
                 if (!is_dir($cache_dir)) {

@@ -1,8 +1,7 @@
-<?php require_once '../tinyfier/css/css.php'; ?>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>css_optimizer test</title>
+        <title>Tinyfier test</title>
         <link rel="stylesheet" href="CodeMirror/codemirror.css">
         <script src="CodeMirror/codemirror.js"></script>
         <link type="text/css" rel="stylesheet" href="../tinyfier/tinyfier.php/tool/index.less" />

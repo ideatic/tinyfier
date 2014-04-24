@@ -1,4 +1,4 @@
-# Tinyfier v1.0
+# Tinyfier
 #### <http://www.tinyfier.com>
 
 `Tinyfier` is a complete suite for compressing, preprocessing, and optimizing HTML/Javascript/CSS and Images.

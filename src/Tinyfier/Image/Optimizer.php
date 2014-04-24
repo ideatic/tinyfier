@@ -24,7 +24,7 @@ abstract class Tinyfier_Image_Optimizer {
     const LEVEL_FAST = 0;
     const LEVEL_NORMAL = 1;
     const LEVEL_HIGH = 2;
-    const LEVEL_XTREME = 3;
+    const LEVEL_EXTREME = 3;
 
     /**
      * Sets the desired quality for lossy compression
@@ -253,13 +253,13 @@ abstract class Tinyfier_Image_Optimizer {
         if ($settings[self::VERBOSE]) {
             clearstatcache();
             reset($args);
-            $before = filesize(isset($args[':in']) ? $args[':in'] : current($args));
+            $before = self::_format_size(filesize(isset($args[':in']) ? $args[':in'] : current($args)));
             $start = microtime(TRUE);
             exec($command, $output, $status);
             $time = round(microtime(TRUE) - $start, 3);
             clearstatcache();
-            $after = filesize(isset($args[':out']) ? $args[':out'] : current($args));
-            echo "<h5>$before » $after ($time s) <small>$command</small> ($status)<h5>";
+            $after = self::_format_size(filesize(isset($args[':out']) ? $args[':out'] : current($args)));
+            echo "<h5>$before » $after ($time s) <small>$command</small> (returned $status)</h5>";
             if (!empty($output)) {
                 echo '<pre>' . print_r($output, TRUE) . '</pre>';
             }
@@ -267,6 +267,24 @@ abstract class Tinyfier_Image_Optimizer {
         } else {
             return exec($command, $output, $status);
         }
+    }
+
+    private static function _format_size($size, $kilobyte = 1024, $format = '%size% %unit%') {
+
+        $size = $size / $kilobyte; // Convertir bytes a kilobyes
+        $units = array('KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+        foreach ($units as $unit) {
+            if ($size > $kilobyte) {
+                $size = $size / $kilobyte;
+            } else {
+                break;
+            }
+        }
+
+        return strtr($format, array(
+            '%size%' => round($size, 2),
+            '%unit%' => $unit
+        ));
     }
 
     /**
@@ -296,7 +314,7 @@ abstract class Tinyfier_Image_Optimizer {
         foreach (array('', '-progressive') as $flag) {
             $temp_files[$flag] = tempnam(sys_get_temp_dir(), 'jpegtran');
 
-            self::_exec("{$commad_prefix}{$jpegtran} -copy {$metadata_copy} -optimize {$flag} -outfile :out :in", array(
+            self::_exec("{$commad_prefix}{$jpegtran} -copy {$metadata_copy} -optimize  {$flag} -outfile :out :in", array(
                 ':in' => $file,
                 ':out' => $temp_files[$flag],
                     ), $settings);
@@ -339,12 +357,11 @@ abstract class Tinyfier_Image_Optimizer {
         if ($settings[self::MODE] == self::MODE_LOSSY) {
             $pngquant = self::_find_tool('pngquant');
             $min_quality = 50;
-            $max_quality = max($min_quality, $settings[self::LOSSY_QUALITY]);
+            $max_quality = max($min_quality, $settings[self:: LOSSY_QUALITY]);
             $levels = array(
                 self::LEVEL_FAST => 10,
                 self::LEVEL_NORMAL => 3,
-                self::LEVEL_HIGH => 1,
-                self::LEVEL_XTREME => 1
+                self::LEVEL_HIGH => 1, self::LEVEL_EXTREME => 1
             );
 
             //compress using a temp file because pngquant dont allow direct writing of input file
@@ -377,24 +394,21 @@ abstract class Tinyfier_Image_Optimizer {
         $optipng = self::_find_tool('optipng');
 
         $metadata_copy = $settings[self::REMOVE_METADATA] ? '-strip all' : '';
-        $levels = array(
-            self::LEVEL_FAST => 2,
+        $levels = array(self::LEVEL_FAST => 2,
             self::LEVEL_NORMAL => 3,
             self::LEVEL_HIGH => 4,
-            self::LEVEL_XTREME => 6
+            self::LEVEL_EXTREME => 6
         );
-        self::_exec("{$commad_prefix}{$optipng} -o{$levels[$settings[self::LEVEL]]} -quiet {$metadata_copy} :file", array(
-            ':file' => $file
+        self::_exec("{$commad_prefix}{$optipng} -o{$levels[$settings[self::LEVEL]]} -quiet {$metadata_copy} :file", array(':file' => $file
                 ), $settings);
 
         //Pngout Lossless compression
         $pngout = self::_find_tool('pngout');
 
-        $levels = array(
-            self::LEVEL_FAST => 3,
+        $levels = array(self::LEVEL_FAST => 3,
             self::LEVEL_NORMAL => 2,
             self::LEVEL_HIGH => 1,
-            self::LEVEL_XTREME => 0
+            self::LEVEL_EXTREME => 0
         );
         self::_exec("{$commad_prefix}{$pngout} -s{$levels[$settings[self::LEVEL]]} -q :file", array(
             ':file' => $file

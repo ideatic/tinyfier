@@ -1,0 +1,26 @@
+{
+    "name": "ideatic/tinyfier",
+    "description": "Complete suite for compressing, preprocessing, and optimizing HTML/Javascript/CSS and Images.",
+    "keywords": ["css", "js", "html", "minify", "image", "optimization", "minification"],
+    "homepage": "http://www.tinyfier.com",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Javier Marín",
+            "email": "contacto@ideatic.net",
+            "homepage": "http://www.ideatic.net/"
+        }
+    ],
+    "require": {
+        "ideatic/css_optimizer": "dev-master",
+        "leafo/lessphp": "0.4.*",
+        "tedivm/jshrink": "*",
+        "php": ">=5.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "Tinyfier_": "src/"
+        }
+    }
+}

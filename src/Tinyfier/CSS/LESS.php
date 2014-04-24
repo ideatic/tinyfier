@@ -1,11 +1,9 @@
 <?php
 
-require_once 'lessc.inc.php';
-
 /**
  * Process a .less file with lessphp library, adding some new functionality
  */
-class tinyfier_less extends lessc {
+class Tinyfier_CSS_LESS extends lessc {
 
     /**
      * @var lessc 

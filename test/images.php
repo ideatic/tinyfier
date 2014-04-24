@@ -1,5 +1,5 @@
 <?php
-require '../Tinyfier/autoloader.php';
+require dirname(dirname(__FILE__)) . '/vendor/autoload.php';
 
 function format_size($size, $kilobyte = 1024, $format = '%size% %unit%') {
 
@@ -18,6 +18,10 @@ function format_size($size, $kilobyte = 1024, $format = '%size% %unit%') {
         '%unit%' => $unit
     ));
 }
+
+if (!isset($_GET['level'])) {
+    $_GET['level'] = Tinyfier_Image_Optimizer::LEVEL_NORMAL;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,8 +33,8 @@ function format_size($size, $kilobyte = 1024, $format = '%size% %unit%') {
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <link href="../tinyfier/tinyfier.php/test/assets/bootstrap.css?recache" rel="stylesheet">  
-        <link href="../tinyfier/tinyfier.php/test/assets/bootstrap-responsive.css?recache" rel="stylesheet">  
+        <link href="../assets_loader/tinyfier.php/test/assets/bootstrap.css?recache" rel="stylesheet">  
+        <link href="../assets_loader/tinyfier.php/test/assets/bootstrap-responsive.css?recache" rel="stylesheet">  
 
         <style type="text/css">
             body {
@@ -42,12 +46,30 @@ function format_size($size, $kilobyte = 1024, $format = '%size% %unit%') {
             }
         </style>
 
-        <script type="text/javascript" src="../tinyfier/tinyfier.php/test/assets/js/jquery-dev.js,test.js,bootstrap.js"></script>
+        <script type="text/javascript" src="../assets_loader/tinyfier.php/test/assets/js/jquery-dev.js,test.js,bootstrap.js"></script>
     </head>
 
     <body>        
 
         <div class="container">
+            <div class="page-header">
+                <form method="GET">
+                    <h1>Tinyfier image compression test</h1>
+                    <label>Level: <select name="level" onchange="this.form.submit()">
+                            <?php
+                            foreach (array(
+                        Tinyfier_Image_Optimizer::LEVEL_FAST => 'Fast',
+                        Tinyfier_Image_Optimizer::LEVEL_NORMAL => 'Normal',
+                        Tinyfier_Image_Optimizer::LEVEL_HIGH => 'High',
+                        Tinyfier_Image_Optimizer::LEVEL_EXTREME => 'Extreme (slow)',
+                            ) as $level => $name) {
+                                ?>
+                                <option value="<?= $level ?>" <?= $level == $_GET['level'] ? 'selected' : '' ?>><?= $name ?></option>
+                            <?php }
+                            ?>
+                        </select></label>
+                </form>
+            </div>
             <?php
             $out_path = dirname(__FILE__) . '/assets/compressed';
             if (!is_dir($out_path)) {
@@ -63,19 +85,21 @@ function format_size($size, $kilobyte = 1024, $format = '%size% %unit%') {
                 if (file_exists($dest)) {
                     unlink($dest);
                 }
+                ?>
 
+                <h2><?= $file->getFilename() ?></h2>
+                <?php
+                //Compress image
                 copy($file->getPathname(), $dest);
                 Tinyfier_Image_Optimizer::process($dest, array(
                     Tinyfier_Image_Optimizer::VERBOSE => TRUE,
                     Tinyfier_Image_Optimizer::MODE => Tinyfier_Image_Optimizer::MODE_LOSSY,
-                 //   Tinyfier_Image_Optimizer::LEVEL => Tinyfier_Image_Optimizer::LEVEL_XTREME
+                    Tinyfier_Image_Optimizer::LEVEL => $_GET['level']
                 ));
                 ?>
-
-                <h2><?= $file->getFilename() ?></h2>
                 <div class="row-fluid">
                     <div class="span6"><h4>Original <small><?= format_size(filesize($file->getPathname())) ?></small></h4><img src="<?= str_replace(dirname(__FILE__) . '/', '', $file->getPathname()) ?>" /></div>
-                    <div class="span6"><h4>Optimized <small><?= format_size(filesize($dest)) ?></h4><img  src="<?= str_replace(dirname(__FILE__) . '/', '', $dest) ?>" /></div>
+                    <div class="span6"><h4>Optimized <small><?= format_size(filesize($dest)) ?> <?= round(100 / filesize($file->getPathname()) * filesize($dest)) ?>% of original size</small></h4><img  src="<?= str_replace(dirname(__FILE__) . '/', '', $dest) ?>" /></div>
                 </div>
             <?php endforeach; ?>
         </div>

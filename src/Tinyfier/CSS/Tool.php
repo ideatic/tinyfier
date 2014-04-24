@@ -37,13 +37,11 @@ abstract class Tinyfier_CSS_Tool {
 
         // 1. Process the file with LESS    
         if ($settings['less']) {
-            require_once 'less/tinyfier_less.php';
-            $less = new tinyfier_less();
+            $less = new Tinyfier_CSS_LESS();
             $css = $less->process($css, $settings);
         }
 
         // 2. Optimize, compress and add vendor prefixes
-        require_once 'css_optimizer/css_optimizer.php';
         $optimizer = new css_optimizer(array(
             'compress' => $settings['compress'],
             'optimize' => $settings['optimize'],
