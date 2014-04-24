@@ -1,5 +1,8 @@
+.idea
 /TODO.txt
 /assets_loader/cache/*
 /assets_loader/error_log.txt
 /test/assets/compressed
 vendor/
+composer.lock
+composer.phar
