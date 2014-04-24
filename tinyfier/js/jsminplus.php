@@ -203,14 +203,8 @@ class JSMinPlus {
     }
 
     private function min($js, $filename) {
-        try {
             $n = $this->parser->parse($js, $filename, 1);
             return $this->parseTree($n);
-        } catch (Exception $e) {
-            echo $e->getMessage() . "\n";
-        }
-
-        return FALSE;
     }
 
     public function parseTree($n, $noBlockGrouping = FALSE) {

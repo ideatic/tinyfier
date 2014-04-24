@@ -1,24 +1,21 @@
 <?php
 
 /**
- * Funcionalidad para la creación de degradados utilizando la librería GD
- *
- * @author Javier Marín <www.digitalestudio.es>
+ * Tool for gradient generation using GD library
  */
-class gd_gradients {
+abstract class Tinyfier_Image_Gradient {
 
     /**
-     * Genera un gradiente
-     * Basada en http://planetozh.com/blog/my-projects/images-php-gd-gradient-fill/
-     * @param int $width Ancho, en píxeles, del gradiente generado
-     * @param int $height Alto, en píxeles, del gradiente generado
-     * @param array $color_stops Array con las paradas de color del degradado, en formato array(posicion, unidad, color)
-     * @param string $direction Dirección del gradiente (vertical, horizontal, diagonal, radial, square, diamond)
-     * @param bool $invert Invertir colores del degradado
-     * @param array $background_color Si se indica, devuelve el último color que forma el degradado en su parte más exterior
-     * @return gd_image
+     * Generate a gradient
+     * @param int $width
+     * @param int $height
+     * @param array $color_stops Color stops, in format (position, unit, color)
+     * @param string $direction Gradient direction (vertical, horizontal, diagonal, radial, square, diamond)
+     * @param bool $invert Inver gradient
+     * @param array $background_color If set, the final color of the gradient will be saved here
+     * @return Tinyfier_Image_Tool
      */
-    public function generate_gradient($width, $height, $color_stops, $direction = 'vertical', $invert = FALSE, &$background_color = NULL) {
+    public static function generate($width, $height, $color_stops, $direction = 'vertical', $invert = FALSE, &$background_color = NULL) {
         //Crear imagen
         $image = imagecreateTRUEcolor($width, $height);
 
@@ -79,16 +76,16 @@ class gd_gradients {
                     $percentage = $position;
                     break;
             }
-            $colors[floatval($position)] = $this->_hex2rgb($color);
+            $colors[floatval($position)] = Tinyfier_CSS_Color::create($color)->to_array();
         }
         ksort($colors);
 
         $positions = array_keys($colors);
-        if (!isset($colors[0])) //Usar el primero como color de inicio
+        if (!isset($colors[0])) { //Usar el primero como color de inicio
             $colors[0] = $colors[reset($positions)];
-        if (!isset($colors[100])) //Usar el último como color final
+        }if (!isset($colors[100])) { //Usar el último como color final
             $colors[100] = $colors[end($positions)];
-
+        }
         //Fill background
         $background_color = $colors[100];
         if ($fill_background) {
@@ -168,23 +165,7 @@ class gd_gradients {
             }
         }
 
-        return new gd_image($image);
-    }
-
-    /**
-     * Convierte un color en formato html hexadecimal a formato array RGB
-     * @param string $color Color en formato #ffffff o #fff
-     * @return array
-     */
-    private function _hex2rgb($color) {
-        if (is_array($color))
-            return $color;
-        $color = str_replace('#', '', $color);
-        $s = strlen($color) / 3;
-        $rgb[] = hexdec(str_repeat(substr($color, 0, $s), 2 / $s));
-        $rgb[] = hexdec(str_repeat(substr($color, $s, $s), 2 / $s));
-        $rgb[] = hexdec(str_repeat(substr($color, 2 * $s, $s), 2 / $s));
-        return $rgb;
+        return new Tinyfier_Image_Tool($image);
     }
 
 }

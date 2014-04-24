@@ -2,8 +2,10 @@
 
 /**
  * Represents a CSS Color
+ * 
+ * @note based on http://www.phpied.com/rgb-color-parser-in-javascript/
  */
-class css_color {
+class Tinyfier_CSS_Color {
 
     public $valid = FALSE;
     public $r, $g, $b, $a = 1;
@@ -60,6 +62,7 @@ class css_color {
                     'callback' => '_parse_hex_short'
                 ),
                 array(
+                    //hsl(0, 100%, 50%);
                     'regex' => '/^hsl\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)$/i',
                     'callback' => '_parse_hsl'
                 )
@@ -128,13 +131,13 @@ class css_color {
                 $v2 = ($lightness + $saturation) - ($saturation * $lightness);
             }
             $v1 = 2 * $lightness - $v2;
-            $this->r = 255 * self::hue2rgb($v1, $v2, $hue + (1 / 3));
-            $this->g = 255 * self::hue2rgb($v1, $v2, $hue);
-            $this->b = 255 * self::hue2rgb($v1, $v2, $hue - (1 / 3));
+            $this->r = 255 * $this->_hue2rgb($v1, $v2, $hue + (1 / 3));
+            $this->g = 255 * $this->_hue2rgb($v1, $v2, $hue);
+            $this->b = 255 * $this->_hue2rgb($v1, $v2, $hue - (1 / 3));
         }
     }
 
-    private function hue2rgb($v1, $v2, $hue) {
+    private function _hue2rgb($v1, $v2, $hue) {
         if ($hue < 0) {
             $hue += 1;
         }

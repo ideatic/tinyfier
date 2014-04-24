@@ -111,7 +111,7 @@ function do_optimization() {
 
     if (empty($_POST)) {
         //Default settings
-        $data['settings'] = TinyfierCSS::default_settings();
+        $data['settings'] = Tinyfier_CSS_Tool::default_settings();
     } else {
         //User settings
         $data['settings'] = array(
@@ -142,7 +142,7 @@ function do_optimization() {
 
 function optimize($css, $settings, &$errors = null) {
 
-    $result = TinyfierCSS::process($css, $settings);
+    $result = Tinyfier_CSS_Tool::process($css, $settings);
 
     return $result;
 }

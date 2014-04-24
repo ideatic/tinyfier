@@ -1,11 +1,9 @@
 <?php
 
 /**
- * Rutinas de compresión y procesado de código CSS
- *
- * @package Tinyfier
+ * Compression and processing routines for CSS code
  */
-abstract class TinyfierCSS {
+abstract class Tinyfier_CSS_Tool {
 
     /**
      * Process a CSS file
@@ -23,18 +21,17 @@ abstract class TinyfierCSS {
      *
      * Available settings:
      *   'less': enable/disable LESS parser
-     *   'compress': if FALSE, adds line breaks and indentation to its output code to make the code easier for humans to read
+     *   'compress': TRUE to remove whispaces and unused chars from output, FALSE to make it more human readable
      *   'absolute_path': absolute path to the file
-     *   'relative_path': relative path to the file given to tinyfier
+     *   'url_path': url path to the file
      *   'cache_path': cache folder
-     *   'ie_compatible': boolean value that indicates if the generated css will be compatible with old IE versions
-     *   'data': array with the vars passed to the css parser for use in the code
+     *   'data': variables passed to the css parser for use in the LESS code
      *
      * @param string $css
      * @param array $settings
      * @return string
      */
-    public static function process($css = NULL, array $settings = array()) {
+    public static function process($css, array $settings = array()) {
         //Load settings
         $settings = $settings + self::default_settings();
 
@@ -45,21 +42,16 @@ abstract class TinyfierCSS {
             $css = $less->process($css, $settings);
         }
 
-        // 2. Optimize, add vendor prefix and remove hacks        
+        // 2. Optimize, compress and add vendor prefixes
         require_once 'css_optimizer/css_optimizer.php';
         $optimizer = new css_optimizer(array(
             'compress' => $settings['compress'],
             'optimize' => $settings['optimize'],
             'extra_optimize' => $settings['extra_optimize'],
-            'remove_ie_hacks' => FALSE, //$settings['ie_compatible'] == FALSE,
+            'remove_ie_hacks' => FALSE,
             'prefix' => $settings['prefix'],
         ));
         $css = $optimizer->process($css);
-
-
-        /*     if ($settings['compress']) { //Remove trailing semicolons
-          $css = str_replace(';}', '}', $css);
-          } */
 
         return $css;
     }
@@ -68,13 +60,13 @@ abstract class TinyfierCSS {
         return array(
             'less' => TRUE,
             'absolute_path' => '',
-            'relative_path' => '',
+            'url_path' => '',
             'cache_path' => '',
             'compress' => TRUE,
             'optimize' => TRUE,
             'extra_optimize' => FALSE,
             'optimize_images' => TRUE,
-            'ie_compatible' => FALSE,
+            'lossy_quality' => 75,
             'data' => NULL,
             'prefix' => 'all'
         );

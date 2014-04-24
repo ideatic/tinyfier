@@ -33,29 +33,31 @@ class tinyfier_less extends lessc {
         }
 
 
-        if (!empty($settings['data']))
+        if (!empty($settings['data'])) {
             $this->setVariables($settings['data']);
+        }
 
-        if (isset($settings['absolute_path']))
+        if (isset($settings['absolute_path'])) {
             $this->addImportDir(dirname($settings['absolute_path']));
+        }
 
         //Compile with lessphp
-        $result = isset($str) ? $this->compile($str) : $this->compileFile($settings['absolute_path']);
+        $result = isset($settings['absolute_path']) ? $this->compileFile($settings['absolute_path']) : $this->compile($str);
 
         //Finalize and create sprites
         foreach ($this->_sprites as $group => $sprite) {
-            /* @var $sprite gd_sprite */
+            /* @var $sprite Tinyfier_Image_Sprite */
             //Build sprite image
             $image = $sprite->build();
 
-            //Save (only if not equal!)
+            //Save sprite
             $path = $this->_get_cache_path("sprite_$group", 'png');
-            $image->save($path, 'png', TRUE);
+            $image->save($path, $this->_settings['lossy_quality'], $this->_settings['optimize_images']);
             $sprite_url = $this->_get_cache_url($path);
 
             //Replace sprite marks by the correct CSS
             foreach ($sprite->images() as $sprite_image) {
-                /* @var $sprite_image gd_sprite_image */
+                /* @var $sprite_image Tinyfier_Image_SpriteImage */
                 $css = "url('$sprite_url') -{$sprite_image->left}px -{$sprite_image->top}px";
                 $result = str_replace($sprite_image->tag, $css, $result);
             }
@@ -72,18 +74,25 @@ class tinyfier_less extends lessc {
         $url = $rewrited = $this->_remove_quotes(trim($value[0]));
 
         if (strpos($url, 'data:') !== 0 && !empty($url)) { //Don't rewrite embedded images
-            if ($url[0] != '/' && strpos($url, 'http://') !== 0) {
-                if ($this->_settings['relative_path'][0] == '/') {
-                    $rewrited = $this->_clear_path(dirname($this->_settings['relative_path']) . '/' . $url);
+            if ($url[0] != '/' && strpos($url, '://') !== 0) {//Don't rewrite site root–relative or absolute images
+                if ($this->_settings['url_path'][0] == '/') {
+                    $rewrited = $this->_clear_path(dirname($this->_settings['url_path']) . '/' . $url);
                 } else {
-                    //  $rewrited = $this->_clear_path(dirname(dirname($_SERVER['SCRIPT_NAME'])) . '/' . dirname($this->_settings['relative_path']) . '/' . $url);
-                    //Find tinyfier.php on REQUEST_URI
-                    if (preg_match('#^.*(tinyfier.php|tinyfier/\?)#i', $_SERVER['REQUEST_URI'], $matches))
-                        $tinyfier = $matches[0];
-                    else
-                        $tinyfier = $_SERVER['SCRIPT_NAME'];
+                    //Calculate working url
+                    $working = $_SERVER['REQUEST_URI'];
+                    $ending = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
 
-                    $rewrited = $this->_clear_path(dirname($tinyfier) . '/../' . dirname($this->_settings['relative_path']) . '/' . $url);
+                    if (!empty($_SERVER['QUERY_STRING'])) {
+                        $ending.='?' . $_SERVER['QUERY_STRING'];
+                    }
+
+                    if (substr($_SERVER['REQUEST_URI'], -strlen($ending)) === $ending) {
+                        $working = substr($_SERVER['REQUEST_URI'], 0, -strlen($ending));
+                    }
+                    $working = rtrim($working, '/');
+
+
+                    $rewrited = $this->_clear_path(dirname($working) . '/../' . dirname($this->_settings['url_path']) . '/' . $url);
                 }
             }
         }
@@ -137,14 +146,13 @@ class tinyfier_less extends lessc {
         $local_path = $this->_local_path($url);
 
         //Apply filter
-        require_once 'gd/gd_image.php';
-        $image = new gd_image($local_path);
+        $image = new Tinyfier_Image_Tool($local_path);
         call_user_func_array(array($image, 'filter'), array_merge(array($filter), $filter_args));
 
         //Save image and generate CSS
-        $format = in_array($image->format, array('gif', 'png', 'jpg')) ? $image->format : 'png';
+        $format = in_array($image->format(), array('gif', 'png', 'jpg')) ? $image->format() : 'png';
         $path = $this->_get_cache_path('filter_' . $filter, $format);
-        $image->save($path, $format, TRUE, 90, $this->_settings['optimize_images']);
+        $image->save($path, $this->_settings['lossy_quality'], $this->_settings['optimize_images']);
         return array('string', '', array("url('{$this->_get_cache_url($path)}')"));
     }
 
@@ -160,16 +168,16 @@ class tinyfier_less extends lessc {
         $height = isset($arg[2][2]) ? $this->_remove_quotes(trim($arg[2][2][1])) : NULL;
         $height_unit = isset($arg[2][2]) ? trim($arg[2][2][2]) : 'px';
         $keep_aspect = (isset($arg[2][3]) ? $this->_remove_quotes(trim($arg[2][3][1])) : TRUE);
-        if (strtolower($keep_aspect) == 'false')
+        if (strtolower($keep_aspect) == 'false') {
             $keep_aspect = FALSE;
+        }
 
 
         //Find local file
         $local_path = $this->_local_path($url);
 
         //Apply filter
-        require_once 'gd/gd_image.php';
-        $image = new gd_image($local_path);
+        $image = new Tinyfier_Image_Tool($local_path);
 
         if ($width_unit == '%')
             $width = round($image->width() * ($width / 100.0));
@@ -182,9 +190,9 @@ class tinyfier_less extends lessc {
         $image->resize($width, $height, $keep_aspect);
 
         //Save image and generate CSS
-        $format = in_array($image->format, array('gif', 'png', 'jpg')) ? $image->format : 'png';
+        $format = in_array($image->format(), array('gif', 'png', 'jpg')) ? $image->format() : 'png';
         $path = $this->_get_cache_path('resize', $format);
-        $image->save($path, $format, TRUE, 90, $this->_settings['optimize_images']);
+        $image->save($path, $this->_settings['lossy_quality'], $this->_settings['optimize_images']);
         return array('string', '', array("url('{$this->_get_cache_url($path)}')"));
     }
 
@@ -251,25 +259,20 @@ class tinyfier_less extends lessc {
         }
 
         //Generate gradient
-        require_once 'gd/gd_gradients.php';
-        require_once 'gd/gd_image.php';
-        $gd = new gd_gradients();
         // var_dump($arguments,$gradient_width, $gradient_height, $color_stops, $gradient_type, FALSE, $back_color);die;
-        $image = $gd->generate_gradient($gradient_width, $gradient_height, $color_stops, $gradient_type, FALSE, $back_color);
+        $image = Tinyfier_Image_Gradient::generate($gradient_width, $gradient_height, $color_stops, $gradient_type, FALSE, $back_color);
         $path = $this->_get_cache_path('gradient', 'png');
-        $image->save($path, 'png', TRUE, 100, $this->_settings['optimize_images']);
-
+        $image->save($path, 100, $this->_settings['optimize_images']); //Save gradients at maximum quality to avoid color loss
         //Create CSS code
-        $css_color_positions = array();
+        $color_positions = array();
         foreach ($color_stops as $stop) {
             list($position, $unit, $color) = $stop;
-
-            $color = $this->_css_color($color);
-            $css_color_positions[] = "$color {$position}$unit";
+            $color = Tinyfier_CSS_Color::create($color);
+            $color_positions[] = ($color->a == 1 ? $color->to_hex() : $color->to_rgb()) . " {$position}$unit";
         }
-        $css_color_positions = implode(',', $css_color_positions);
+        $color_positions = implode(',', $color_positions);
 
-        $back_color = $this->_css_color($back_color);
+        $back_color = Tinyfier_CSS_Color::create($back_color)->to_hex();
 
         if (in_array($gradient_type, array('vertical', 'horizontal', 'diagonal'))) {
             switch ($gradient_type) {
@@ -295,10 +298,10 @@ class tinyfier_less extends lessc {
             }
             $css = "background-repeat: $repeat;
 background-image: url('{$this->_get_cache_url($path)}'); /* Old browsers */
-background-image: linear-gradient($position, $css_color_positions);";
+background-image: linear-gradient($position, $color_positions);";
         } else if ($gradient_type == 'radial') {
             $css = "background-image: url('{$this->_get_cache_url($path)}'); /* Old browsers */
-background-image: radial-gradient(ellipse at center, $css_color_positions);";
+background-image: radial-gradient(ellipse at center, $color_positions);";
         } else { //It is necessary to use images
             $css = "background-image: url('{$this->_get_cache_url($path)}');";
         }
@@ -315,10 +318,8 @@ background-image: radial-gradient(ellipse at center, $css_color_positions);";
         $group = $this->_remove_quotes(trim($arg[2][1][2][0]));
 
         //Get sprite
-        require_once 'gd/gd_sprite.php';
-        require_once 'gd/gd_image.php';
         if (!isset($this->_sprites[$group])) {
-            $this->_sprites[$group] = new gd_sprite();
+            $this->_sprites[$group] = new Tinyfier_Image_Sprite();
         }
 
         //Add image to sprite
@@ -366,10 +367,10 @@ background-image: radial-gradient(ellipse at center, $css_color_positions);";
      * @param string $suffix
      * @return string
      */
-    private function _get_cache_path($suffix = '', $extension = '.png') {
+    private function _get_cache_path($suffix = '', $extension = 'png') {
         static $cache_prefix, $i = 0;
         if (!isset($cache_prefix)) {
-            $cache_prefix = $this->_settings['cache_path'] . '/' . basename($this->_settings['relative_path'], '.css') . '_' . substr(md5($this->_settings['absolute_path'] . serialize($this->_settings['data'])), 0, 5);
+            $cache_prefix = $this->_settings['cache_path'] . '/' . basename($this->_settings['url_path'], '.css') . '_' . substr(md5($this->_settings['absolute_path'] . serialize($this->_settings['data'])), 0, 5);
         }
         return $cache_prefix . ($i++) . "_$suffix.$extension";
     }
@@ -385,7 +386,7 @@ background-image: radial-gradient(ellipse at center, $css_color_positions);";
 
     private function _clear_path($path) {
         // /cool/yeah/../zzz ==> /cool/zzz
-        $path = preg_replace('/\w+\/\.\.\//', '', $path);
+        $path = preg_replace('/[^\/]+\/\.\.\//', '', $path);
 
         // bla/./bloo ==> bla/bloo
         // bla//bloo ==> bla/bloo
@@ -402,24 +403,6 @@ background-image: radial-gradient(ellipse at center, $css_color_positions);";
         if (preg_match('/^("|\').*?\1$/', $str))
             return substr($str, 1, -1);
         return $str;
-    }
-
-    /**
-     * Convierte un color en varios formatos de entrada a un color CSS de la forma #RRGGBB
-     */
-    private function _css_color($color) {
-        if (is_array($color)) {
-            $hex = '';
-            for ($i = 0; $i < count($color); $i++) {
-                $h = dechex($color[$i]);
-                $hex .= (strlen($h) < 2 ? '0' : '') . $h;
-            }
-            return "#$hex";
-        } else if ($color[0] != '#') {
-            return "#$color";
-        } else {
-            return $color;
-        }
     }
 
 }

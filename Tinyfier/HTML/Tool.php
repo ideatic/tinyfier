@@ -1,11 +1,9 @@
 <?php
 
 /**
- * Rutinas de compresión y procesado de código HTML
- *
- * @package Tinyfier
+ * Tools for HTML optimization and compression
  */
-abstract class TinyfierHTML {
+abstract class Tinyfier_HTML_Tool {
 
     private static $_settings;
 
@@ -20,19 +18,23 @@ abstract class TinyfierHTML {
 
         $settings = self::$_settings = $settings + array(
             'compress_all' => TRUE,
+            'css' => array(),
+            'js' => array(),
             'markers' => array(
                 '<?'
             ),
-            'external_services' => TRUE
+            'external_services' => TRUE,
         );
 
         if ($settings['compress_all']) {
-            require_once dirname(dirname(__FILE__)) . '/css/css.php';
-            require_once dirname(dirname(__FILE__)) . '/js/js.php';
+            require_once dirname(dirname(__FILE__)) . '/CSS/Tool.php';
+            require_once dirname(dirname(__FILE__)) . '/JS/Tool.php';
+
+
 
             return Minify_HTML::minify($html, array(
-                        'cssMinifier' => 'TinyfierHTML::_compress_inline_css',
-                        'jsMinifier' => 'TinyfierHTML::_compress_inline_js'
+                        'cssMinifier' => array(__CLASS__, '_compress_inline_css'),
+                        'jsMinifier' => array(__CLASS__, '_compress_inline_js')
             ));
         } else {
             return Minify_HTML::minify($html);
@@ -48,9 +50,8 @@ abstract class TinyfierHTML {
         if (self::_has_mark($css)) {
             return $css;
         } else {
-            return TinyfierCSS::process($css, array(
-                        'use_less' => FALSE,
-                        'ie_compatible' => TRUE,
+            return Tinyfier_CSS_Tool::process($css, self::$_settings['css'] + array(
+                        'less' => FALSE,
                         'external_services' => self::$_settings['external_services']
             ));
         }
@@ -65,7 +66,7 @@ abstract class TinyfierHTML {
         if (self::_has_mark($js)) {
             return $js;
         } else {
-            return TinyfierJS::process($js, array(
+            return Tinyfier_JS_Tool::process($js, self::$_settings['js'] + array(
                         'external_services' => self::$_settings['external_services']
             ));
         }

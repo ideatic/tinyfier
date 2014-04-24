@@ -1,28 +1,25 @@
 <?php
 
 /**
- * Tinyfier 0.3 (https://github.com/javiermarinros/Tinyfier)
- *
- * @author Javier Marín <www.digitalestudio.es>
- * @license http://opensource.org/licenses/bsd-license.php  New BSD License
- * @see http://www.digitalestudio.es/proyectos/tinyfier/
- * @package Tinyfier
+ * Tinyfier assets loader
  */
 /*
  * Configuration
  */
-if (!isset($cache_dir))
+if (!isset($cache_dir)) {
     $cache_dir = dirname(__FILE__) . '/cache'; //Path to cache folder
-if (!isset($auto_compatibility_mode))
-    $auto_compatibility_mode = TRUE; // Detect automatically IE7-
-if (!isset($max_age))
+}
+if (!isset($src_folder)) {//Path where look for source files
+    $src_folder = dirname(dirname($_SERVER['SCRIPT_FILENAME']));
+}
+if (!isset($max_age)) {
     $max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 604800; //Max time for user cache (default: 1 week)
-if (!isset($separator))
+}if (!isset($separator)) {
     $separator = ','; //Source files separator
-if (!isset($optimize_images))
-    $optimize_images = TRUE; //Optimize images using external APIs like Yahoo Smush.it and TinyPNG.org
-if (!isset($tinypng_api_key))
-    $tinypng_api_key = '';
+}
+if (!isset($optimize_images)) {
+    $optimize_images = TRUE; //Optimize images using tools such as optipng, jpegtran or Yahoo Smush.it
+}
 
 $debug = isset($_GET['debug']); //Debug mode, useful during development
 $recache = isset($_GET['recache']); //Disable cache
@@ -37,18 +34,19 @@ ini_set('log_errors', 'On');
 ini_set('error_log', isset($error_log) ? $error_log : dirname(__FILE__) . '/error_log.txt');
 
 //Get input string
-if (isset($_GET['f'])) {
-    $input_string = $_GET['f'];
-} else if (isset($_SERVER['PATH_INFO'])) {
+if (isset($_SERVER['PATH_INFO'])) {
     $input_string = $_SERVER['PATH_INFO'][0] == '/' ? substr($_SERVER['PATH_INFO'], 1) : $_SERVER['PATH_INFO'];
 } else if (isset($_SERVER['ORIG_PATH_INFO'])) {
     $input_string = $_SERVER['ORIG_PATH_INFO'][0] == '/' ? substr($_SERVER['ORIG_PATH_INFO'], 1) : $_SERVER['ORIG_PATH_INFO'];
+} else if (isset($_GET['f'])) {
+    $input_string = $_GET['f'];
 } else {
     die('Input not found');
 }
 
+
 //Check that source files are safe and well-formed
-$input_string = str_replace("\x00", '', (string) $input_string);//Protect null bytes (http://www.php.net/manual/en/security.filesystem.nullbytes.php)
+$input_string = str_replace("\x00", '', (string) $input_string); //Protect null bytes (http://www.php.net/manual/en/security.filesystem.nullbytes.php)
 if (empty($input_string) || strpos($input_string, '//') !== FALSE || strpos($input_string, '\\') !== FALSE || strpos($input_string, './') !== FALSE) {
     header('HTTP/1.0 400 Bad Request');
     die('Invalid source files');
@@ -61,9 +59,11 @@ $files = array();
 $vars = array();
 $type = NULL;
 $valid_extensions = array('js', 'css', 'less');
-if (!isset($src_folder))
-    $src_folder = dirname(dirname($_SERVER['SCRIPT_FILENAME']));
 foreach ($input_data as $input) {
+    if(empty($input)){
+        continue;
+    }
+    
     if (strpos($input, '=') !== FALSE) { //Input data
         $parts = explode('=', urldecode($input));
         $vars[$parts[0]] = $parts[1];
@@ -125,14 +125,6 @@ if (strpos($accept_encoding, 'gzip') !== FALSE) {
     $encoding = 'none';
 }
 
-//Extra check for GZIP support (from Minify project, http://code.google.com/p/minify/)
-$ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-if (strpos($ua, 'Mozilla/4.0 (compatible; MSIE ') === 0 && strpos($ua, 'Opera') === FALSE) { // quick escape for non-IEs
-    $IE_version = (float) substr($ua, 30);
-    if ($IE_version < 6 || ($IE_version == 6 && FALSE === strpos($ua, 'SV1'))) { // IE < 6 SP1 don't support GZIp compression
-        $encoding = 'none';
-    }
-}
 
 //Send HTTP headers
 header('Vary: Accept-Encoding');
@@ -148,53 +140,45 @@ if ($debug || $recache) {
     header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', $_SERVER['REQUEST_TIME'] + $max_age));
 }
 
-//Compatible mode for IE7-?
-$compatible_mode = $type == 'js' ? FALSE : ($auto_compatibility_mode && !isset($_GET['compatible']) ? isset($IE_version) && $IE_version <= 7 : isset($_GET['compatible']));
-
 //Check cache
 $cache_prefix = 'tynifier_' . md5($input_string);
-$cache_id = $cache_prefix . '_' . $last_modified . ($compatible_mode ? '_compatible' : '') . '.' . $type;
+$cache_id = $cache_prefix . '_' . $last_modified . '.' . $type;
 $cache_file = $cache_dir . '/' . $cache_id . ($encoding != 'none' ? ".$encoding" : '');
 
 if (!file_exists($cache_file) || $debug || $recache) :
 
     //Process source code
     try {
+    require 'autoloader.php';
         if ($type == 'js') { //Combine, then compress
-            require 'js/js.php';
-
             //Combine
             $source = array();
-            foreach ($files as $relative_path => $absolute_path) {
+            foreach ($files as $url_path => $absolute_path) {
                 if ($debug) {
-                    $source [] = "\n\n\n/* $relative_path */\n\n\n";
+                    $source [] = "\n\n\n/* $url_path */\n\n\n";
                 }
                 $source [] = file_get_contents($absolute_path) . "\n";
             }
 
             //Compress
             $source = implode(';', $source);
-            $source = TinyfierJS::process($source, array(
+            $source = Tinyfier_JS_Tool::process($source, array(
                         'pretty' => $debug,
                         'gclosure' => strlen($source) > 750 && !$debug //No usar Google Closure en modo debug o para javascript pequeños
             ));
         } elseif ($type == 'css' || $type == 'less') { //Process and compress, then combine
-            require 'css/css.php';
-
             //Process and compress
             $source = array();
-            foreach ($files as $relative_path => $absolute_path) {
+            foreach ($files as $url_path => $absolute_path) {
                 if ($debug) {
-                    $source[] = "\n\n\n/* $relative_path */\n\n\n";
+                    $source[] = "\n\n\n/* $url_path */\n\n\n";
                 }
 
-                $source[] = TinyfierCSS::process(NULL, array(
-                            'absolute_path' => $absolute_path,
-                            'relative_path' => $relative_path,
+                $source[] = Tinyfier_CSS_Tool::process_file($absolute_path, array(
+                            'url_path' => $url_path,
                             'cache_path' => $cache_dir,
                             'compress' => !$debug,
                             'data' => $vars,
-                            'ie_compatible' => $compatible_mode,
                             'optimize_images' => !$debug && $optimize_images,
                 ));
             }
@@ -215,17 +199,25 @@ if (!file_exists($cache_file) || $debug || $recache) :
     }
 
     //Save cache
-    if (file_put_contents("$cache_dir/$cache_id", $source) === FALSE ||
-            file_put_contents("$cache_dir/$cache_id.gzip", gzencode($source, 9, FORCE_GZIP)) === FALSE ||
-            file_put_contents("$cache_dir/$cache_id.deflate", gzencode($source, 9, FORCE_DEFLATE)) === FALSE
-    ) {
-        //Check if cache folder exists, and if not, create it
-        if (!is_dir($cache_dir)) {
-            mkdir($cache_dir, 0755);
+    for ($try = 0; $try < 2; $try++) {
+        $writing_error=file_put_contents("$cache_dir/$cache_id", $source) === FALSE ||
+                file_put_contents("$cache_dir/$cache_id.gzip", gzencode($source, 9, FORCE_GZIP)) === FALSE ||
+                file_put_contents("$cache_dir/$cache_id.deflate", gzencode($source, 9, FORCE_DEFLATE)) === FALSE;
+        
+        if ($writing_error) {
+            if ($try == 0) {
+                if (!is_dir($cache_dir)) {
+                    mkdir($cache_dir, 0755);
+                }
+            } else {
+                header('HTTP/1.1 500 Internal Server Error');
+                die('Error writing cache');
+            }
+        } else {
+            break;
         }
-        header('HTTP/1.1 500 Internal Server Error');
-        die('Error writing cache');
     }
+
 
     //Delete old cache copies
     $dirh = opendir($cache_dir);

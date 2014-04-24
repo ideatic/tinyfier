@@ -1,10 +1,13 @@
-# Tinyfier v0.3
+# Tinyfier v1.0
 #### <http://www.tinyfier.com>
 
-`Tinyfier` is a CSS and Javascript preprocessing and minification tool. 
-It combines multiple CSS or Javascript files, add extra functionality to CSS, removes unnecessary whitespace and comments, and serves them with gzip encoding and optimal client-side cache headers.
+`Tinyfier` is a complete suite for compressing, preprocessing, and optimizing HTML/Javascript/CSS and Images.
 
 ### Usage
+
+#### Optimization on-the-fly
+
+With `Tinyfier` you can combine multiple CSS or Javascript files, add extra functionality to CSS (using LESS), remove unnecessary whitespace and comments, and serve them with gzip encoding and optimal client-side cache headers.
 
 For compress and combine your javascript and stylesheets files, all that you
 need to do is replace the original URL:
@@ -13,18 +16,18 @@ need to do is replace the original URL:
 
 By this:
 
->http://example.com/static/tinyfier/f=stylesheet.css
+>http://example.com/static/tinyfier/tinyfier.php/stylesheet.css
 
 You can also join multiple files into a larger one, reducing the number of
 HTTP request and making your application fly!
 
->http://example.com/static/tinyfier/f=main.css,user.css,print.css
+>http://example.com/static/tinyfier/tinyfier.php/main.css,user.css,print.css
 
 Also, if you want to pass extra variables to CSS parser, you can do it by adding
 it into the URL, for example:
 
->http://example.com/static/tinyfier/f=stylesheet.css,base_color=%23ff0000
->http://example.com/static/tinyfier/f=stylesheet.css,height=450
+>http://example.com/static/tinyfier/tinyfier.php/stylesheet.css,base_color=%23ff0000
+>http://example.com/static/tinyfier/tinyfier.php/stylesheet.css,height=450
 
 ### Javascript
 

@@ -147,8 +147,9 @@ class css_prefixer {
      * declaratiopn property "-ms-filter".
      */
     private static function filter(css_property $property, css_prefixer $prefixer) {
-        if ($prefixer->msie)
+        if ($prefixer->msie) {
             $property->insert_after('-ms-filter', strpos($property->value, "'") === FALSE ? "'$property->value'" : '"' . $property->value . '"');
+        }
     }
 
     /**

@@ -2,10 +2,8 @@
 
 /**
  * Compression and processing routines for Javascript code
- *
- * @package Tinyfier
  */
-abstract class TinyfierJS {
+abstract class Tinyfier_JS_Tool {
 
     /**
      * Compress javascript code
@@ -35,15 +33,16 @@ abstract class TinyfierJS {
             return $source;
         } else {
             require_once 'jsminplus.php';
-            ob_start(); //Capture output, JSMinPlus echo errors by default
-            $result = JSMinPlus::minify($source);
-            $errors_str = ob_get_clean();
-            if (empty($errors_str)) { //Success
-                return $result;
-            } else { //Return original source
-                $errors[] = $errors_str;
+
+            //Remember: modify JSMinPlus::minify to not catch errors
+            try {
+                $result = JSMinPlus::minify($source);
+            } catch (Exception $e) {
+                $errors[] = $e->getMessage();
                 return $source;
             }
+
+            return $result;
         }
     }
 
