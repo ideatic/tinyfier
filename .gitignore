@@ -1,8 +1,17 @@
+# General rules
 .idea
-/TODO.txt
-/assets_loader/cache/*
-/assets_loader/error_log.txt
-/test/assets/compressed
+nbproject/
+docs/
 vendor/
 composer.lock
 composer.phar
+
+# OS crap
+Thumbs.db
+[Dd]esktop.ini
+.DS_Store
+
+# Custom rules
+/assets_loader/cache/*
+/assets_loader/error_log.txt
+/test/assets/compressed

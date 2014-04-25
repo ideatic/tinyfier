@@ -6,8 +6,8 @@
 /*
  * Configuration
  */
-if (!isset($lib_path)) {//Path where look for Tinyfier files
-    $lib_path = dirname(dirname(__FILE__));
+if (!isset($autoloader_path)) {//Path to composer autoloader
+    $autoloader_path = dirname(dirname(__FILE__)) . '/vendor/autoload.php';
 }
 if (!isset($cache_dir)) {
     $cache_dir = dirname(__FILE__) . '/cache'; //Path to cache folder
@@ -152,7 +152,7 @@ if (!file_exists($cache_file) || $debug || $recache) :
 
     //Process source code
     try {
-        require $lib_path . '/vendor/autoload.php';
+        require $autoloader_path;
         if ($type == 'js') { //Combine, then compress
             //Combine
             $source = array();
