@@ -28,12 +28,13 @@ abstract class Tinyfier_JS_Tool {
             }
         }
 
-        //Compile using JShrink
+        //Compile using JSqueeze
         if ($settings['pretty']) {
             return $source;
         } else {
             try {
-                $result = JShrink\Minifier::minify($source);
+                $jz = new JSqueeze;
+                $result = $jz->squeeze($source);
             } catch (Exception $e) {
                 $errors[] = $e->getMessage();
                 return $source;

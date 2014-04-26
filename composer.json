@@ -15,7 +15,7 @@
     "require": {
         "ideatic/css_optimizer": "dev-master",
         "leafo/lessphp": "0.4.*",
-        "tedivm/jshrink": "*",
+        "patchwork/jsqueeze": "*",
         "php": ">=5.2"
     },
     "autoload": {
