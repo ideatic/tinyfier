@@ -79,6 +79,7 @@ class Tinyfier_CSS_LESS extends lessc {
                     //Calculate working url
                     $working = $_SERVER['REQUEST_URI'];
                     $ending = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+                    $ending = isset($_SERVER['ORIG_PATH_INFO']) ? $_SERVER['ORIG_PATH_INFO'] : $ending;
 
                     if (!empty($_SERVER['QUERY_STRING'])) {
                         $ending.='?' . $_SERVER['QUERY_STRING'];
@@ -88,7 +89,6 @@ class Tinyfier_CSS_LESS extends lessc {
                         $working = substr($_SERVER['REQUEST_URI'], 0, -strlen($ending));
                     }
                     $working = rtrim($working, '/');
-
 
                     $rewrited = $this->_clear_path(dirname($working) . '/../' . dirname($this->_settings['url_path']) . '/' . $url);
                 }
