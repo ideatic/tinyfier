@@ -60,6 +60,7 @@ abstract class Tinyfier_CSS_Tool {
             'absolute_path' => '',
             'url_path' => '',
             'cache_path' => '',
+            'cache_url' => '/cache/',
             'compress' => TRUE,
             'optimize' => TRUE,
             'extra_optimize' => FALSE,
