@@ -3,15 +3,19 @@
 /**
  * Compression and processing routines for CSS code
  */
-abstract class Tinyfier_CSS_Tool {
+abstract class Tinyfier_CSS_Tool
+{
 
     /**
      * Process a CSS file
+     *
      * @param string $file
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return string
      */
-    public static function process_file($file, array $settings = array()) {
+    public static function process_file($file, array $settings = array())
+    {
         $settings['absolute_path'] = $file;
         return self::process(file_get_contents($file), $settings);
     }
@@ -28,10 +32,12 @@ abstract class Tinyfier_CSS_Tool {
      *   'data': variables passed to the css parser for use in the LESS code
      *
      * @param string $css
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return string
      */
-    public static function process($css, array $settings = array()) {
+    public static function process($css, array $settings = array())
+    {
         //Load settings
         $settings = $settings + self::default_settings();
 
@@ -46,7 +52,7 @@ abstract class Tinyfier_CSS_Tool {
             'compress' => $settings['compress'],
             'optimize' => $settings['optimize'],
             'extra_optimize' => $settings['extra_optimize'],
-            'remove_ie_hacks' => FALSE,
+            'remove_ie_hacks' => false,
             'prefix' => $settings['prefix'],
         ));
         $css = $optimizer->process($css);
@@ -54,19 +60,20 @@ abstract class Tinyfier_CSS_Tool {
         return $css;
     }
 
-    public static function default_settings() {
+    public static function default_settings()
+    {
         return array(
-            'less' => TRUE,
+            'less' => true,
             'absolute_path' => '',
             'url_path' => '',
             'cache_path' => '',
             'cache_url' => '/cache/',
-            'compress' => TRUE,
-            'optimize' => TRUE,
-            'extra_optimize' => FALSE,
-            'optimize_images' => TRUE,
+            'compress' => true,
+            'optimize' => true,
+            'extra_optimize' => false,
+            'optimize_images' => true,
             'lossy_quality' => 75,
-            'data' => NULL,
+            'data' => null,
             'prefix' => 'all'
         );
     }

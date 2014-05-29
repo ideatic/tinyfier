@@ -2,11 +2,12 @@
 
 /**
  * Tools for image optimization and compression
- * 
+ *
  * @note Much of the code has been obtained from the great EWWW Image Optimizer
  * Wordpress Plugin by nosilver4u (http://wordpress.org/plugins/ewww-image-optimizer/)
  */
-abstract class Tinyfier_Image_Optimizer {
+abstract class Tinyfier_Image_Optimizer
+{
 
     /**
      * Sets the image processing mode (default: LOSSY)
@@ -49,7 +50,7 @@ abstract class Tinyfier_Image_Optimizer {
     const CHECK_OUTPUT = 'check_output';
 
     /**
-     * Dump debug information (default: FALSE)     * 
+     * Dump debug information (default: FALSE)     *
      */
     const VERBOSE = 'verbose';
 
@@ -57,21 +58,22 @@ abstract class Tinyfier_Image_Optimizer {
      * Optimize an imagen given its path
      * @return boolean
      */
-    public static function process($file, array $settings = array()) {
+    public static function process($file, array $settings = array())
+    {
         if (!is_writable($file)) {
             throw new InvalidArgumentException("File '$file' is not writable");
         }
 
         //Merge default settings
         $settings = $settings + array(
-            self::MODE => self::MODE_LOSSY,
-            self::LOSSY_QUALITY => 75,
-            self::LOW_PRIORITY => TRUE,
-            self::REMOVE_METADATA => TRUE,
-            self::CHECK_OUTPUT => FALSE,
-            self::LEVEL => self::LEVEL_NORMAL,
-            self::VERBOSE => FALSE,
-        );
+                self::MODE => self::MODE_LOSSY,
+                self::LOSSY_QUALITY => 75,
+                self::LOW_PRIORITY => true,
+                self::REMOVE_METADATA => true,
+                self::CHECK_OUTPUT => false,
+                self::LEVEL => self::LEVEL_NORMAL,
+                self::VERBOSE => false,
+            );
 
         if ($settings[self::MODE] == self::MODE_SMUSHIT) {
             //Optimize using Yahoo Smush.it
@@ -90,7 +92,7 @@ abstract class Tinyfier_Image_Optimizer {
 
             //Use 'nice' to reduce process priority
             $commad_prefix = '';
-            if ($settings[self::LOW_PRIORITY] && ($nice = self::_find_tool('nice', FALSE, FALSE))) {
+            if ($settings[self::LOW_PRIORITY] && ($nice = self::_find_tool('nice', false, false))) {
                 $commad_prefix = "$nice ";
             }
 
@@ -108,9 +110,13 @@ abstract class Tinyfier_Image_Optimizer {
                 case 'image/gif':
                     $gifsicle = self::_find_tool('gifsicle');
 
-                    self::_exec("{$commad_prefix}{$gifsicle} -b -O3 --careful :file", array(
-                        ':file' => $file
-                            ), $settings);
+                    self::_exec(
+                        "{$commad_prefix}{$gifsicle} -b -O3 --careful :file",
+                            array(
+                                ':file' => $file
+                            ),
+                            $settings
+                    );
                     break;
 
                 default:
@@ -120,9 +126,10 @@ abstract class Tinyfier_Image_Optimizer {
         }
     }
 
-    private function _compress_smushit($file) {
+    private function _compress_smushit($file)
+    {
         if (!function_exists('curl_init')) {
-            return FALSE;
+            return false;
         }
 
 
@@ -130,10 +137,14 @@ abstract class Tinyfier_Image_Optimizer {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
         curl_setopt($ch, CURLOPT_URL, 'http://www.smushit.com/ysmush.it/ws.php');
-        curl_setopt($ch, CURLOPT_POST, TRUE);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, array(
-            'files' => file_get_contents($file),
-        ));
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_POSTFIELDS,
+            array(
+                'files' => file_get_contents($file),
+            )
+        );
         $json_str = curl_exec($ch);
 
         //Parse response and save file
@@ -148,11 +159,12 @@ abstract class Tinyfier_Image_Optimizer {
         }
 
         curl_close($ch);
-        return FALSE;
+        return false;
     }
 
-    private static function _detect_mime($path) {
-        $type = FALSE;
+    private static function _detect_mime($path)
+    {
+        $type = false;
 
         //1st method: using finfo
         if (function_exists('finfo_file') && defined('FILEINFO_MIME')) {
@@ -168,7 +180,7 @@ abstract class Tinyfier_Image_Optimizer {
         if (empty($type) && function_exists('getimagesize')) {
             $type = getimagesize($path);
             // make sure we have results
-            if (FALSE !== $type) {
+            if (false !== $type) {
                 // store the mime-type
                 $type = $type['mime'];
             }
@@ -182,7 +194,8 @@ abstract class Tinyfier_Image_Optimizer {
         return $type;
     }
 
-    private static function _find_tool($name, $local_search = TRUE, $throw_not_found = TRUE) {
+    private static function _find_tool($name, $local_search = true, $throw_not_found = true)
+    {
         //Search in local tools
         $paths = array();
         if ($local_search) {
@@ -237,11 +250,12 @@ abstract class Tinyfier_Image_Optimizer {
         if ($throw_not_found) {
             throw new RuntimeException("$name not found or with no permission, optimization cannot be done");
         } else {
-            return FALSE;
+            return false;
         }
     }
 
-    private static function _exec($command, $args, $settings) {
+    private static function _exec($command, $args, $settings)
+    {
         $escaped_args = array();
 
         foreach ($args as $k => $v) {
@@ -254,14 +268,14 @@ abstract class Tinyfier_Image_Optimizer {
             clearstatcache();
             reset($args);
             $before = self::_format_size(filesize(isset($args[':in']) ? $args[':in'] : current($args)));
-            $start = microtime(TRUE);
+            $start = microtime(true);
             exec($command, $output, $status);
-            $time = round(microtime(TRUE) - $start, 3);
+            $time = round(microtime(true) - $start, 3);
             clearstatcache();
             $after = self::_format_size(filesize(isset($args[':out']) ? $args[':out'] : current($args)));
             echo "<h5>$before » $after ($time s) <small>$command</small> (returned $status)</h5>";
             if (!empty($output)) {
-                echo '<pre>' . print_r($output, TRUE) . '</pre>';
+                echo '<pre>' . print_r($output, true) . '</pre>';
             }
             return $status;
         } else {
@@ -269,7 +283,8 @@ abstract class Tinyfier_Image_Optimizer {
         }
     }
 
-    private static function _format_size($size, $kilobyte = 1024, $format = '%size% %unit%') {
+    private static function _format_size($size, $kilobyte = 1024, $format = '%size% %unit%')
+    {
 
         $size = $size / $kilobyte; // Convertir bytes a kilobyes
         $units = array('KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
@@ -281,19 +296,24 @@ abstract class Tinyfier_Image_Optimizer {
             }
         }
 
-        return strtr($format, array(
-            '%size%' => round($size, 2),
-            '%unit%' => $unit
-        ));
+        return strtr(
+            $format,
+            array(
+                '%size%' => round($size, 2),
+                '%unit%' => $unit
+            )
+        );
     }
 
     /**
      * @param $file
      * @param $settings
      * @param $commad_prefix
+     *
      * @throws Exception
      */
-    private static function _optimize_jpg($file, $settings, $commad_prefix) {
+    private static function _optimize_jpg($file, $settings, $commad_prefix)
+    {
         if ($settings[self::MODE] == self::MODE_LOSSY) {
             $handle = imagecreatefromjpeg($file);
             if (!imagejpeg($handle, $file, $settings[self::LOSSY_QUALITY])) {
@@ -314,10 +334,14 @@ abstract class Tinyfier_Image_Optimizer {
         foreach (array('', '-progressive') as $flag) {
             $temp_files[$flag] = tempnam(sys_get_temp_dir(), 'jpegtran');
 
-            self::_exec("{$commad_prefix}{$jpegtran} -copy {$metadata_copy} -optimize  {$flag} -outfile :out :in", array(
-                ':in' => $file,
-                ':out' => $temp_files[$flag],
-                    ), $settings);
+            self::_exec(
+                "{$commad_prefix}{$jpegtran} -copy {$metadata_copy} -optimize  {$flag} -outfile :out :in",
+                    array(
+                        ':in' => $file,
+                        ':out' => $temp_files[$flag],
+                    ),
+                    $settings
+            );
         }
 
         //Find the lowest size
@@ -325,7 +349,7 @@ abstract class Tinyfier_Image_Optimizer {
         $lowest_path = $file;
         foreach ($temp_files as $converted) {
             $size = filesize($converted);
-            if ($size !== FALSE && $size < $lowest_size) {
+            if ($size !== false && $size < $lowest_size) {
                 if (isset($original_image) && !Tinyfier_Image_Tool::equal($original_image, $converted)) {
                     continue;
                 }
@@ -350,9 +374,11 @@ abstract class Tinyfier_Image_Optimizer {
      * @param $file
      * @param $settings
      * @param $commad_prefix
+     *
      * @throws Exception
      */
-    private static function _optimize_png($file, $settings, $commad_prefix) {
+    private static function _optimize_png($file, $settings, $commad_prefix)
+    {
         //pngquant lossy compresssion
         if ($settings[self::MODE] == self::MODE_LOSSY) {
             $pngquant = self::_find_tool('pngquant');
@@ -361,7 +387,8 @@ abstract class Tinyfier_Image_Optimizer {
             $levels = array(
                 self::LEVEL_FAST => 10,
                 self::LEVEL_NORMAL => 3,
-                self::LEVEL_HIGH => 1, self::LEVEL_EXTREME => 1
+                self::LEVEL_HIGH => 1,
+                self::LEVEL_EXTREME => 1
             );
 
             //compress using a temp file because pngquant dont allow direct writing of input file
@@ -371,9 +398,13 @@ abstract class Tinyfier_Image_Optimizer {
                 $i++;
             } while (file_exists($tmp));
             copy($file, $tmp);
-            self::_exec("{$commad_prefix}{$pngquant} --speed {$levels[$settings[self::LEVEL]]} --quality={$min_quality}-{$max_quality} --ext _pq.png :file", array(
-                ':file' => $tmp
-                    ), $settings);
+            self::_exec(
+                "{$commad_prefix}{$pngquant} --speed {$levels[$settings[self::LEVEL]]} --quality={$min_quality}-{$max_quality} --ext _pq.png :file",
+                    array(
+                        ':file' => $tmp
+                    ),
+                    $settings
+            );
 
             $out = preg_replace('/\.png$/', '_pq.png', $tmp);
 
@@ -394,25 +425,36 @@ abstract class Tinyfier_Image_Optimizer {
         $optipng = self::_find_tool('optipng');
 
         $metadata_copy = $settings[self::REMOVE_METADATA] ? '-strip all' : '';
-        $levels = array(self::LEVEL_FAST => 2,
+        $levels = array(
+            self::LEVEL_FAST => 2,
             self::LEVEL_NORMAL => 3,
             self::LEVEL_HIGH => 4,
             self::LEVEL_EXTREME => 6
         );
-        self::_exec("{$commad_prefix}{$optipng} -o{$levels[$settings[self::LEVEL]]} -quiet {$metadata_copy} :file", array(':file' => $file
-                ), $settings);
+        self::_exec(
+            "{$commad_prefix}{$optipng} -o{$levels[$settings[self::LEVEL]]} -quiet {$metadata_copy} :file",
+                array(
+                    ':file' => $file
+                ),
+                $settings
+        );
 
         //Pngout Lossless compression
         $pngout = self::_find_tool('pngout');
 
-        $levels = array(self::LEVEL_FAST => 3,
+        $levels = array(
+            self::LEVEL_FAST => 3,
             self::LEVEL_NORMAL => 2,
             self::LEVEL_HIGH => 1,
             self::LEVEL_EXTREME => 0
         );
-        self::_exec("{$commad_prefix}{$pngout} -s{$levels[$settings[self::LEVEL]]} -q :file", array(
-            ':file' => $file
-                ), $settings);
+        self::_exec(
+            "{$commad_prefix}{$pngout} -s{$levels[$settings[self::LEVEL]]} -q :file",
+                array(
+                    ':file' => $file
+                ),
+                $settings
+        );
 
         if (isset($original_image) && !Tinyfier_Image_Tool::equal($original_image, $file)) {
             throw new Exception('Lossless compression output was different to original');

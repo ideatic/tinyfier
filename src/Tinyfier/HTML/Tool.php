@@ -3,34 +3,41 @@
 /**
  * Tools for HTML optimization and compression
  */
-abstract class Tinyfier_HTML_Tool {
+abstract class Tinyfier_HTML_Tool
+{
 
     private static $_settings;
 
     /**
      * Remove whitespaces from HTML code
-     * @param string $html
+     *
+     * @param string  $html
      * @param boolean $compress_all Compress embedded css and js code
+     *
      * @return string
      */
-    public static function process($html, array $settings = array()) {
+    public static function process($html, array $settings = array())
+    {
         require_once dirname(__FILE__) . '/Minify_HTML.php';
 
         $settings = self::$_settings = $settings + array(
-            'compress_all' => TRUE,
-            'css' => array(),
-            'js' => array(),
-            'markers' => array(
-                '<?'
-            ),
-            'external_services' => TRUE,
-        );
+                'compress_all' => true,
+                'css' => array(),
+                'js' => array(),
+                'markers' => array(
+                    '<?'
+                ),
+                'external_services' => true,
+            );
 
         if ($settings['compress_all']) {
-            return Minify_HTML::minify($html, array(
-                        'cssMinifier' => array(__CLASS__, '_compress_inline_css'),
-                        'jsMinifier' => array(__CLASS__, '_compress_inline_js')
-            ));
+            return Minify_HTML::minify(
+                              $html,
+                                  array(
+                                      'cssMinifier' => array(__CLASS__, '_compress_inline_css'),
+                                      'jsMinifier' => array(__CLASS__, '_compress_inline_js')
+                                  )
+            );
         } else {
             return Minify_HTML::minify($html);
         }
@@ -41,14 +48,18 @@ abstract class Tinyfier_HTML_Tool {
      * Only por internal usage.
      * @access private
      */
-    public static function _compress_inline_css($css) {
+    public static function _compress_inline_css($css)
+    {
         if (self::_has_mark($css)) {
             return $css;
         } else {
-            return Tinyfier_CSS_Tool::process($css, self::$_settings['css'] + array(
-                        'less' => FALSE,
-                        'external_services' => self::$_settings['external_services']
-            ));
+            return Tinyfier_CSS_Tool::process(
+                                    $css,
+                                        self::$_settings['css'] + array(
+                                            'less' => false,
+                                            'external_services' => self::$_settings['external_services']
+                                        )
+            );
         }
     }
 
@@ -57,13 +68,17 @@ abstract class Tinyfier_HTML_Tool {
      * Only por internal usage.
      * @access private
      */
-    public static function _compress_inline_js($js) {
+    public static function _compress_inline_js($js)
+    {
         if (self::_has_mark($js)) {
             return $js;
         } else {
-            return Tinyfier_JS_Tool::process($js, self::$_settings['js'] + array(
-                        'external_services' => self::$_settings['external_services']
-            ));
+            return Tinyfier_JS_Tool::process(
+                                   $js,
+                                       self::$_settings['js'] + array(
+                                           'external_services' => self::$_settings['external_services']
+                                       )
+            );
         }
     }
 
@@ -72,13 +87,14 @@ abstract class Tinyfier_HTML_Tool {
      * Se utiliza para evitar que fragmentos de código que lleven incustrado código PHP
      * se compriman y den lugar a pérdida de datos
      */
-    private static function _has_mark($code) {
+    private static function _has_mark($code)
+    {
         foreach (self::$_settings['markers'] as $mark) {
-            if (strpos($code, $mark) !== FALSE) {
-                return TRUE;
+            if (strpos($code, $mark) !== false) {
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
 }

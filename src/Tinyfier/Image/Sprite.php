@@ -3,25 +3,29 @@
 /**
  * Tool for CSS sprites creation
  */
-class Tinyfier_Image_Sprite {
+class Tinyfier_Image_Sprite
+{
 
     /**
      * @var Tinyfier_Image_SpriteImage[]
      */
     private $_images;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->_images = array();
     }
 
     /**
      * Adds a new image to the sprite
      */
-    public function add_image($path, $tag = NULL) {
+    public function add_image($path, $tag = null)
+    {
         //Check if the file is already included
         foreach ($this->_images as $image) {
-            if ($image->path == $path)
+            if ($image->path == $path) {
                 return;
+            }
         }
 
         $im = new Tinyfier_Image_SpriteImage($path);
@@ -33,7 +37,8 @@ class Tinyfier_Image_Sprite {
      * Build the CSS sprite in memory
      * @return Tinyfier_Image_Tool
      */
-    public function build() {
+    public function build()
+    {
         //Sort images inside the sprite
         $y = 0;
         foreach ($this->_images as $image) {
@@ -51,7 +56,7 @@ class Tinyfier_Image_Sprite {
         }
 
         $sprite = imagecreatetruecolor($w, $h);
-        imagealphablending($sprite, FALSE); //Soporte de transparencias
+        imagealphablending($sprite, false); //Soporte de transparencias
         imagefill($sprite, 0, 0, imagecolorallocatealpha($sprite, 0, 0, 0, 127)); //Fondo transparente
         foreach ($this->_images as $image) {
             imagecopy($sprite, $image->image->handle(), $image->left, $image->top, 0, 0, $image->image->width(), $image->image->height());
@@ -64,7 +69,8 @@ class Tinyfier_Image_Sprite {
      * Images added to the sprite
      * @return Tinyfier_Image_SpriteImage[]
      */
-    public function images() {
+    public function images()
+    {
         return $this->_images;
     }
 
@@ -73,16 +79,18 @@ class Tinyfier_Image_Sprite {
 /**
  * Represents an image inside a sprite
  */
-class Tinyfier_Image_SpriteImage {
+class Tinyfier_Image_SpriteImage
+{
 
-    public function __construct($path) {
+    public function __construct($path)
+    {
         $this->path = $path;
         $this->image = new Tinyfier_Image_Tool($path);
     }
 
     /**
      * Image added to the sprite
-     * @var Tinyfier_Image_Tool 
+     * @var Tinyfier_Image_Tool
      */
     public $image;
 

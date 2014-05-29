@@ -3,25 +3,29 @@
 /**
  * Tool for gradient generation using GD library
  */
-abstract class Tinyfier_Image_Gradient {
+abstract class Tinyfier_Image_Gradient
+{
 
     /**
      * Generate a gradient
-     * @param int $width
-     * @param int $height
-     * @param array $color_stops Color stops, in format (position, unit, color)
-     * @param string $direction Gradient direction (vertical, horizontal, diagonal, radial, square, diamond)
-     * @param bool $invert Inver gradient
-     * @param array $background_color If set, the final color of the gradient will be saved here
+     *
+     * @param int    $width
+     * @param int    $height
+     * @param array  $color_stops      Color stops, in format (position, unit, color)
+     * @param string $direction        Gradient direction (vertical, horizontal, diagonal, radial, square, diamond)
+     * @param bool   $invert           Inver gradient
+     * @param array  $background_color If set, the final color of the gradient will be saved here
+     *
      * @return Tinyfier_Image_Tool
      */
-    public static function generate($width, $height, $color_stops, $direction = 'vertical', $invert = FALSE, &$background_color = NULL) {
+    public static function generate($width, $height, $color_stops, $direction = 'vertical', $invert = false, &$background_color = null)
+    {
         //Crear imagen
         $image = imagecreateTRUEcolor($width, $height);
 
         //Calcular el número de líneas a dibujar
         $lines;
-        $fill_background = FALSE;
+        $fill_background = false;
         switch ($direction) {
             case 'vertical':
                 $lines = $height;
@@ -37,9 +41,11 @@ abstract class Tinyfier_Image_Gradient {
                 $center_y = $height / 2;
                 $rh = $height > $width ? 1 : $width / $height;
                 $rw = $width > $height ? 1 : $height / $width;
-                $lines = ceil(max($width, $height) / 1.5); //Lo correcto sería /2, pero se aplica 1.5 para expandir el degradado y hacerlo más similar al generado por los navegadores
+                $lines = ceil(
+                    max($width, $height) / 1.5
+                ); //Lo correcto sería /2, pero se aplica 1.5 para expandir el degradado y hacerlo más similar al generado por los navegadores
 
-                $fill_background = TRUE;
+                $fill_background = true;
                 $invert = !$invert; //The gradient is drawn from outside to inside
                 break;
             case 'square':
@@ -58,7 +64,7 @@ abstract class Tinyfier_Image_Gradient {
                 break;
 
             default:
-                return FALSE;
+                return false;
                 break;
         }
 
@@ -76,14 +82,16 @@ abstract class Tinyfier_Image_Gradient {
                     $percentage = $position;
                     break;
             }
-            $colors[floatval($position)] = Tinyfier_CSS_Color::create($color)->to_array();
+            $colors[floatval($position)] = Tinyfier_CSS_Color::create($color)
+                                                             ->to_array();
         }
         ksort($colors);
 
         $positions = array_keys($colors);
         if (!isset($colors[0])) { //Usar el primero como color de inicio
             $colors[0] = $colors[reset($positions)];
-        }if (!isset($colors[100])) { //Usar el último como color final
+        }
+        if (!isset($colors[100])) { //Usar el último como color final
             $colors[100] = $colors[end($positions)];
         }
         //Fill background
@@ -115,7 +123,7 @@ abstract class Tinyfier_Image_Gradient {
                 $j = intval($total_progress);
                 do {
                     $color_index = array_search($j--, $color_change_positions);
-                } while ($color_index === FALSE && $j >= 0);
+                } while ($color_index === false && $j >= 0);
 
                 //Obtener colores inicio y final para este rango
                 $start_color_progress = $color_change_positions[$color_index];
@@ -140,11 +148,21 @@ abstract class Tinyfier_Image_Gradient {
                     break;
 
                 case 'diagonal': //Draw from top-left to bottom-right
-                    imagefilledpolygon($image, array(
-                        $i, 0,
-                        $i + $incr, 0,
-                        0, $i + $incr,
-                        0, $i), 4, $color);
+                    imagefilledpolygon(
+                        $image,
+                        array(
+                            $i,
+                            0,
+                            $i + $incr,
+                            0,
+                            0,
+                            $i + $incr,
+                            0,
+                            $i
+                        ),
+                        4,
+                        $color
+                    );
                     break;
 
                 case 'square': //Draw from outside to center
@@ -156,11 +174,21 @@ abstract class Tinyfier_Image_Gradient {
                     break;
 
                 case 'diamond': //Draw from outside to center
-                    imagefilledpolygon($image, array(
-                        $width / 2, $i * $rw - 0.5 * $height,
-                        $i * $rh - 0.5 * $width, $height / 2,
-                        $width / 2, 1.5 * $height - $i * $rw,
-                        1.5 * $width - $i * $rh, $height / 2), 4, $color);
+                    imagefilledpolygon(
+                        $image,
+                        array(
+                            $width / 2,
+                            $i * $rw - 0.5 * $height,
+                            $i * $rh - 0.5 * $width,
+                            $height / 2,
+                            $width / 2,
+                            1.5 * $height - $i * $rw,
+                            1.5 * $width - $i * $rh,
+                            $height / 2
+                        ),
+                        4,
+                        $color
+                    );
                     break;
             }
         }

@@ -3,7 +3,8 @@
 /**
  * Compression and processing routines for Javascript code
  */
-abstract class Tinyfier_JS_Tool {
+abstract class Tinyfier_JS_Tool
+{
 
     /**
      * Compress javascript code
@@ -13,17 +14,19 @@ abstract class Tinyfier_JS_Tool {
      *   'gclosure': allow to use the external google closure compiler
      *
      * @param string $source
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return string
      */
-    public static function process($source, array $settings = array(), &$errors = array(), &$warnings = NULL) {
+    public static function process($source, array $settings = array(), &$errors = array(), &$warnings = null)
+    {
         //Default settings
         $settings = $settings + self::default_settings();
 
         //Compress using Google Closure compiler
         if ($settings['external_services'] && $settings['gclosure']) {
             $compiled = self::_compress_google_closure($source, $settings['level'], $settings['pretty'], $errors, $warnings);
-            if ($compiled !== FALSE) {
+            if ($compiled !== false) {
                 return $compiled;
             }
         }
@@ -48,26 +51,30 @@ abstract class Tinyfier_JS_Tool {
     const LEVEL_SIMPLE_OPTIMIZATIONS = 'SIMPLE_OPTIMIZATIONS';
     const LEVEL_ADVANCED_OPTIMIZATIONS = 'ADVANCED_OPTIMIZATIONS';
 
-    public static function default_settings() {
+    public static function default_settings()
+    {
         return array(
-            'external_services' => TRUE, //Use external compressors (like gclosure)
-            'gclosure' => TRUE,
+            'external_services' => true, //Use external compressors (like gclosure)
+            'gclosure' => true,
             'level' => self::LEVEL_SIMPLE_OPTIMIZATIONS,
-            'pretty' => FALSE
+            'pretty' => false
         );
     }
 
     /**
      * Compiles javascript code using the Google Closure Compiler API
      * @see http://code.google.com/intl/es/closure/compiler/docs/api-ref.html
+     *
      * @param string $source
-     * @param int $level One of LEVEL_* constants
-     * @param bool $pretty
+     * @param int    $level One of LEVEL_* constants
+     * @param bool   $pretty
+     *
      * @return mixed Code compressed, FALSE if error
      */
-    private static function _compress_google_closure($source, $level = self::LEVEL_SIMPLE_OPTIMIZATIONS, $pretty = FALSE, &$errors = array(), &$warnings = NULL) {
+    private static function _compress_google_closure($source, $level = self::LEVEL_SIMPLE_OPTIMIZATIONS, $pretty = false, &$errors = array(), &$warnings = null)
+    {
         if (!function_exists('curl_exec')) {
-            return FALSE;
+            return false;
         }
 
         //Generate POST data
@@ -84,19 +91,19 @@ abstract class Tinyfier_JS_Tool {
 
         //Remote compile
         $ch = curl_init('http://closure-compiler.appspot.com/compile');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post) . '&output_info=warnings&output_info=errors');
         $output = curl_exec($ch);
         curl_close($ch);
-        if ($output === FALSE) {
-            return FALSE;
+        if ($output === false) {
+            return false;
         }
 
-        $compilation_result = json_decode($output, TRUE);
+        $compilation_result = json_decode($output, true);
 
         if (!$compilation_result) {
-            return FALSE;
+            return false;
         }
 
         if (!empty($compilation_result['errors'])) {
@@ -115,7 +122,7 @@ abstract class Tinyfier_JS_Tool {
             }
         }
 
-        return empty($errors) ? $compilation_result['compiledCode'] : FALSE;
+        return empty($errors) ? $compilation_result['compiledCode'] : false;
     }
 
 }
