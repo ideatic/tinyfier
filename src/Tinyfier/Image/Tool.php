@@ -292,17 +292,30 @@ class Tinyfier_Image_Tool
 
         //Optimize
         if ($optimize && $path != null && $success) {
-            Tinyfier_Image_Optimizer::process(
-                                    $path,
-                                        (is_array($optimize) ? $optimize : array()) + array(
-                                            Tinyfier_Image_Optimizer::MODE =>
-                                                $quality === true ? Tinyfier_Image_Optimizer::MODE_LOSSLESS : Tinyfier_Image_Optimizer::MODE_LOSSY,
-                                            Tinyfier_Image_Optimizer::LOSSY_QUALITY => $quality
-                                        )
-            );
+            $optimizer = new Tinyfier_Image_Optimizer();
+            $optimizer->mode = $quality === true ? Tinyfier_Image_Optimizer::MODE_LOSSLESS : Tinyfier_Image_Optimizer::MODE_LOSSY;
+            $optimizer->lossy_quality = $quality;
+            if (is_array($optimize)) {
+                foreach ($optimize as $k => $v) {
+                    $optimizer->$k = $v;
+                }
+            }
+            $optimizer->optimize($path);
         }
 
         return $success;
+    }
+
+    /**
+     * Get the mime type for the given format
+     *
+     * @param string $format
+     *
+     * @return string
+     */
+    public function mimetype($format = 'png')
+    {
+        return (is_string($format) ? 'image/' . $format : image_type_to_mime_type($format));
     }
 
     /**
@@ -310,7 +323,7 @@ class Tinyfier_Image_Tool
      */
     public function send($format = 'png', $quality = 90)
     {
-        header('Content-type: ' . (is_string($format) ? 'image/' . $format : image_type_to_mime_type($format)));
+        header('Content-type: ' . $this->mimetype());
         return $this->save(null, $quality, false, false, $format);
     }
 
