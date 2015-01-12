@@ -36,7 +36,7 @@ abstract class Tinyfier_JS_Tool
             return $source;
         } else {
             try {
-                $jz = new JSqueeze;
+                $jz = new \Patchwork\JSqueeze;
                 $result = $jz->squeeze($source, true, false, false);
             } catch (Exception $e) {
                 $errors[] = $e->getMessage();

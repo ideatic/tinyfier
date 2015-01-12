@@ -236,9 +236,9 @@ class Minify_HTML
         $css = call_user_func($minifier, $css);
 
         return $this->_reservePlace(
-                    $this->_needsCdata($css)
-                        ? "{$openStyle}/*<![CDATA[*/{$css}/*]]>*/</style>"
-                        : "{$openStyle}{$css}</style>"
+            $this->_needsCdata($css)
+                ? "{$openStyle}/*<![CDATA[*/{$css}/*]]>*/</style>"
+                : "{$openStyle}{$css}</style>"
         );
     }
 
@@ -259,16 +259,22 @@ class Minify_HTML
         // remove CDATA section markers
         $js = $this->_removeCdata($js);
 
+        // check type
+        $minify = true;
+        if ($type = preg_match('/type=[\'"](.*?)[\'"]/i', $m[0], $match)) {
+            $minify = strcasecmp($match[1], 'text/javascript') == 0;
+        }
+
         // minify
-        $minifier = $this->_jsMinifier
+        $minifier = $minify && $this->_jsMinifier
             ? $this->_jsMinifier
             : 'trim';
         $js = call_user_func($minifier, $js);
 
         return $this->_reservePlace(
-                    $this->_needsCdata($js)
-                        ? "{$ws1}{$openScript}/*<![CDATA[*/{$js}/*]]>*/</script>{$ws2}"
-                        : "{$ws1}{$openScript}{$js}</script>{$ws2}"
+            $this->_needsCdata($js)
+                ? "{$ws1}{$openScript}/*<![CDATA[*/{$js}/*]]>*/</script>{$ws2}"
+                : "{$ws1}{$openScript}{$js}</script>{$ws2}"
         );
     }
 
