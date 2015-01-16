@@ -20,14 +20,20 @@ abstract class Tinyfier_JS_Tool
      */
     public static function process($source, array $settings = array(), &$errors = array(), &$warnings = null)
     {
+        if (empty($source)) {
+            return $source;
+        }
+
         //Default settings
         $settings = $settings + self::default_settings();
 
         //Compress using Google Closure compiler
-        if ($settings['external_services'] && $settings['gclosure']) {
-            $compiled = self::_compress_google_closure($source, $settings['level'], $settings['pretty'], $errors, $warnings);
-            if ($compiled !== false) {
-                return $compiled;
+        if ($settings['external_services'] && strlen($source) > $settings['external_services_min_length']) {
+            if ($settings['gclosure']) {
+                $compiled = self::_compress_google_closure($source, $settings['level'], $settings['pretty'], $errors, $warnings);
+                if ($compiled !== false) {
+                    return $compiled;
+                }
             }
         }
 
@@ -55,6 +61,7 @@ abstract class Tinyfier_JS_Tool
     {
         return array(
             'external_services' => true, //Use external compressors (like gclosure)
+            'external_services_min_length' => 750, //Min source length to use external compressors (to avoid too many calls)
             'gclosure' => true,
             'level' => self::LEVEL_SIMPLE_OPTIMIZATIONS,
             'pretty' => false
