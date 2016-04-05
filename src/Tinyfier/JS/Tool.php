@@ -30,7 +30,8 @@ abstract class Tinyfier_JS_Tool
         //Compress using Google Closure compiler
         if ($settings['external_services'] && strlen($source) > $settings['external_services_min_length']) {
             if ($settings['gclosure']) {
-                $compiled = self::_compress_google_closure($source, $settings['level'], $settings['pretty'], $errors, $warnings);
+                $extra = is_array($settings['gclosure']) ? $settings['gclosure'] : array();
+                $compiled = self::_compress_google_closure($source, $settings['level'], $settings['pretty'], $errors, $warnings, $extra);
                 if ($compiled !== false) {
                     return $compiled;
                 }
@@ -60,11 +61,11 @@ abstract class Tinyfier_JS_Tool
     public static function default_settings()
     {
         return array(
-            'external_services' => true, //Use external compressors (like gclosure)
+            'external_services'            => true, //Use external compressors (like gclosure)
             'external_services_min_length' => 750, //Min source length to use external compressors (to avoid too many calls)
-            'gclosure' => true,
-            'level' => self::LEVEL_SIMPLE_OPTIMIZATIONS,
-            'pretty' => false
+            'gclosure'                     => true,
+            'level'                        => self::LEVEL_SIMPLE_OPTIMIZATIONS,
+            'pretty'                       => false
         );
     }
 
@@ -78,20 +79,26 @@ abstract class Tinyfier_JS_Tool
      *
      * @return mixed Code compressed, FALSE if error
      */
-    private static function _compress_google_closure($source, $level = self::LEVEL_SIMPLE_OPTIMIZATIONS, $pretty = false, &$errors = array(), &$warnings = null)
-    {
+    private static function _compress_google_closure(
+        $source,
+        $level = self::LEVEL_SIMPLE_OPTIMIZATIONS,
+        $pretty = false,
+        &$errors = array(),
+        &$warnings = null,
+        $extra_settings = array()
+    ) {
         if (!function_exists('curl_exec')) {
             return false;
         }
 
         //Generate POST data
-        $post = array(
-            'output_info' => 'compiled_code',
-            'output_format' => 'json',
-            'warning_level' => isset($warnings) ? 'VERBOSE' : 'QUIET',
-            'compilation_level' => $level,
-            'js_code' => $source,
-        );
+        $post = $extra_settings + array(
+                'output_info'       => 'compiled_code',
+                'output_format'     => 'json',
+                'warning_level'     => isset($warnings) ? 'VERBOSE' : 'QUIET',
+                'compilation_level' => $level,
+                'js_code'           => $source,
+            );
         if ($pretty) {
             $post['formatting'] = 'pretty_print';
         }

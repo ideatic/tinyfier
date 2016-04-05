@@ -102,7 +102,9 @@ class Tinyfier_Image_Optimizer
             $mime = $this->_detect_mime($file);
 
             if (!$mime) {
-                throw new RuntimeException("Mimetype cannot be found for '$file'. Please check that at least one of these are available: finfo_file(), getimagesize() or mime_content_type()");
+                throw new RuntimeException(
+                    "Mimetype cannot be found for '$file'. Please check that at least one of these are available: finfo_file(), getimagesize() or mime_content_type()"
+                );
             }
 
             //Use 'nice' to reduce process priority
@@ -126,10 +128,10 @@ class Tinyfier_Image_Optimizer
                     $gifsicle = self::_find_tool('gifsicle');
 
                     $success = $this->_exec(
-                                    "{$commad_prefix}{$gifsicle} -b -O3 --careful :file",
-                                        array(
-                                            ':file' => $file
-                                        )
+                        "{$commad_prefix}{$gifsicle} -b -O3 --careful :file",
+                        array(
+                            ':file' => $file
+                        )
                     );
                     break;
 
@@ -280,11 +282,11 @@ class Tinyfier_Image_Optimizer
             $temp_files[$flag] = tempnam(sys_get_temp_dir(), 'jpegtran');
 
             $this->_exec(
-                 "{$commad_prefix}{$jpegtran} -copy {$metadata_copy} -optimize {$flag} -outfile :out :in",
-                     array(
-                         ':in' => $file,
-                         ':out' => $temp_files[$flag],
-                     )
+                "{$commad_prefix}{$jpegtran} -copy {$metadata_copy} -optimize {$flag} -outfile :out :in",
+                array(
+                    ':in'  => $file,
+                    ':out' => $temp_files[$flag],
+                )
             );
         }
 
@@ -341,9 +343,9 @@ class Tinyfier_Image_Optimizer
             $min_quality = 50;
             $max_quality = max($min_quality, $this->lossy_quality);
             $levels = array(
-                self::LEVEL_FAST => 10,
-                self::LEVEL_NORMAL => 3,
-                self::LEVEL_HIGH => 1,
+                self::LEVEL_FAST    => 10,
+                self::LEVEL_NORMAL  => 3,
+                self::LEVEL_HIGH    => 1,
                 self::LEVEL_EXTREME => 1
             );
 
@@ -355,10 +357,10 @@ class Tinyfier_Image_Optimizer
             } while (file_exists($tmp));
             copy($file, $tmp);
             $this->_exec(
-                 "{$commad_prefix}{$pngquant} --speed {$levels[$this->level]} --quality={$min_quality}-{$max_quality} --ext _pq.png :file",
-                     array(
-                         ':file' => $tmp
-                     )
+                "{$commad_prefix}{$pngquant} --speed {$levels[$this->level]} --quality={$min_quality}-{$max_quality} --ext _pq.png :file",
+                array(
+                    ':file' => $tmp
+                )
             );
 
             $out = preg_replace('/\.png$/', '_pq.png', $tmp);
@@ -388,32 +390,32 @@ class Tinyfier_Image_Optimizer
 
         $metadata_copy = $this->remove_metadata ? '-strip all' : '';
         $levels = array(
-            self::LEVEL_FAST => 2,
-            self::LEVEL_NORMAL => 3,
-            self::LEVEL_HIGH => 4,
+            self::LEVEL_FAST    => 2,
+            self::LEVEL_NORMAL  => 3,
+            self::LEVEL_HIGH    => 4,
             self::LEVEL_EXTREME => 6
         );
         $this->_exec(
-             "{$commad_prefix}{$optipng} -o{$levels[$this->level]} -quiet {$metadata_copy} :file",
-                 array(
-                     ':file' => $file
-                 )
+            "{$commad_prefix}{$optipng} -o{$levels[$this->level]} -quiet {$metadata_copy} :file",
+            array(
+                ':file' => $file
+            )
         );
 
         //Pngout Lossless compression
         $pngout = self::_find_tool('pngout');
 
         $levels = array(
-            self::LEVEL_FAST => 3,
-            self::LEVEL_NORMAL => 2,
-            self::LEVEL_HIGH => 1,
+            self::LEVEL_FAST    => 3,
+            self::LEVEL_NORMAL  => 2,
+            self::LEVEL_HIGH    => 1,
             self::LEVEL_EXTREME => 0
         );
         $this->_exec(
-             "{$commad_prefix}{$pngout} -s{$levels[$this->level]} -q :file",
-                 array(
-                     ':file' => $file
-                 )
+            "{$commad_prefix}{$pngout} -s{$levels[$this->level]} -q :file",
+            array(
+                ':file' => $file
+            )
         );
 
         if (isset($original_image) && !Tinyfier_Image_Tool::equal($original_image, $file)) {

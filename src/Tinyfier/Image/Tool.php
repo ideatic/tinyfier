@@ -214,9 +214,9 @@ class Tinyfier_Image_Tool
         if (!is_numeric($filter) && !defined($filter)) {
             $replaces = array(
                 'desaturate' => 'grayscale',
-                'invert' => 'negate',
-                'edges' => 'edgedetect',
-                'blur' => 'gaussian_blur',
+                'invert'     => 'negate',
+                'edges'      => 'edgedetect',
+                'blur'       => 'gaussian_blur',
             );
 
             foreach ($replaces as $s => $r) {
@@ -362,8 +362,6 @@ class Tinyfier_Image_Tool
      */
     public static function equal($image_a, $image_b)
     {
-        @set_time_limit(0);
-
         if (!($image_a instanceof self)) {
             $image_a = new self($image_a);
         }
@@ -381,14 +379,13 @@ class Tinyfier_Image_Tool
         $hb = $image_b->handle();
         for ($x = 0; $x <= imagesx($ha) - 1; $x++) {
             for ($y = 0; $y <= imagesy($ha) - 1; $y++) {
-                $color_index_a = imagecolorat($ha, $x, $y);
-                $color_index_b = imagecolorat($hb, $x, $y);
 
-                if ($color_index_a != $color_index_b) {
+                $color_a = imagecolorsforindex($ha, imagecolorat($ha, $x, $y));
+                $color_b = imagecolorsforindex($hb, imagecolorat($hb, $x, $y));
+
+                if ($color_a != $color_b) {
                     //If alfa value is zero, color doesn't matter
-                    $alpha_a = ($color_index_a >> 24) & 0x7F;
-                    $alpha_b = ($color_index_b >> 24) & 0x7F;
-                    if ($alpha_a != 0 || $alpha_b != 0) {
+                    if ($color_b['alpha'] != 0 || $color_b['alpha'] != 0) {
                         return false;
                     }
                 }

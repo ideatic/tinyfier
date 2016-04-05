@@ -48,13 +48,15 @@ abstract class Tinyfier_CSS_Tool
         }
 
         // 2. Optimize, compress and add vendor prefixes
-        $optimizer = new css_optimizer(array(
-            'compress' => $settings['compress'],
-            'optimize' => $settings['optimize'],
-            'extra_optimize' => $settings['extra_optimize'],
-            'remove_ie_hacks' => false,
-            'prefix' => $settings['prefix'],
-        ));
+        $optimizer = new css_optimizer(
+            array(
+                'compress'        => $settings['compress'],
+                'optimize'        => $settings['optimize'],
+                'extra_optimize'  => $settings['extra_optimize'],
+                'remove_ie_hacks' => false,
+                'prefix'          => $settings['prefix'],
+            )
+        );
         $css = $optimizer->process($css);
 
         return $css;
@@ -63,18 +65,18 @@ abstract class Tinyfier_CSS_Tool
     public static function default_settings()
     {
         return array(
-            'less' => true,
-            'absolute_path' => '',
-            'url_path' => '',
-            'cache_path' => '',
-            'cache_url' => '/cache/',
-            'compress' => true,
-            'optimize' => true,
-            'extra_optimize' => false,
+            'less'            => true,
+            'absolute_path'   => '',
+            'url_path'        => '',
+            'cache_path'      => '',
+            'cache_url'       => '/cache/',
+            'compress'        => true,
+            'optimize'        => true,
+            'extra_optimize'  => false,
             'optimize_images' => true,
-            'lossy_quality' => 75,
-            'data' => null,
-            'prefix' => 'all'
+            'lossy_quality'   => 75,
+            'data'            => null,
+            'prefix'          => 'all'
         );
     }
 

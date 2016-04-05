@@ -21,10 +21,10 @@ abstract class Tinyfier_HTML_Tool
         require_once dirname(__FILE__) . '/Minify_HTML.php';
 
         $settings = self::$_settings = $settings + array(
-                'compress_all' => true,
-                'css' => array(),
-                'js' => array(),
-                'markers' => array(
+                'compress_all'      => true,
+                'css'               => array(),
+                'js'                => array(),
+                'markers'           => array(
                     '<?'
                 ),
                 'external_services' => true,
@@ -32,11 +32,11 @@ abstract class Tinyfier_HTML_Tool
 
         if ($settings['compress_all']) {
             return Minify_HTML::minify(
-                              $html,
-                                  array(
-                                      'cssMinifier' => array(__CLASS__, '_compress_inline_css'),
-                                      'jsMinifier' => array(__CLASS__, '_compress_inline_js')
-                                  )
+                $html,
+                array(
+                    'cssMinifier' => array(__CLASS__, '_compress_inline_css'),
+                    'jsMinifier'  => array(__CLASS__, '_compress_inline_js')
+                )
             );
         } else {
             return Minify_HTML::minify($html);
@@ -54,11 +54,11 @@ abstract class Tinyfier_HTML_Tool
             return $css;
         } else {
             return Tinyfier_CSS_Tool::process(
-                                    $css,
-                                        self::$_settings['css'] + array(
-                                            'less' => false,
-                                            'external_services' => self::$_settings['external_services']
-                                        )
+                $css,
+                self::$_settings['css'] + array(
+                    'less'              => false,
+                    'external_services' => self::$_settings['external_services']
+                )
             );
         }
     }
@@ -74,10 +74,10 @@ abstract class Tinyfier_HTML_Tool
             return $js;
         } else {
             return Tinyfier_JS_Tool::process(
-                                   $js,
-                                       self::$_settings['js'] + array(
-                                           'external_services' => self::$_settings['external_services']
-                                       )
+                $js,
+                self::$_settings['js'] + array(
+                    'external_services' => self::$_settings['external_services']
+                )
             );
         }
     }
