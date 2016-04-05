@@ -12,12 +12,8 @@
             "homepage": "http://www.ideatic.net/"
         }
     ],
-    "config": {
-        "minimum-stability": "dev",
-        "prefer-stable": true
-    },
     "require": {
-        "ideatic/css_optimizer": "dev-master@dev",
+        "ideatic/css-optimizer": "*",
         "leafo/lessphp": "0.4.*",
         "patchwork/jsqueeze": "*",
         "php": ">=5.2"
