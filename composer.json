@@ -17,7 +17,7 @@
         "prefer-stable": true
     },
     "require": {
-        "ideatic/css_optimizer": "dev-master",
+        "ideatic/css_optimizer": "dev-master@dev",
         "leafo/lessphp": "0.4.*",
         "patchwork/jsqueeze": "*",
         "php": ">=5.2"
