@@ -136,6 +136,55 @@ class Tinyfier_Image_Tool
     }
 
     /**
+     * Sharpen the current image
+     *
+     * @param int $factor Sharpening factor (between 1 and 64)
+     */
+    public function sharpen($factor)
+    {
+        if ($factor == 0) {
+            return;
+        }
+
+        // get a value thats equal to 64 - abs( factor )
+        // ( using min/max to limited the factor to 0 - 64 to not get out of range values )
+        $val1Adjustment = 64 - min(64, max(0, abs($factor)));
+
+        // the base factor for the "current" pixel depends on if we are blurring or sharpening.
+        // If we are blurring use 1, if sharpening use 9.
+        $val1Base = (abs($factor) != $factor)
+            ? 1
+            : 9;
+
+        // value for the center/currrent pixel is:
+        //  1 + 0 - max blurring
+        //  1 + 64- minimal blurring
+        //  9 + 64- minimal sharpening
+        //  9 + 0 - maximum sharpening
+        $val1 = $val1Base + $val1Adjustment;
+
+        // the value for the surrounding pixels is either positive or negative depending on if we are blurring or sharpening.
+        $val2 = (abs($factor) != $factor) ? 1 : -1;
+
+        // get source values
+
+        // setup matrix ..
+        $matrix = [
+            [$val2, $val2, $val2],
+            [$val2, $val1, $val2],
+            [$val2, $val2, $val2]
+        ];
+
+        // calculate the correct divisor
+        // actual divisor is equal to "$divisor = $val1 + $val2 * 8;"
+        // but the following line is more generic
+        $divisor = array_sum(array_map('array_sum', $matrix));
+
+        // apply the matrix
+        imageconvolution($this->_handle, $matrix, $divisor, 0);
+    }
+
+    /**
      * Force the aspect ratio to the given value, stretching or flattening the image if necessary
      *
      * @param float $ratio Proportion ratio between the width and the height
@@ -212,12 +261,12 @@ class Tinyfier_Image_Tool
     {
         //Find filter constant
         if (!is_numeric($filter) && !defined($filter)) {
-            $replaces = array(
+            $replaces = [
                 'desaturate' => 'grayscale',
                 'invert'     => 'negate',
                 'edges'      => 'edgedetect',
                 'blur'       => 'gaussian_blur',
-            );
+            ];
 
             foreach ($replaces as $s => $r) {
                 if ($filter == $s) {
@@ -241,6 +290,92 @@ class Tinyfier_Image_Tool
         array_unshift($args, $filter);
         array_unshift($args, $this->_handle);
         return call_user_func_array('imagefilter', $args);
+    }
+
+    private function _is_transparent($in)
+    {
+        $c = imagecolorsforindex($this->_handle, $in);
+        if ($c['alpha'] >= 127) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Crop the current image, removing the transparent background area
+     * @return resource
+     */
+    public function crop($pad = null)
+    {
+        // Calculate padding for each side.
+        if (isset($pad)) {
+            $pp = explode(' ', $pad);
+            if (isset($pp[3])) {
+                $p = [(int)$pp[0], (int)$pp[1], (int)$pp[2], (int)$pp[3]];
+            } else {
+                if (isset($pp[2])) {
+                    $p = [(int)$pp[0], (int)$pp[1], (int)$pp[2], (int)$pp[1]];
+                } else {
+                    if (isset($pp[1])) {
+                        $p = [(int)$pp[0], (int)$pp[1], (int)$pp[0], (int)$pp[1]];
+                    } else {
+                        $p = array_fill(0, 4, (int)$pp[0]);
+                    }
+                }
+            }
+        } else {
+            $p = array_fill(0, 4, 0);
+        }
+
+        // Get the image width and height.
+        $imw = imagesx($this->_handle);
+        $imh = imagesy($this->_handle);
+
+        // Set the X variables.
+        $xmin = $imw;
+        $xmax = 0;
+
+        // Start scanning for the edges.
+        for ($iy = 0; $iy < $imh; $iy++) {
+            $first = true;
+            for ($ix = 0; $ix < $imw; $ix++) {
+                $ndx = imagecolorat($this->_handle, $ix, $iy);
+                if (!$this->_is_transparent($ndx)) {
+                    if ($xmin > $ix) {
+                        $xmin = $ix;
+                    }
+                    if ($xmax < $ix) {
+                        $xmax = $ix;
+                    }
+                    if (!isset($ymin)) {
+                        $ymin = $iy;
+                    }
+                    $ymax = $iy;
+                    if ($first) {
+                        $ix = $xmax;
+                        $first = false;
+                    }
+                }
+            }
+        }
+
+        // The new width and height of the image. (not including padding)
+        $imw = 1 + $xmax - $xmin; // Image width in pixels
+        $imh = 1 + $ymax - $ymin; // Image height in pixels
+
+        // Make another image to place the trimmed version in.
+        $im2 = imagecreatetruecolor($imw + $p[1] + $p[3], $imh + $p[0] + $p[2]);
+
+        // Make the background of the new image the same as the background of the old one.
+        $transparent = imagecolorallocatealpha($im2, 255, 255, 255, 127);
+        imagefill($im2, 0, 0, $transparent);
+
+        // Copy it over to the new image.
+        imagecopy($im2, $this->_handle, $p[3], $p[0], $xmin, $ymin, $imw, $imh);
+
+        // To finish up, we replace the old image which is referenced.
+        $this->_handle = $im2;
     }
 
     /**
@@ -304,6 +439,21 @@ class Tinyfier_Image_Tool
         }
 
         return $success;
+    }
+
+    /**
+     * Get the current image with the specified format
+     *
+     * @param string $format
+     * @param int    $quality
+     *
+     * @return string
+     */
+    public function get($format = null, $quality = 85)
+    {
+        ob_start();
+        $this->save(null, $quality, true, false, $format);
+        return ob_get_clean();
     }
 
     /**
