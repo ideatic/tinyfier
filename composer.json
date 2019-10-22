@@ -14,7 +14,7 @@
     ],
     "require": {
         "ideatic/css-optimizer": "*",
-        "leafo/lessphp": "0.4.*",
+        "leafo/lessphp": "0.5.*",
         "patchwork/jsqueeze": "*",
         "php": ">=5.2"
     },
