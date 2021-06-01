@@ -110,7 +110,7 @@ class Tinyfier_Image_Tool
             $height = $keep_aspect ? PHP_INT_MAX : $current_height;
         }
 
-        //Adjust final size
+        // Adjust final size
         if ($keep_aspect) {
             $aspect_ratio = min($width / $current_width, $height / $current_height);
             $dest_width = round($current_width * $aspect_ratio);
@@ -535,7 +535,7 @@ class Tinyfier_Image_Tool
 
                 if ($color_a != $color_b) {
                     //If alfa value is zero, color doesn't matter
-                    if ($color_b['alpha'] != 0 || $color_b['alpha'] != 0) {
+                    if ($color_a['alpha'] != 0 || $color_b['alpha'] != 0) {
                         return false;
                     }
                 }
