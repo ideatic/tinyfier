@@ -9,16 +9,14 @@ abstract class Tinyfier_Image_Gradient
     /**
      * Generate a gradient
      *
-     * @param int    $width
-     * @param int    $height
-     * @param array  $color_stops      Color stops, in format (position, unit, color)
-     * @param string $direction        Gradient direction (vertical, horizontal, diagonal, radial, square, diamond)
-     * @param bool   $invert           Inver gradient
-     * @param array  $background_color If set, the final color of the gradient will be saved here
-     *
-     * @return Tinyfier_Image_Tool
+     * @param int        $width
+     * @param int        $height
+     * @param array      $color_stops      Color stops, in format (position, unit, color)
+     * @param string     $direction        Gradient direction (vertical, horizontal, diagonal, radial, square, diamond)
+     * @param bool       $invert           Inver gradient
+     * @param array|null $background_color If set, the final color of the gradient will be saved here
      */
-    public static function generate($width, $height, $color_stops, $direction = 'vertical', $invert = false, &$background_color = null)
+    public static function generate(int $width, int $height, array $color_stops, string $direction = 'vertical', bool $invert = false, array &$background_color = null): Tinyfier_Image_Tool|bool
     {
         //Crear imagen
         $image = imagecreateTRUEcolor($width, $height);
@@ -65,23 +63,18 @@ abstract class Tinyfier_Image_Gradient
 
             default:
                 return false;
-                break;
         }
 
         //Ordenar paradas de color      
-        $colors = array();
+        $colors = [];
         foreach ($color_stops as $stop) {
-            list($position, $unit, $color) = $stop;
+            [$position, $unit, $color] = $stop;
 
             $percentage;
-            switch ($unit) {
-                case 'px':
-                    $percentage = 100 / $lines * $position;
-                    break;
-                default:
-                    $percentage = $position;
-                    break;
-            }
+            $percentage = match ($unit) {
+                'px' => 100 / $lines * $position,
+                default => $position,
+            };
             $colors[floatval($position)] = Tinyfier_CSS_Color::create($color)
                                                              ->to_array();
         }
@@ -97,13 +90,13 @@ abstract class Tinyfier_Image_Gradient
         //Fill background
         $background_color = $colors[100];
         if ($fill_background) {
-            list($r1, $g1, $b1) = $colors[100];
+            [$r1, $g1, $b1] = $colors[100];
             imagefill($image, 0, 0, imagecolorallocate($image, $r1, $g1, $b1));
         }
 
         //Invert colors
         if ($invert) {
-            $invert_colors = array();
+            $invert_colors = [];
             foreach ($colors as $key => $value) {
                 $invert_colors[100 - $key] = $value;
             }
@@ -150,7 +143,7 @@ abstract class Tinyfier_Image_Gradient
                 case 'diagonal': //Draw from top-left to bottom-right
                     imagefilledpolygon(
                         $image,
-                        array(
+                        [
                             $i,
                             0,
                             $i + $incr,
@@ -159,7 +152,7 @@ abstract class Tinyfier_Image_Gradient
                             $i + $incr,
                             0,
                             $i
-                        ),
+                        ],
                         4,
                         $color
                     );
@@ -176,7 +169,7 @@ abstract class Tinyfier_Image_Gradient
                 case 'diamond': //Draw from outside to center
                     imagefilledpolygon(
                         $image,
-                        array(
+                        [
                             $width / 2,
                             $i * $rw - 0.5 * $height,
                             $i * $rh - 0.5 * $width,
@@ -185,7 +178,7 @@ abstract class Tinyfier_Image_Gradient
                             1.5 * $height - $i * $rw,
                             1.5 * $width - $i * $rh,
                             $height / 2
-                        ),
+                        ],
                         4,
                         $color
                     );

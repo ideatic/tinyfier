@@ -1,5 +1,7 @@
 <?php
 
+use Patchwork\JSqueeze;
+
 /**
  * Compression and processing routines for Javascript code
  */
@@ -18,7 +20,7 @@ abstract class Tinyfier_JS_Tool
      *
      * @return string
      */
-    public static function process($source, array $settings = array(), &$errors = array(), &$warnings = null)
+    public static function process(string $source, array $settings = [], &$errors = [], &$warnings = null): string
     {
         if (empty($source)) {
             return $source;
@@ -30,7 +32,7 @@ abstract class Tinyfier_JS_Tool
         //Compress using Google Closure compiler
         if ($settings['external_services'] && strlen($source) > $settings['external_services_min_length']) {
             if ($settings['gclosure']) {
-                $extra = is_array($settings['gclosure']) ? $settings['gclosure'] : array();
+                $extra = is_array($settings['gclosure']) ? $settings['gclosure'] : [];
                 $compiled = self::_compress_google_closure($source, $settings['level'], $settings['pretty'], $errors, $warnings, $extra);
                 if ($compiled !== false) {
                     return $compiled;
@@ -43,7 +45,7 @@ abstract class Tinyfier_JS_Tool
             return $source;
         } else {
             try {
-                $jz = new \Patchwork\JSqueeze;
+                $jz = new JSqueeze;
                 $result = $jz->squeeze($source, true, false, false);
             } catch (Exception $e) {
                 $errors[] = $e->getMessage();
@@ -58,47 +60,47 @@ abstract class Tinyfier_JS_Tool
     const LEVEL_SIMPLE_OPTIMIZATIONS = 'SIMPLE_OPTIMIZATIONS';
     const LEVEL_ADVANCED_OPTIMIZATIONS = 'ADVANCED_OPTIMIZATIONS';
 
-    public static function default_settings()
+    public static function default_settings(): array
     {
-        return array(
+        return [
             'external_services'            => true, //Use external compressors (like gclosure)
             'external_services_min_length' => 750, //Min source length to use external compressors (to avoid too many calls)
             'gclosure'                     => true,
             'level'                        => self::LEVEL_SIMPLE_OPTIMIZATIONS,
             'pretty'                       => false
-        );
+        ];
     }
 
     /**
      * Compiles javascript code using the Google Closure Compiler API
      * @see http://code.google.com/intl/es/closure/compiler/docs/api-ref.html
      *
-     * @param string $source
-     * @param int    $level One of LEVEL_* constants
-     * @param bool   $pretty
+     * @param string     $source
+     * @param int|string $level One of LEVEL_* constants
+     * @param bool       $pretty
      *
      * @return mixed Code compressed, FALSE if error
      */
     private static function _compress_google_closure(
-        $source,
-        $level = self::LEVEL_SIMPLE_OPTIMIZATIONS,
-        $pretty = false,
-        &$errors = array(),
+        string $source,
+        int|string $level = self::LEVEL_SIMPLE_OPTIMIZATIONS,
+        bool $pretty = false,
+        &$errors = [],
         &$warnings = null,
-        $extra_settings = array()
-    ) {
+        $extra_settings = []
+    ): mixed {
         if (!function_exists('curl_exec')) {
             return false;
         }
 
         //Generate POST data
-        $post = $extra_settings + array(
+        $post = $extra_settings + [
                 'output_info'       => 'compiled_code',
                 'output_format'     => 'json',
                 'warning_level'     => isset($warnings) ? 'VERBOSE' : 'QUIET',
                 'compilation_level' => $level,
                 'js_code'           => $source,
-            );
+            ];
         if ($pretty) {
             $post['formatting'] = 'pretty_print';
         }

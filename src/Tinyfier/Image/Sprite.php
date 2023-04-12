@@ -9,17 +9,17 @@ class Tinyfier_Image_Sprite
     /**
      * @var Tinyfier_Image_SpriteImage[]
      */
-    private $_images;
+    private array $_images;
 
     public function __construct()
     {
-        $this->_images = array();
+        $this->_images = [];
     }
 
     /**
      * Adds a new image to the sprite
      */
-    public function add_image($path, $tag = null)
+    public function add_image($path, $tag = null): void
     {
         //Check if the file is already included
         foreach ($this->_images as $image) {
@@ -37,7 +37,7 @@ class Tinyfier_Image_Sprite
      * Build the CSS sprite in memory
      * @return Tinyfier_Image_Tool
      */
-    public function build()
+    public function build(): Tinyfier_Image_Tool
     {
         //Sort images inside the sprite
         $y = 0;
@@ -69,7 +69,7 @@ class Tinyfier_Image_Sprite
      * Images added to the sprite
      * @return Tinyfier_Image_SpriteImage[]
      */
-    public function images()
+    public function images(): array
     {
         return $this->_images;
     }
@@ -92,30 +92,30 @@ class Tinyfier_Image_SpriteImage
      * Image added to the sprite
      * @var Tinyfier_Image_Tool
      */
-    public $image;
+    public Tinyfier_Image_Tool $image;
 
     /**
      * Original path to the image file
      * @var string
      */
-    public $path;
+    public string $path;
 
     /**
      * Top margin of the image in the sprite
      * @var int
      */
-    public $top;
+    public int $top;
 
     /**
      * Left margin of the image in the sprite
      * @var int
      */
-    public $left;
+    public int $left;
 
     /**
      * Information related to the image
      * @var mixed
      */
-    public $tag;
+    public mixed $tag;
 
 }

@@ -16,7 +16,7 @@ if (!isset($src_folder)) {//Path where look for source files
     $src_folder = dirname(dirname($_SERVER['SCRIPT_FILENAME']));
 }
 if (!isset($max_age)) {
-    $max_age = isset($_GET['max-age']) ? $_GET['max-age'] : 604800; //Max time for user cache (default: 1 week)
+    $max_age = $_GET['max-age'] ?? 604800; //Max time for user cache (default: 1 week)
 }if (!isset($separator)) {
     $separator = ','; //Source files separator
 }
@@ -34,7 +34,7 @@ $recache = isset($_GET['recache']); //Disable cache
 error_reporting(E_ALL & ~E_STRICT);
 ini_set('display_errors', $debug);
 ini_set('log_errors', 'On');
-ini_set('error_log', isset($error_log) ? $error_log : dirname(__FILE__) . '/error_log.txt');
+ini_set('error_log', $error_log ?? dirname(__FILE__) . '/error_log.txt');
 
 //Get input string
 if (isset($_SERVER['PATH_INFO'])) {
@@ -50,7 +50,7 @@ if (isset($_SERVER['PATH_INFO'])) {
 
 //Check that source files are safe and well-formed
 $input_string = str_replace("\x00", '', (string) $input_string); //Protect null bytes (http://www.php.net/manual/en/security.filesystem.nullbytes.php)
-if (empty($input_string) || strpos($input_string, '//') !== FALSE || strpos($input_string, '\\') !== FALSE || strpos($input_string, './') !== FALSE) {
+if (empty($input_string) || str_contains($input_string, '//') || str_contains($input_string, '\\') || str_contains($input_string, './')) {
     header('HTTP/1.0 400 Bad Request');
     die('Invalid source files');
 }
@@ -67,7 +67,7 @@ foreach ($input_data as $input) {
         continue;
     }
 
-    if (strpos($input, '=') !== FALSE) { //Input data
+    if (str_contains($input, '=')) { //Input data
         $parts = explode('=', urldecode($input));
         $vars[$parts[0]] = $parts[1];
     } else { //Input file
@@ -120,9 +120,9 @@ if (!$debug) {
 
 //Check if browser supports GZIP compression
 $accept_encoding = isset($_SERVER['HTTP_ACCEPT_ENCODING']) ? strtolower($_SERVER['HTTP_ACCEPT_ENCODING']) : '';
-if (strpos($accept_encoding, 'gzip') !== FALSE) {
+if (str_contains($accept_encoding, 'gzip')) {
     $encoding = 'gzip';
-} else if (strpos($accept_encoding, 'deflate') !== FALSE) {
+} else if (str_contains($accept_encoding, 'deflate')) {
     $encoding = 'deflate';
 } else {
     $encoding = 'none';
@@ -225,7 +225,7 @@ if (!file_exists($cache_file) || $debug || $recache) :
     //Delete old cache copies
     $dirh = opendir($cache_dir);
     while (($file = readdir($dirh)) !== FALSE) {
-        if (strpos($file, $cache_prefix) === 0 && filemtime("$cache_dir/$file") < $last_modified) {
+        if (str_starts_with($file, $cache_prefix) && filemtime("$cache_dir/$file") < $last_modified) {
             unlink("$cache_dir/$file");
         }
     }

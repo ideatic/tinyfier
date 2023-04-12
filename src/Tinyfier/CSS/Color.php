@@ -8,22 +8,19 @@
 class Tinyfier_CSS_Color
 {
 
-    public $valid = false;
-    public $r, $g, $b, $a = 1;
+    public bool $valid = false;
+    public int $r, $g, $b;
+    public int|float $a = 1;
 
-    public function __construct($color)
+    public function __construct(string $color)
     {
         $this->parse($color);
     }
 
     /**
      * Parse the specified color. Valid formats: rgb, rgba, hex, hsl, blue/white/...
-     *
-     * @param string $color
-     *
-     * @return boolean
      */
-    public function parse($color)
+    public function parse(string $color): bool
     {
         $this->valid = false;
         if (is_array($color)) {
@@ -31,7 +28,7 @@ class Tinyfier_CSS_Color
                 $this->r = $color[0];
                 $this->g = $color[1];
                 $this->b = $color[2];
-                $this->a = isset($color[3]) ? $color[3] : 1;
+                $this->a = $color[3] ?? 1;
             }
         } else {
             $this->r = $this->g = $this->b = 0;
@@ -50,28 +47,28 @@ class Tinyfier_CSS_Color
             }
 
             //Define formats
-            $formats = array(
-                array(
+            $formats = [
+                [
                     //'rgb(123, 234, 45)', 'rgb(255,234,245)', 'rgba(255,234,245,0.5)'
                     'regex'    => '/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*(\d+(?:\.\d+)?))?\s*\)$/i',
                     'callback' => '_parse_rgba'
-                ),
-                array(
+                ],
+                [
                     //'#00ff00', '336699'
                     'regex'    => '/^(\w{2})(\w{2})(\w{2})$/',
                     'callback' => '_parse_hex'
-                ),
-                array(
+                ],
+                [
                     //'#fb0', 'f0f'
                     'regex'    => '/^(\w{1})(\w{1})(\w{1})$/',
                     'callback' => '_parse_hex_short'
-                ),
-                array(
+                ],
+                [
                     //hsl(0, 100%, 50%);
                     'regex'    => '/^hsl\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)$/i',
                     'callback' => '_parse_hsl'
-                )
-            );
+                ]
+            ];
 
             //Find the current format
             $this->valid = false;
@@ -81,7 +78,7 @@ class Tinyfier_CSS_Color
                     $this->$callback($match);
 
                     //Clean color values
-                    foreach (array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 1) as $prop => $max) {
+                    foreach (['r' => 255, 'g' => 255, 'b' => 255, 'a' => 1] as $prop => $max) {
                         $v = $this->$prop;
                         $this->$prop = $v < 0 || is_nan($v) ? 0 : min($v, $max);
                     }
@@ -94,7 +91,7 @@ class Tinyfier_CSS_Color
         return $this->valid;
     }
 
-    private function _parse_rgba($match)
+    private function _parse_rgba(array $match): void
     {
         $this->r = intval($match[1]);
         $this->g = intval($match[2]);
@@ -102,14 +99,14 @@ class Tinyfier_CSS_Color
         $this->a = !isset($match[4]) || $match[4] == '' ? 1 : floatval($match[4]);
     }
 
-    private function _parse_hex($match)
+    private function _parse_hex(array $match): void
     {
         $this->r = hexdec($match[1]);
         $this->g = hexdec($match[2]);
         $this->b = hexdec($match[3]);
     }
 
-    private function _parse_hex_short($match)
+    private function _parse_hex_short(array $match): void
     {
         $this->r = hexdec($match[1] . $match[1]);
         $this->g = hexdec($match[2] . $match[2]);
@@ -120,11 +117,10 @@ class Tinyfier_CSS_Color
      * Convert a HSL value to RGB
      *
      * Based on: {@link http://www.easyrgb.com/index.php?X=MATH&H=19#text19}.ss Lightnesss
-     * @return string
      */
-    private function _parse_hsl($match)
+    private function _parse_hsl(array $match): void
     {
-        list($hue, $saturation, $lightness) = array($match[1], $match[2], $match[3]);
+        [$hue, $saturation, $lightness] = [$match[1], $match[2], $match[3]];
 
         $hue = $hue / 360;
         $saturation = $saturation / 100;
@@ -168,9 +164,8 @@ class Tinyfier_CSS_Color
 
     /**
      * Get the color in CSS rgb/rgba format
-     * @return string
      */
-    public function to_rgb($alpha = true)
+    public function to_rgb(bool $alpha = true): string
     {
         if ($alpha && $this->a != 1) {
             return "rgba($this->r, $this->g, $this->b, $this->a)";
@@ -181,9 +176,8 @@ class Tinyfier_CSS_Color
 
     /**
      * Get the color in HEX format
-     * @return string
      */
-    public function to_hex($allow_short = true)
+    public function to_hex(bool $allow_short = true): string
     {
         $hex = "#";
         $hex .= str_pad(dechex($this->r), 2, "0", STR_PAD_LEFT);
@@ -199,36 +193,30 @@ class Tinyfier_CSS_Color
 
     /**
      * Get the color in a RGB/RGBA array
-     * @return array
      */
-    public function to_array($alpha = true)
+    public function to_array($alpha = true): array
     {
         if ($alpha && $this->a != 1) {
-            return array($this->r, $this->g, $this->b, $this->a);
+            return [$this->r, $this->g, $this->b, $this->a];
         } else {
-            return array($this->r, $this->g, $this->b);
+            return [$this->r, $this->g, $this->b];
         }
     }
 
     /**
      * Parse the input color
-     *
-     * @param string $color
-     *
-     * @return self
      */
-    public static function create($color)
+    public static function create(string $color): self
     {
         return new self($color);
     }
 
     /**
      * List of common color names used in HTML and CSS
-     * @return array
      */
-    public static function color_names()
+    public static function color_names(): array
     {
-        return array(
+        return [
             'aliceblue'            => 'f0f8ff',
             'antiquewhite'         => 'faebd7',
             'aqua'                 => '00ffff',
@@ -372,7 +360,7 @@ class Tinyfier_CSS_Color
             'whitesmoke'           => 'f5f5f5',
             'yellow'               => 'ffff00',
             'yellowgreen'          => '9acd32'
-        );
+        ];
     }
 
 }

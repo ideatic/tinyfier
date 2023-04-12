@@ -9,20 +9,20 @@ class Tinyfier_CSS_LESS extends lessc
     /**
      * @var lessc
      */
-    private $_settings;
-    private $_sprites = array();
+    private lessc $_settings;
+    private array $_sprites = [];
 
-    public function process($str = null, $settings = null)
+    public function process($str = null, $settings = null): array|bool|int|string
     {
-        $this->_sprites = array();
+        $this->_sprites = [];
         $this->_settings = $settings;
 
         //Prepare compiler
-        $this->registerFunction('gradient', array($this, 'lib_gradient'));
-        $this->registerFunction('sprite', array($this, 'lib_sprite'));
-        $this->registerFunction('inline', array($this, 'lib_inline'));
-        $this->registerFunction('url', array($this, 'lib_url'));
-        $this->registerFunction('filter', array($this, 'lib_filter'));
+        $this->registerFunction('gradient', [$this, 'lib_gradient']);
+        $this->registerFunction('sprite', [$this, 'lib_sprite']);
+        $this->registerFunction('inline', [$this, 'lib_inline']);
+        $this->registerFunction('url', [$this, 'lib_url']);
+        $this->registerFunction('filter', [$this, 'lib_filter']);
 
         if ($settings['compress']) {
             $this->setFormatter('compressed');
@@ -69,31 +69,31 @@ class Tinyfier_CSS_LESS extends lessc
     /**
      * Rewrite URLs in the document for put them right
      */
-    public function lib_url($arg)
+    public function lib_url($arg): array
     {
-        list($type, $dummy, $value) = $arg;
+        [$type, $dummy, $value] = $arg;
         $url = $rewrited = $this->_remove_quotes(trim($value[0]));
 
-        $rewrite = strpos($url, 'data:') !== 0 //Don't rewrite data URLs
+        $rewrite = !str_starts_with($url, 'data:') //Don't rewrite data URLs
                    && !empty($url) //Don't rewrite empty URLs
-                   && $url[0] != '/' && strpos($url, '://') === false //Don't rewrite site root–relative or absolute URLs
+                   && $url[0] != '/' && !str_contains($url, '://') //Don't rewrite site root–relative or absolute URLs
         ;
 
 
         if ($rewrite) {
-            if ($this->_settings['url_path'][0] == '/' || strpos($this->_settings['url_path'], '://') !== 0) {
+            if ($this->_settings['url_path'][0] == '/' || !str_starts_with($this->_settings['url_path'], '://')) {
                 $rewrited = $this->_clear_path(dirname($this->_settings['url_path']) . '/' . $url);
             } else {
                 //Calculate working url
                 $working = $_SERVER['REQUEST_URI'];
-                $ending = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
-                $ending = isset($_SERVER['ORIG_PATH_INFO']) ? $_SERVER['ORIG_PATH_INFO'] : $ending;
+                $ending = $_SERVER['PATH_INFO'] ?? '';
+                $ending = $_SERVER['ORIG_PATH_INFO'] ?? $ending;
 
                 if (!empty($_SERVER['QUERY_STRING'])) {
                     $ending .= '?' . $_SERVER['QUERY_STRING'];
                 }
 
-                if (substr($_SERVER['REQUEST_URI'], -strlen($ending)) === $ending) {
+                if (str_ends_with($_SERVER['REQUEST_URI'], $ending)) {
                     $working = substr($_SERVER['REQUEST_URI'], 0, -strlen($ending));
                 }
                 $working = rtrim($working, '/');
@@ -102,7 +102,7 @@ class Tinyfier_CSS_LESS extends lessc
             }
         }
 
-        return array($type, '', array("url('$rewrited')"));
+        return [$type, '', ["url('$rewrited')"]];
     }
 
     /**
@@ -110,29 +110,29 @@ class Tinyfier_CSS_LESS extends lessc
      */
     public function lib_inline($arg)
     {
-        list($type, $dummy, $value) = $arg;
+        [$type, $dummy, $value] = $arg;
         $url = $this->_remove_quotes(trim($value[0]));
 
-        if (strpos($url, 'data:') !== 0) {
+        if (!str_starts_with($url, 'data:')) {
             $local_path = $this->_local_path($url);
             $ext = pathinfo($local_path, PATHINFO_EXTENSION);
-            if (!in_array($ext, array('png', 'gif', 'jpg', 'jpeg'))) {
+            if (!in_array($ext, ['png', 'gif', 'jpg', 'jpeg'])) {
                 die("The file extension '$ext' is not allowed for inline images");
             }
             $content = @file_get_contents($local_path) or die("Can't retrieve $url content (looked in $local_path)");
             $url = "data:image/$ext;base64," . base64_encode($content);
         }
-        return array($type, '', array("url('$url')"));
+        return [$type, '', ["url('$url')"]];
     }
 
     /**
      * Resize the selected image
      */
-    public function lib_filter($arguments)
+    public function lib_filter($arguments): array
     {
         //Process input arguments
         $filter = $url = '';
-        $filter_args = array();
+        $filter_args = [];
         foreach ($arguments[2] as $argument) {
             switch ($argument[0]) {
                 case 'string':
@@ -155,20 +155,20 @@ class Tinyfier_CSS_LESS extends lessc
 
         //Apply filter
         $image = new Tinyfier_Image_Tool($local_path);
-        call_user_func_array(array($image, 'filter'), array_merge(array($filter), $filter_args));
+        call_user_func_array([$image, 'filter'], array_merge([$filter], $filter_args));
 
         //Save image and generate CSS
-        $format = in_array($image->format(), array('gif', 'png', 'jpg')) ? $image->format() : 'png';
+        $format = in_array($image->format(), ['gif', 'png', 'jpg']) ? $image->format() : 'png';
         $path = $this->_get_cache_path('filter_' . $filter, $format);
         $image->save($path, $this->_settings['lossy_quality'], $this->_settings['optimize_images']);
-        return array('string', '', array("url('{$this->_get_cache_url($path)}')"));
+        return ['string', '', ["url('{$this->_get_cache_url($path)}')"]];
     }
 
     /**
      * Apply a filter on the selected image
      * @see http://php.net/manual/function.imagefilter.php
      */
-    public function lib_resize($arg)
+    public function lib_resize($arg): array
     {
         //Get parameters
         $url = $this->_remove_quotes(trim($arg[2][0][2][0]));
@@ -197,24 +197,24 @@ class Tinyfier_CSS_LESS extends lessc
 
         if ($width == $image->width() && $height == $image->height()) //Resize not necessary
         {
-            return array('string', '', array("url('$url')"));
+            return ['string', '', ["url('$url')"]];
         }
 
         $image->resize($width, $height, $keep_aspect);
 
         //Save image and generate CSS
-        $format = in_array($image->format(), array('gif', 'png', 'jpg')) ? $image->format() : 'png';
+        $format = in_array($image->format(), ['gif', 'png', 'jpg']) ? $image->format() : 'png';
         $path = $this->_get_cache_path('resize', $format);
         $image->save($path, $this->_settings['lossy_quality'], $this->_settings['optimize_images']);
-        return array('string', '', array("url('{$this->_get_cache_url($path)}')"));
+        return ['string', '', ["url('{$this->_get_cache_url($path)}')"]];
     }
 
     /**
      * Generates a gradient compatible with old browsers
      */
-    public function lib_gradient($arguments)
+    public function lib_gradient($arguments): array
     {
-        $color_stops = array();
+        $color_stops = [];
         $gradient_type = 'vertical';
         $gradient_width = 1;
         $gradient_height = 50;
@@ -227,9 +227,9 @@ class Tinyfier_CSS_LESS extends lessc
                 case 'raw_color':
                 case 'color': //Start or end color  
                     $argument = $this->coerceColor($argument);
-                    $is_initial_color = isset($is_initial_color) ? false : true;
+                    $is_initial_color = !isset($is_initial_color);
                     // $color = $type == 'color' ? array($argument[1], $argument[2], $argument[3]) : $this->coerceColor($argument[1]);
-                    $color_stops[] = array($is_initial_color ? 0 : 100, '%', array($argument[1], $argument[2], $argument[3]));
+                    $color_stops[] = [$is_initial_color ? 0 : 100, '%', [$argument[1], $argument[2], $argument[3]]];
                     break;
                 case 'list':
                     $list_data = $argument[2];
@@ -241,10 +241,10 @@ class Tinyfier_CSS_LESS extends lessc
                         $color_index = 1;
                         $position_index = 0;
                     }
-                    $color = array($list_data[$color_index][1], $list_data[$color_index][2], $list_data[$color_index][3]);
+                    $color = [$list_data[$color_index][1], $list_data[$color_index][2], $list_data[$color_index][3]];
                     $position = $list_data[$position_index][1];
                     $unit = $list_data[$position_index][2];
-                    $color_stops[] = array($position, $unit, $color);
+                    $color_stops[] = [$position, $unit, $color];
                     break;
                 case 'string': //Gradient type
                     $gradient_type = strtolower($this->_remove_quotes($argument[2][0]));
@@ -284,9 +284,9 @@ class Tinyfier_CSS_LESS extends lessc
         $path = $this->_get_cache_path('gradient', 'png');
         $image->save($path, 100, $this->_settings['optimize_images']); //Save gradients at maximum quality to avoid color loss
         //Create CSS code
-        $color_positions = array();
+        $color_positions = [];
         foreach ($color_stops as $stop) {
-            list($position, $unit, $color) = $stop;
+            [$position, $unit, $color] = $stop;
             $color = Tinyfier_CSS_Color::create($color);
             $color_positions[] = ($color->a == 1 ? $color->to_hex() : $color->to_rgb()) . " {$position}$unit";
         }
@@ -295,7 +295,7 @@ class Tinyfier_CSS_LESS extends lessc
         $back_color = Tinyfier_CSS_Color::create($back_color)
                                         ->to_hex();
 
-        if (in_array($gradient_type, array('vertical', 'horizontal', 'diagonal'))) {
+        if (in_array($gradient_type, ['vertical', 'horizontal', 'diagonal'])) {
             switch ($gradient_type) {
                 case 'vertical':
                     $repeat = 'repeat-x';
@@ -329,13 +329,13 @@ background-image: radial-gradient(ellipse at center, $color_positions);";
             }
         }
 
-        return array('string', '', array("$back_color;$css"));
+        return ['string', '', ["$back_color;$css"]];
     }
 
     /**
      * Create an image sprite
      */
-    public function lib_sprite($arg)
+    public function lib_sprite($arg): array
     {
         //Get parameters
         $url = $this->_remove_quotes(trim($arg[2][0][2][0]));
@@ -351,14 +351,14 @@ background-image: radial-gradient(ellipse at center, $color_positions);";
         $mark = 'CSSSPRITE_' . $group . '_' . md5($file);
 
         $this->_sprites[$group]->add_image($file, $mark);
-        return array('string', '', array($mark));
+        return ['string', '', [$mark]];
     }
 
     /**
      * Convert a document URL into a local path
      * @return string
      */
-    private function _local_path($url)
+    private function _local_path($url): string
     {
         //Remove url() if found
         if (stripos($url, 'url(') === 0) {
@@ -370,12 +370,12 @@ background-image: radial-gradient(ellipse at center, $color_positions);";
         } else {
             $path = $url;
             if ($url[0] == '/') { //Relative to SCRIPT_FILENAME
-                $path = realpath(dirname(dirname($_SERVER['SCRIPT_FILENAME'])) . $url);
+                $path = realpath(dirname($_SERVER['SCRIPT_FILENAME'], 2) . $url);
 
                 if (!$path) { //Relative to DOCUMENT_ROOT
                     $path = realpath($_SERVER['DOCUMENT_ROOT'] . $url);
                 }
-            } elseif (strpos($url, 'http://') !== 0) { //Relative to the document
+            } elseif (!str_starts_with($url, 'http://')) { //Relative to the document
                 $path = realpath(dirname($this->_settings['absolute_path']) . '/' . $url);
             }
         }
@@ -394,7 +394,7 @@ background-image: radial-gradient(ellipse at center, $color_positions);";
      *
      * @return string
      */
-    private function _get_cache_path($suffix = '', $extension = 'png')
+    private function _get_cache_path(string $suffix = '', $extension = 'png'): string
     {
         static $cache_prefix, $i = 0;
         if (!isset($cache_prefix)) {
@@ -412,12 +412,12 @@ background-image: radial-gradient(ellipse at center, $color_positions);";
      *
      * @return string
      */
-    private function _get_cache_url($filename = '')
+    private function _get_cache_url(string $filename = ''): string
     {
         return $this->_settings['cache_url'] . basename($filename);
     }
 
-    private function _clear_path($path)
+    private function _clear_path($path): array|string|null
     {
         // /cool/yeah/../zzz ==> /cool/zzz
         $path = preg_replace('/[^\/]+\/\.\.\//', '', $path);
@@ -433,7 +433,7 @@ background-image: radial-gradient(ellipse at center, $color_positions);";
      * Remove quotes from beginning and end of the string
      * @return string
      */
-    private function _remove_quotes($str)
+    private function _remove_quotes($str): string
     {
         if (preg_match('/^("|\').*?\1$/', $str)) {
             return substr($str, 1, -1);
