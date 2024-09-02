@@ -1,7 +1,5 @@
 <?php
 
-use Patchwork\JSqueeze;
-
 /**
  * Compression and processing routines for Javascript code
  */
@@ -16,7 +14,7 @@ abstract class Tinyfier_JS_Tool
      *   'gclosure': allow to use the external google closure compiler
      *
      * @param string $source
-     * @param array  $settings
+     * @param array $settings
      *
      * @return string
      */
@@ -43,9 +41,9 @@ abstract class Tinyfier_JS_Tool
         //Compile using JSqueeze
         if ($settings['pretty']) {
             return $source;
-        } else {
+        } elseif (class_exists('\Patchwork\JSqueeze')) {
             try {
-                $jz = new JSqueeze;
+                $jz = new \Patchwork\JSqueeze;
                 $result = $jz->squeeze($source, true, false, false);
             } catch (Exception $e) {
                 $errors[] = $e->getMessage();
@@ -53,6 +51,8 @@ abstract class Tinyfier_JS_Tool
             }
 
             return $result;
+        } else {
+            return $source;
         }
     }
 
@@ -63,11 +63,11 @@ abstract class Tinyfier_JS_Tool
     public static function default_settings(): array
     {
         return [
-            'external_services'            => true, //Use external compressors (like gclosure)
+            'external_services' => true, //Use external compressors (like gclosure)
             'external_services_min_length' => 750, //Min source length to use external compressors (to avoid too many calls)
-            'gclosure'                     => true,
-            'level'                        => self::LEVEL_SIMPLE_OPTIMIZATIONS,
-            'pretty'                       => false
+            'gclosure' => true,
+            'level' => self::LEVEL_SIMPLE_OPTIMIZATIONS,
+            'pretty' => false,
         ];
     }
 
@@ -75,9 +75,9 @@ abstract class Tinyfier_JS_Tool
      * Compiles javascript code using the Google Closure Compiler API
      * @see http://code.google.com/intl/es/closure/compiler/docs/api-ref.html
      *
-     * @param string     $source
+     * @param string $source
      * @param int|string $level One of LEVEL_* constants
-     * @param bool       $pretty
+     * @param bool $pretty
      *
      * @return mixed Code compressed, FALSE if error
      */
@@ -87,7 +87,7 @@ abstract class Tinyfier_JS_Tool
         bool $pretty = false,
         &$errors = [],
         &$warnings = null,
-        $extra_settings = []
+        $extra_settings = [],
     ): mixed {
         if (!function_exists('curl_exec')) {
             return false;
@@ -95,11 +95,11 @@ abstract class Tinyfier_JS_Tool
 
         //Generate POST data
         $post = $extra_settings + [
-                'output_info'       => 'compiled_code',
-                'output_format'     => 'json',
-                'warning_level'     => isset($warnings) ? 'VERBOSE' : 'QUIET',
+                'output_info' => 'compiled_code',
+                'output_format' => 'json',
+                'warning_level' => isset($warnings) ? 'VERBOSE' : 'QUIET',
                 'compilation_level' => $level,
-                'js_code'           => $source,
+                'js_code' => $source,
             ];
         if ($pretty) {
             $post['formatting'] = 'pretty_print';
