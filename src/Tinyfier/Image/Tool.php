@@ -7,7 +7,7 @@ class Tinyfier_Image_Tool
 {
 
     protected $_handle;
-    protected $_format;
+    protected string $_format;
 
     public function __construct($path_or_handle)
     {
@@ -22,9 +22,9 @@ class Tinyfier_Image_Tool
         }
     }
 
-    private function _load_image($path)
+    private function _load_image(string $path): mixed
     {
-        list($w, $h, $type) = getimagesize($path);
+        [$w, $h, $type] = getimagesize($path);
         switch ($type) {
             case IMAGETYPE_GIF :
                 $this->_format = 'gif';
@@ -60,7 +60,7 @@ class Tinyfier_Image_Tool
      * Gets the current image handle
      * @return mixed
      */
-    public function handle()
+    public function handle(): mixed
     {
         return $this->_handle;
     }
@@ -77,7 +77,7 @@ class Tinyfier_Image_Tool
      * Return the current image width
      * @return int
      */
-    public function width()
+    public function width(): int
     {
         return imagesx($this->_handle);
     }
@@ -86,7 +86,7 @@ class Tinyfier_Image_Tool
      * Return the current image height
      * @return int
      */
-    public function height()
+    public function height(): int
     {
         return imagesy($this->_handle);
     }
@@ -94,14 +94,14 @@ class Tinyfier_Image_Tool
     /**
      * Resizes the current image
      *
-     * @param int     $width
-     * @param int     $height
-     * @param boolean $keep_aspect
-     * @param boolean $enlarge Disable image resizing when destination size is bigger than original size (only if keey_aspect=true)
+     * @param int      $width
+     * @param int|null $height
+     * @param boolean  $keep_aspect
+     * @param boolean  $enlarge Disable image resizing when destination size is bigger than original size (only if keey_aspect=true)
      *
      * @return boolean
      */
-    public function resize($width, $height = null, $keep_aspect = true, $enlarge = false)
+    public function resize(int $width, int $height = null, bool $keep_aspect = true, bool $enlarge = false): bool
     {
         $current_width = $this->width();
         $current_height = $this->height();
@@ -110,7 +110,7 @@ class Tinyfier_Image_Tool
             $height = $keep_aspect ? PHP_INT_MAX : $current_height;
         }
 
-        //Adjust final size
+        // Adjust final size
         if ($keep_aspect) {
             $aspect_ratio = min($width / $current_width, $height / $current_height);
             $dest_width = round($current_width * $aspect_ratio);
@@ -140,7 +140,7 @@ class Tinyfier_Image_Tool
      *
      * @param int $factor Sharpening factor (between 1 and 64)
      */
-    public function sharpen($factor)
+    public function sharpen(int $factor): void
     {
         if ($factor == 0) {
             return;
@@ -187,15 +187,15 @@ class Tinyfier_Image_Tool
     /**
      * Force the aspect ratio to the given value, stretching or flattening the image if necessary
      *
-     * @param float $ratio Proportion ratio between the width and the height
-     * @param int   $maxw  Maximum width allowed for the final image, null to disable
-     * @param int   $maxh  Maximum height allowed for the final image, null to disable
-     * @param int   $minw  Minimum width allowed for the final image, null to disable
-     * @param int   $minh  Minimum height allowed for the final image, null to disable
+     * @param float    $ratio Proportion ratio between the width and the height
+     * @param int|null $maxw  Maximum width allowed for the final image, null to disable
+     * @param int|null $maxh  Maximum height allowed for the final image, null to disable
+     * @param int|null $minw  Minimum width allowed for the final image, null to disable
+     * @param int|null $minh  Minimum height allowed for the final image, null to disable
      *
      * @return boolean
      */
-    public function aspect_ratio($ratio, $maxw = null, $maxh = null, $minw = null, $minh = null)
+    public function aspect_ratio(float $ratio, int $maxw = null, int $maxh = null, int $minw = null, int $minh = null): bool
     {
         $w = $this->width();
         $h = $this->height();
@@ -233,7 +233,7 @@ class Tinyfier_Image_Tool
     /**
      * Sets the background color for transparent images
      */
-    public function set_bg_color($r = 255, $g = 255, $b = 255)
+    public function set_bg_color($r = 255, $g = 255, $b = 255): void
     {
         // Create a new true color image with the same size
         $w = imagesx($this->_handle);
@@ -253,11 +253,8 @@ class Tinyfier_Image_Tool
     /**
      * Apply a filter on the selected image. For the list of available filters
      * , please check http://php.net/manual/function.imagefilter.php
-     *
-     * @param string $path
-     * @param string $filter
      */
-    public function filter($filter, $arg1 = '', $arg2 = '', $arg3 = '')
+    public function filter(string $filter, $arg1 = '', $arg2 = '', $arg3 = '')
     {
         //Find filter constant
         if (!is_numeric($filter) && !defined($filter)) {
@@ -292,7 +289,7 @@ class Tinyfier_Image_Tool
         return call_user_func_array('imagefilter', $args);
     }
 
-    private function _is_transparent($in)
+    private function _is_transparent($in): bool
     {
         $c = imagecolorsforindex($this->_handle, $in);
         if ($c['alpha'] >= 127) {
@@ -382,15 +379,15 @@ class Tinyfier_Image_Tool
      * Save the current image on the specified path
      *
      * @param string        $path           Path to the saved file, NULL to send it to the browser
-     * @param int|boolean   $quality        Lossy quality of the saved file. TRUE for maximum quality and LOSSLESS optimization
+     * @param boolean|int   $quality        Lossy quality of the saved file. TRUE for maximum quality and LOSSLESS optimization
      * @param boolean|array $optimize       Optimize image after save. It can be an array of Tinyfier_Image_Optimizer::process settings
      * @param boolean       $check_is_equal Check, before save, that the file exists and it's equal to the current image (so it doesnt have to optimize again)
-     * @param mixed         $format         Output format for the image, NULL to detect it from the file name
+     * @param mixed|null    $format         Output format for the image, NULL to detect it from the file name
      *
      * @return boolean
      * @warning Optimization is not available when the image is sent to the browser
      */
-    public function save($path, $quality = 85, $optimize = true, $check_is_equal = false, $format = null)
+    public function save(string $path, bool|int $quality = 85, bool|array $optimize = true, bool $check_is_equal = false, mixed $format = null): bool
     {
         //Check if image exists and is equal
         if ($check_is_equal && file_exists($path) && self::equal($this, $path)) {
@@ -444,12 +441,12 @@ class Tinyfier_Image_Tool
     /**
      * Get the current image with the specified format
      *
-     * @param string $format
-     * @param int    $quality
+     * @param string|null $format
+     * @param int         $quality
      *
      * @return string
      */
-    public function get($format = null, $quality = 85)
+    public function get(string $format = null, int $quality = 85): string
     {
         ob_start();
         $this->save(null, $quality, true, false, $format);
@@ -463,7 +460,7 @@ class Tinyfier_Image_Tool
      *
      * @return string
      */
-    public function mimetype($format = 'png')
+    public function mimetype(string $format = 'png'): string
     {
         return (is_string($format) ? 'image/' . $format : image_type_to_mime_type($format));
     }
@@ -471,7 +468,7 @@ class Tinyfier_Image_Tool
     /**
      * Send the current image to the browser
      */
-    public function send($format = 'png', $quality = 90)
+    public function send($format = 'png', $quality = 90): bool
     {
         header('Content-type: ' . $this->mimetype());
         return $this->save(null, $quality, false, false, $format);
@@ -484,7 +481,7 @@ class Tinyfier_Image_Tool
      *
      * @return boolean
      */
-    public static function is_valid_image($path)
+    public static function is_valid_image(string $path): bool
     {
         if (!is_file($path)) {
             return false;
@@ -510,7 +507,7 @@ class Tinyfier_Image_Tool
      *
      * @return bool
      */
-    public static function equal($image_a, $image_b)
+    public static function equal(mixed $image_a, mixed $image_b): bool
     {
         if (!($image_a instanceof self)) {
             $image_a = new self($image_a);
@@ -529,13 +526,12 @@ class Tinyfier_Image_Tool
         $hb = $image_b->handle();
         for ($x = 0; $x <= imagesx($ha) - 1; $x++) {
             for ($y = 0; $y <= imagesy($ha) - 1; $y++) {
-
                 $color_a = imagecolorsforindex($ha, imagecolorat($ha, $x, $y));
                 $color_b = imagecolorsforindex($hb, imagecolorat($hb, $x, $y));
 
                 if ($color_a != $color_b) {
                     //If alfa value is zero, color doesn't matter
-                    if ($color_b['alpha'] != 0 || $color_b['alpha'] != 0) {
+                    if ($color_a['alpha'] != 0 || $color_b['alpha'] != 0) {
                         return false;
                     }
                 }

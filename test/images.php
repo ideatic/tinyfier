@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 
 require dirname(dirname(__FILE__)) . '/vendor/autoload.php';
 
-function format_size($size, $kilobyte = 1024, $format = '%size% %unit%')
+function format_size($size, $kilobyte = 1024, $format = '%size% %unit%'): string
 {
 
     $size = $size / $kilobyte; // Convertir bytes a kilobyes

@@ -14,7 +14,7 @@ abstract class Tinyfier_CSS_Tool
      *
      * @return string
      */
-    public static function process_file($file, array $settings = array())
+    public static function process_file(string $file, array $settings = []): string
     {
         $settings['absolute_path'] = $file;
         return self::process(file_get_contents($file), $settings);
@@ -36,7 +36,7 @@ abstract class Tinyfier_CSS_Tool
      *
      * @return string
      */
-    public static function process($css, array $settings = array())
+    public static function process(string $css, array $settings = []): string
     {
         //Load settings
         $settings = $settings + self::default_settings();
@@ -49,22 +49,22 @@ abstract class Tinyfier_CSS_Tool
 
         // 2. Optimize, compress and add vendor prefixes
         $optimizer = new css_optimizer(
-            array(
+            [
                 'compress'        => $settings['compress'],
                 'optimize'        => $settings['optimize'],
                 'extra_optimize'  => $settings['extra_optimize'],
                 'remove_ie_hacks' => false,
-                'prefix'          => $settings['prefix'],
-            )
+                'prefixes'        => $settings['prefixes'] ?? $settings['prefix'],
+            ]
         );
         $css = $optimizer->process($css);
 
         return $css;
     }
 
-    public static function default_settings()
+    public static function default_settings(): array
     {
-        return array(
+        return [
             'less'            => true,
             'absolute_path'   => '',
             'url_path'        => '',
@@ -76,8 +76,8 @@ abstract class Tinyfier_CSS_Tool
             'optimize_images' => true,
             'lossy_quality'   => 75,
             'data'            => null,
-            'prefix'          => 'all'
-        );
+            'prefixes'        => 'all'
+        ];
     }
 
 }

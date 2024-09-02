@@ -18,10 +18,11 @@
  */
 class Minify_HTML
 {
+    private string $_html = '';
     /**
      * @var boolean
      */
-    protected $_jsCleanComments = true;
+    protected bool $_jsCleanComments = true;
 
     /**
      * "Minify" an HTML page
@@ -41,7 +42,7 @@ class Minify_HTML
      *
      * @return string
      */
-    public static function minify($html, $options = array())
+    public static function minify(string $html, array $options = []): string
     {
         $min = new self($html, $options);
         return $min->process();
@@ -66,7 +67,7 @@ class Minify_HTML
      * 'xhtml' : (optional boolean) should content be treated as XHTML1.0? If
      * unset, minify will sniff for an XHTML doctype.
      */
-    public function __construct($html, $options = array())
+    public function __construct(string $html, array $options = [])
     {
         $this->_html = str_replace("\r\n", "\n", trim($html));
         if (isset($options['xhtml'])) {
@@ -89,20 +90,20 @@ class Minify_HTML
      *
      * @return string
      */
-    public function process()
+    public function process(): string
     {
         if ($this->_isXhtml === null) {
-            $this->_isXhtml = (false !== strpos($this->_html, '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML'));
+            $this->_isXhtml = (str_contains($this->_html, '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML'));
         }
 
         $this->_replacementHash = 'MINIFYHTML' . md5($_SERVER['REQUEST_TIME']);
-        $this->_placeholders = array();
+        $this->_placeholders = [];
 
         // replace SCRIPTs (and minify) with placeholders
         $this->_html = preg_replace_callback(
             '/(\\s*)<script(\\b[^>]*?>)([\\s\\S]*?)<\\/script>(\\s*)/i'
             ,
-            array($this, '_removeScriptCB')
+            [$this, '_removeScriptCB']
             ,
             $this->_html
         );
@@ -111,7 +112,7 @@ class Minify_HTML
         $this->_html = preg_replace_callback(
             '/\\s*<style(\\b[^>]*>)([\\s\\S]*?)<\\/style>\\s*/i'
             ,
-            array($this, '_removeStyleCB')
+            [$this, '_removeStyleCB']
             ,
             $this->_html
         );
@@ -120,7 +121,7 @@ class Minify_HTML
         $this->_html = preg_replace_callback(
             '/<!--([\\s\\S]*?)-->/'
             ,
-            array($this, '_commentCB')
+            [$this, '_commentCB']
             ,
             $this->_html
         );
@@ -129,7 +130,7 @@ class Minify_HTML
         $this->_html = preg_replace_callback(
             '/\\s*<pre(\\b[^>]*?>[\\s\\S]*?<\\/pre>)\\s*/i'
             ,
-            array($this, '_removePreCB')
+            [$this, '_removePreCB']
             ,
             $this->_html
         );
@@ -138,7 +139,7 @@ class Minify_HTML
         $this->_html = preg_replace_callback(
             '/\\s*<textarea(\\b[^>]*?>[\\s\\S]*?<\\/textarea>)\\s*/i'
             ,
-            array($this, '_removeTextareaCB')
+            [$this, '_removeTextareaCB']
             ,
             $this->_html
         );
@@ -191,35 +192,35 @@ class Minify_HTML
 
     protected function _commentCB($m)
     {
-        return (0 === strpos($m[1], '[') || false !== strpos($m[1], '<!['))
+        return (str_starts_with($m[1], '[') || str_contains($m[1], '<!['))
             ? $m[0]
             : '';
     }
 
-    protected function _reservePlace($content)
+    protected function _reservePlace($content): string
     {
         $placeholder = '%' . $this->_replacementHash . count($this->_placeholders) . '%';
         $this->_placeholders[$placeholder] = $content;
         return $placeholder;
     }
 
-    protected $_isXhtml = null;
-    protected $_replacementHash = null;
-    protected $_placeholders = array();
-    protected $_cssMinifier = null;
-    protected $_jsMinifier = null;
+    protected ?bool $_isXhtml = null;
+    protected string|null $_replacementHash = null;
+    protected array $_placeholders = [];
+    protected mixed $_cssMinifier = null;
+    protected mixed $_jsMinifier = null;
 
-    protected function _removePreCB($m)
+    protected function _removePreCB($m): string
     {
         return $this->_reservePlace("<pre{$m[1]}");
     }
 
-    protected function _removeTextareaCB($m)
+    protected function _removeTextareaCB($m): string
     {
         return $this->_reservePlace("<textarea{$m[1]}");
     }
 
-    protected function _removeStyleCB($m)
+    protected function _removeStyleCB($m): string
     {
         $openStyle = "<style{$m[1]}";
         $css = $m[2];
@@ -230,9 +231,7 @@ class Minify_HTML
         $css = $this->_removeCdata($css);
 
         // minify
-        $minifier = $this->_cssMinifier
-            ? $this->_cssMinifier
-            : 'trim';
+        $minifier = $this->_cssMinifier ?: 'trim';
         $css = call_user_func($minifier, $css);
 
         return $this->_reservePlace(
@@ -242,7 +241,7 @@ class Minify_HTML
         );
     }
 
-    protected function _removeScriptCB($m)
+    protected function _removeScriptCB($m): string
     {
         $openScript = "<script{$m[2]}";
         $js = $m[3];
@@ -280,12 +279,12 @@ class Minify_HTML
 
     protected function _removeCdata($str)
     {
-        return (false !== strpos($str, '<![CDATA['))
-            ? str_replace(array('<![CDATA[', ']]>'), '', $str)
+        return (str_contains($str, '<![CDATA['))
+            ? str_replace(['<![CDATA[', ']]>'], '', $str)
             : $str;
     }
 
-    protected function _needsCdata($str)
+    protected function _needsCdata($str): bool
     {
         return ($this->_isXhtml && preg_match('/(?:[<&]|\\-\\-|\\]\\]>)/', $str));
     }
