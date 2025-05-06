@@ -101,7 +101,7 @@ class Tinyfier_Image_Tool
      *
      * @return boolean
      */
-    public function resize(int $width, int $height = null, bool $keep_aspect = true, bool $enlarge = false): bool
+    public function resize(int $width, ?int $height = null, bool $keep_aspect = true, bool $enlarge = false): bool
     {
         $current_width = $this->width();
         $current_height = $this->height();
@@ -195,7 +195,7 @@ class Tinyfier_Image_Tool
      *
      * @return boolean
      */
-    public function aspect_ratio(float $ratio, int $maxw = null, int $maxh = null, int $minw = null, int $minh = null): bool
+    public function aspect_ratio(float $ratio, ?int $maxw = null, ?int $maxh = null, ?int $minw = null, ?int $minh = null): bool
     {
         $w = $this->width();
         $h = $this->height();
@@ -446,7 +446,7 @@ class Tinyfier_Image_Tool
      *
      * @return string
      */
-    public function get(string $format = null, int $quality = 85): string
+    public function get(?string $format = null, int $quality = 85): string
     {
         ob_start();
         $this->save(null, $quality, true, false, $format);

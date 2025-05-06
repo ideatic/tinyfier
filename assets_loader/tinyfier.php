@@ -7,13 +7,13 @@
  * Configuration
  */
 if (!isset($autoloader_path)) {//Path to composer autoloader
-    $autoloader_path = dirname(dirname(__FILE__)) . '/vendor/autoload.php';
+    $autoloader_path = dirname(__FILE__, 2) . '/vendor/autoload.php';
 }
 if (!isset($cache_dir)) {
     $cache_dir = dirname(__FILE__) . '/cache'; //Path to cache folder
 }
 if (!isset($src_folder)) {//Path where look for source files
-    $src_folder = dirname(dirname($_SERVER['SCRIPT_FILENAME']));
+    $src_folder = dirname($_SERVER['SCRIPT_FILENAME'], 2);
 }
 if (!isset($max_age)) {
     $max_age = $_GET['max-age'] ?? 604800; //Max time for user cache (default: 1 week)

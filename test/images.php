@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require dirname(dirname(__FILE__)) . '/vendor/autoload.php';
+require dirname(__FILE__, 2) . '/vendor/autoload.php';
 
 function format_size($size, $kilobyte = 1024, $format = '%size% %unit%'): string
 {

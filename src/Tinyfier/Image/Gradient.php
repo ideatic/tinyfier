@@ -16,7 +16,7 @@ abstract class Tinyfier_Image_Gradient
      * @param bool       $invert           Inver gradient
      * @param array|null $background_color If set, the final color of the gradient will be saved here
      */
-    public static function generate(int $width, int $height, array $color_stops, string $direction = 'vertical', bool $invert = false, array &$background_color = null): Tinyfier_Image_Tool|bool
+    public static function generate(int $width, int $height, array $color_stops, string $direction = 'vertical', bool $invert = false, ?array &$background_color = null): Tinyfier_Image_Tool|bool
     {
         //Crear imagen
         $image = imagecreateTRUEcolor($width, $height);
