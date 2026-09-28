@@ -178,7 +178,7 @@ class Tinyfier_Image_Tool
         // calculate the correct divisor
         // actual divisor is equal to "$divisor = $val1 + $val2 * 8;"
         // but the following line is more generic
-        $divisor = array_sum(array_map('array_sum', $matrix));
+        $divisor = array_sum(array_map(array_sum(...), $matrix));
 
         // apply the matrix
         imageconvolution($this->_handle, $matrix, $divisor, 0);
@@ -286,7 +286,7 @@ class Tinyfier_Image_Tool
         array_shift($args);
         array_unshift($args, $filter);
         array_unshift($args, $this->_handle);
-        return call_user_func_array('imagefilter', $args);
+        return imagefilter(...$args);
     }
 
     private function _is_transparent($in): bool

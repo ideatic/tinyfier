@@ -16,7 +16,7 @@
         "ideatic/css-optimizer": "*",
         "leafo/lessphp": "0.5.*",
         "patchwork/jsqueeze": "*",
-        "php": ">=8",
+        "php": ">=8.1",
         "ext-gd": "*"
     },
     "autoload": {

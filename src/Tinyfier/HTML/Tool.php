@@ -28,8 +28,8 @@ abstract class Tinyfier_HTML_Tool
             return Minify_HTML::minify(
                 $html,
                 [
-                    'cssMinifier' => [__CLASS__, '_compress_inline_css'],
-                    'jsMinifier'  => [__CLASS__, '_compress_inline_js']
+                    'cssMinifier' => self::_compress_inline_css(...),
+                    'jsMinifier'  => self::_compress_inline_js(...)
                 ]
             );
         } else {

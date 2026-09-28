@@ -227,7 +227,7 @@ class Tinyfier_Image_Optimizer
 
     private function _exec(string $command, $args): bool|int|string
     {
-        $escaped_args = array_map(fn($v) => escapeshellarg($v), $args);
+        $escaped_args = array_map(escapeshellarg(...), $args);
 
         $command = strtr($command, $escaped_args);
 

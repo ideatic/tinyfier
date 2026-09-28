@@ -103,7 +103,7 @@ class Minify_HTML
         $this->_html = preg_replace_callback(
             '/(\\s*)<script(\\b[^>]*?>)([\\s\\S]*?)<\\/script>(\\s*)/i'
             ,
-            [$this, '_removeScriptCB']
+            $this->_removeScriptCB(...)
             ,
             $this->_html
         );
@@ -112,7 +112,7 @@ class Minify_HTML
         $this->_html = preg_replace_callback(
             '/\\s*<style(\\b[^>]*>)([\\s\\S]*?)<\\/style>\\s*/i'
             ,
-            [$this, '_removeStyleCB']
+            $this->_removeStyleCB(...)
             ,
             $this->_html
         );
@@ -121,7 +121,7 @@ class Minify_HTML
         $this->_html = preg_replace_callback(
             '/<!--([\\s\\S]*?)-->/'
             ,
-            [$this, '_commentCB']
+            $this->_commentCB(...)
             ,
             $this->_html
         );
@@ -130,7 +130,7 @@ class Minify_HTML
         $this->_html = preg_replace_callback(
             '/\\s*<pre(\\b[^>]*?>[\\s\\S]*?<\\/pre>)\\s*/i'
             ,
-            [$this, '_removePreCB']
+            $this->_removePreCB(...)
             ,
             $this->_html
         );
@@ -139,7 +139,7 @@ class Minify_HTML
         $this->_html = preg_replace_callback(
             '/\\s*<textarea(\\b[^>]*?>[\\s\\S]*?<\\/textarea>)\\s*/i'
             ,
-            [$this, '_removeTextareaCB']
+            $this->_removeTextareaCB(...)
             ,
             $this->_html
         );

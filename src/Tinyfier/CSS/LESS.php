@@ -18,11 +18,11 @@ class Tinyfier_CSS_LESS extends lessc
         $this->_settings = $settings;
 
         //Prepare compiler
-        $this->registerFunction('gradient', [$this, 'lib_gradient']);
-        $this->registerFunction('sprite', [$this, 'lib_sprite']);
-        $this->registerFunction('inline', [$this, 'lib_inline']);
-        $this->registerFunction('url', [$this, 'lib_url']);
-        $this->registerFunction('filter', [$this, 'lib_filter']);
+        $this->registerFunction('gradient', $this->lib_gradient(...));
+        $this->registerFunction('sprite', $this->lib_sprite(...));
+        $this->registerFunction('inline', $this->lib_inline(...));
+        $this->registerFunction('url', $this->lib_url(...));
+        $this->registerFunction('filter', $this->lib_filter(...));
 
         if ($settings['compress']) {
             $this->setFormatter('compressed');
@@ -155,7 +155,7 @@ class Tinyfier_CSS_LESS extends lessc
 
         //Apply filter
         $image = new Tinyfier_Image_Tool($local_path);
-        call_user_func_array([$image, 'filter'], array_merge([$filter], $filter_args));
+        $image->filter($filter, ...$filter_args);
 
         //Save image and generate CSS
         $format = in_array($image->format(), ['gif', 'png', 'jpg']) ? $image->format() : 'png';
