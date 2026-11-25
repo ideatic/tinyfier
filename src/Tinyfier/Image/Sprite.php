@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Tool for CSS sprites creation
  */
@@ -9,17 +11,12 @@ class Tinyfier_Image_Sprite
     /**
      * @var Tinyfier_Image_SpriteImage[]
      */
-    private array $_images;
-
-    public function __construct()
-    {
-        $this->_images = [];
-    }
+    private array $_images = [];
 
     /**
      * Adds a new image to the sprite
      */
-    public function add_image($path, $tag = null): void
+    public function add_image(string $path, mixed $tag = null): void
     {
         //Check if the file is already included
         foreach ($this->_images as $image) {
@@ -35,7 +32,6 @@ class Tinyfier_Image_Sprite
 
     /**
      * Build the CSS sprite in memory
-     * @return Tinyfier_Image_Tool
      */
     public function build(): Tinyfier_Image_Tool
     {
@@ -57,7 +53,11 @@ class Tinyfier_Image_Sprite
 
         $sprite = imagecreatetruecolor($w, $h);
         imagealphablending($sprite, false); //Soporte de transparencias
-        imagefill($sprite, 0, 0, imagecolorallocatealpha($sprite, 0, 0, 0, 127)); //Fondo transparente
+        $transparent = imagecolorallocatealpha($sprite, 0, 0, 0, 127);
+        if ($transparent === false) {
+            throw new RuntimeException('Cannot allocate the sprite background color');
+        }
+        imagefill($sprite, 0, 0, $transparent); //Fondo transparente
         foreach ($this->_images as $image) {
             imagecopy($sprite, $image->image->handle(), $image->left, $image->top, 0, 0, $image->image->width(), $image->image->height());
         }
@@ -82,40 +82,32 @@ class Tinyfier_Image_Sprite
 class Tinyfier_Image_SpriteImage
 {
 
-    public function __construct($path)
-    {
-        $this->path = $path;
-        $this->image = new Tinyfier_Image_Tool($path);
-    }
-
     /**
      * Image added to the sprite
-     * @var Tinyfier_Image_Tool
      */
-    public Tinyfier_Image_Tool $image;
-
-    /**
-     * Original path to the image file
-     * @var string
-     */
-    public string $path;
+    public readonly Tinyfier_Image_Tool $image;
 
     /**
      * Top margin of the image in the sprite
-     * @var int
      */
-    public int $top;
+    public int $top = 0;
 
     /**
      * Left margin of the image in the sprite
-     * @var int
      */
-    public int $left;
+    public int $left = 0;
 
     /**
      * Information related to the image
-     * @var mixed
      */
-    public mixed $tag;
+    public mixed $tag = null;
+
+    /**
+     * @param string $path Original path to the image file
+     */
+    public function __construct(public readonly string $path)
+    {
+        $this->image = new Tinyfier_Image_Tool($path);
+    }
 
 }

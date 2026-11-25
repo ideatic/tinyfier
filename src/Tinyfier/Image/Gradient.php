@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Tool for gradient generation using GD library
  */
@@ -9,21 +11,20 @@ abstract class Tinyfier_Image_Gradient
     /**
      * Generate a gradient
      *
-     * @param int        $width
-     * @param int        $height
-     * @param array      $color_stops      Color stops, in format (position, unit, color)
-     * @param string     $direction        Gradient direction (vertical, horizontal, diagonal, radial, square, diamond)
-     * @param bool       $invert           Inver gradient
-     * @param array|null $background_color If set, the final color of the gradient will be saved here
+     * @param list<array{int|float, string, string|array<int, int|float>}> $color_stops      Color stops, in format (position, unit, color)
+     * @param string                                                      $direction        Gradient direction (vertical, horizontal, diagonal, radial, square, diamond)
+     * @param bool                                                        $invert           Inver gradient
+     * @param list<int|float>|null                                        $background_color If set, the final color of the gradient will be saved here
      */
-    public static function generate(int $width, int $height, array $color_stops, string $direction = 'vertical', bool $invert = false, ?array &$background_color = null): Tinyfier_Image_Tool|bool
+    public static function generate(int $width, int $height, array $color_stops, string $direction = 'vertical', bool $invert = false, ?array &$background_color = null): Tinyfier_Image_Tool
     {
         //Crear imagen
-        $image = imagecreateTRUEcolor($width, $height);
+        $image = imagecreatetruecolor($width, $height);
 
         //Calcular el número de líneas a dibujar
-        $lines;
         $fill_background = false;
+        $center_x = $center_y = 0;
+        $rh = $rw = 1;
         switch ($direction) {
             case 'vertical':
                 $lines = $height;
@@ -62,7 +63,7 @@ abstract class Tinyfier_Image_Gradient
                 break;
 
             default:
-                return false;
+                throw new InvalidArgumentException("Invalid gradient direction '{$direction}'");
         }
 
         //Ordenar paradas de color      
@@ -70,28 +71,32 @@ abstract class Tinyfier_Image_Gradient
         foreach ($color_stops as $stop) {
             [$position, $unit, $color] = $stop;
 
-            $percentage;
             $percentage = match ($unit) {
                 'px' => 100 / $lines * $position,
                 default => $position,
             };
-            $colors[floatval($position)] = Tinyfier_CSS_Color::create($color)
+            // Las claves de un array son enteras: la posición se trunca, como hacía PHP con las claves float
+            $colors[(int)$position] = Tinyfier_CSS_Color::create($color)
                                                              ->to_array();
         }
         ksort($colors);
 
         $positions = array_keys($colors);
         if (!isset($colors[0])) { //Usar el primero como color de inicio
-            $colors[0] = $colors[reset($positions)];
+            $colors[0] = $colors[array_first($positions)];
         }
         if (!isset($colors[100])) { //Usar el último como color final
-            $colors[100] = $colors[end($positions)];
+            $colors[100] = $colors[array_last($positions)];
         }
         //Fill background
         $background_color = $colors[100];
         if ($fill_background) {
             [$r1, $g1, $b1] = $colors[100];
-            imagefill($image, 0, 0, imagecolorallocate($image, $r1, $g1, $b1));
+            $background = imagecolorallocate($image, (int)$r1, (int)$g1, (int)$b1);
+            if ($background === false) {
+                throw new RuntimeException('Cannot allocate the gradient background color');
+            }
+            imagefill($image, 0, 0, $background);
         }
 
         //Invert colors
@@ -108,6 +113,8 @@ abstract class Tinyfier_Image_Gradient
         $incr = 1;
         $color_change_positions = array_keys($colors);
         $end_color_progress = 0; //Forzar que en la primera iteración se seleccione el rango de colores
+        $start_color_progress = 0;
+        $start_color = $end_color = $colors[0];
         for ($i = 0; $i < $lines; $i = $i + $incr) {
             //Escoger color
             $total_progress = 100 / $lines * $i;
@@ -119,6 +126,10 @@ abstract class Tinyfier_Image_Gradient
                 } while ($color_index === false && $j >= 0);
 
                 //Obtener colores inicio y final para este rango
+                // Si no se encuentra la posición, se usa el primer rango (como antes, al usar false como índice)
+                if ($color_index === false) {
+                    $color_index = 0;
+                }
                 $start_color_progress = $color_change_positions[$color_index];
                 $start_color = $colors[$start_color_progress];
                 $end_color_progress = $color_change_positions[$color_index + 1];
@@ -128,16 +139,19 @@ abstract class Tinyfier_Image_Gradient
             $r = $start_color[0] + ($end_color[0] - $start_color[0]) * $internal_progress;
             $g = $start_color[1] + ($end_color[1] - $start_color[1]) * $internal_progress;
             $b = $start_color[2] + ($end_color[2] - $start_color[2]) * $internal_progress;
-            $color = imagecolorallocate($image, $r, $g, $b);
+            $color = imagecolorallocate($image, (int)$r, (int)$g, (int)$b);
+            if ($color === false) {
+                throw new RuntimeException('Cannot allocate a gradient color');
+            }
 
             //Dibujar línea
             switch ($direction) {
                 case 'vertical': //Draw from top to bottom
-                    imagefilledrectangle($image, 0, $i, $width, $i + $incr, $color);
+                    imagefilledrectangle($image, 0, (int)$i, $width, (int)($i + $incr), $color);
                     break;
 
                 case 'horizontal': //Draw from left to right
-                    imagefilledrectangle($image, $i, 0, $i + $incr, $height, $color);
+                    imagefilledrectangle($image, (int)$i, 0, (int)($i + $incr), $height, $color);
                     break;
 
                 case 'diagonal': //Draw from top-left to bottom-right
@@ -153,17 +167,23 @@ abstract class Tinyfier_Image_Gradient
                             0,
                             $i
                         ],
-                        4,
                         $color
                     );
                     break;
 
                 case 'square': //Draw from outside to center
-                    imagefilledrectangle($image, $i * $width / $height, $i * $height / $width, $width - ($i * $width / $height), $height - ($i * $height / $width), $color);
+                    imagefilledrectangle(
+                        $image,
+                        (int)($i * $width / $height),
+                        (int)($i * $height / $width),
+                        (int)($width - ($i * $width / $height)),
+                        (int)($height - ($i * $height / $width)),
+                        $color
+                    );
                     break;
 
                 case 'radial': //Draw from outside to center
-                    imagefilledellipse($image, $center_x, $center_y, ($lines - $i) * $rh * 2, ($lines - $i) * $rw * 2, $color);
+                    imagefilledellipse($image, (int)$center_x, (int)$center_y, (int)(($lines - $i) * $rh * 2), (int)(($lines - $i) * $rw * 2), $color);
                     break;
 
                 case 'diamond': //Draw from outside to center
@@ -179,7 +199,6 @@ abstract class Tinyfier_Image_Gradient
                             1.5 * $width - $i * $rh,
                             $height / 2
                         ],
-                        4,
                         $color
                     );
                     break;

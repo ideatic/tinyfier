@@ -123,6 +123,9 @@ if (!empty($process_data['errors'])) {
 </html>
 <?php
 
+/**
+ * @return array<string, mixed>
+ */
 function do_optimization(): array
 {
     require_once  dirname(__DIR__) . '/vendor/autoload.php';
@@ -154,20 +157,23 @@ function do_optimization(): array
     $data['source'] = $_POST['source'];
 
     $start = microtime(true);
-    $data['css'] = optimize($_POST['source'], $data['settings'], $data['errors']);
+    $data['css'] = optimize((string)$_POST['source'], $data['settings']);
     $data['execution_time'] = microtime(true) - $start;
 
     return $data;
 }
 
-function optimize($css, $settings, &$errors = null): string
+/**
+ * @param array<string, mixed> $settings
+ */
+function optimize(string $css, array $settings): string
 {
     $result = Tinyfier_CSS_Tool::process($css, $settings);
 
     return $result;
 }
 
-function readable_time($time): string
+function readable_time(float $time): string
 {
     if ($time > 60) {
         $min = floor($time / 60);
@@ -182,7 +188,7 @@ function readable_time($time): string
     }
 }
 
-function readable_size($bytes, $sign = false, $precission = 2): string
+function readable_size(int|float $bytes, bool $sign = false, int $precission = 2): string
 {
     if ($bytes > 1000000000) {
         $count = round($bytes / 1000000000, $precission);

@@ -1,30 +1,57 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Tools for HTML optimization and compression
+ *
+ * @phpstan-import-type CssSettings from Tinyfier_CSS_Tool
+ * @phpstan-import-type JsSettings from Tinyfier_JS_Tool
+ * @phpstan-type HtmlSettings array{
+ *     // Comprimir también el CSS y el JS en línea
+ *     compress_all?: bool,
+ *     // Ajustes para Tinyfier_CSS_Tool::process (el CSS en línea nunca usa LESS)
+ *     css?: CssSettings,
+ *     // Ajustes para Tinyfier_JS_Tool::process
+ *     js?: JsSettings,
+ *     // Si el CSS o JS en línea contiene una de estas cadenas, no se comprime (por ejemplo, código PHP)
+ *     markers?: list<string>,
+ * }
  */
 abstract class Tinyfier_HTML_Tool
 {
+    /**
+     * @var array{compress_all: bool, css: CssSettings, js: JsSettings, markers: list<string>}
+     */
     private static array $_settings;
 
     /**
      * Remove whitespaces from HTML code
+     *
+     * @param HtmlSettings $settings
      */
     public static function process(string $html, array $settings = []): string
     {
         require_once dirname(__FILE__) . '/Minify_HTML.php';
 
-        $settings = self::$_settings = $settings + [
-                'compress_all'      => true,
-                'css'               => [],
-                'js'                => [],
-                'markers'           => [
-                    '<?'
-                ],
-                'external_services' => true,
-            ];
+        $settings += [
+            'compress_all'      => true,
+            'css'               => [],
+            'js'                => [],
+            'markers'           => [
+                '<?'
+            ],
+        ];
 
-        if ($settings['compress_all']) {
+        // Normalizar los tipos, porque los ajustes pueden venir de configuración
+        self::$_settings = [
+            'compress_all' => (bool)$settings['compress_all'],
+            'css'          => is_array($settings['css']) ? $settings['css'] : [],
+            'js'           => is_array($settings['js']) ? $settings['js'] : [],
+            'markers'      => array_values(array_map(strval(...), is_array($settings['markers']) ? $settings['markers'] : [])),
+        ];
+
+        if ((bool)$settings['compress_all']) {
             return Minify_HTML::minify(
                 $html,
                 [
@@ -50,8 +77,7 @@ abstract class Tinyfier_HTML_Tool
             return Tinyfier_CSS_Tool::process(
                 $css,
                 self::$_settings['css'] + [
-                    'less'              => false,
-                    'external_services' => self::$_settings['external_services']
+                    'less' => false,
                 ]
             );
         }
@@ -67,12 +93,7 @@ abstract class Tinyfier_HTML_Tool
         if (self::_has_mark($js)) {
             return $js;
         } else {
-            return Tinyfier_JS_Tool::process(
-                $js,
-                self::$_settings['js'] + [
-                    'external_services' => self::$_settings['external_services']
-                ]
-            );
+            return Tinyfier_JS_Tool::process($js, self::$_settings['js']);
         }
     }
 

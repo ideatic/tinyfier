@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Represents a CSS Color
  *
@@ -9,25 +11,33 @@ class Tinyfier_CSS_Color
 {
 
     public bool $valid = false;
-    public int $r, $g, $b;
+    public int $r = 0;
+    public int $g = 0;
+    public int $b = 0;
     public int|float $a = 1;
 
-    public function __construct(string $color)
+    /**
+     * @param string|array<int, int|float> $color CSS color or [r, g, b, a?] array
+     */
+    public function __construct(string|array $color)
     {
         $this->parse($color);
     }
 
     /**
      * Parse the specified color. Valid formats: rgb, rgba, hex, hsl, blue/white/...
+     *
+     * @param string|array<int, int|float> $color CSS color or [r, g, b, a?] array
      */
-    public function parse(string $color): bool
+    public function parse(string|array $color): bool
     {
         $this->valid = false;
         if (is_array($color)) {
+            // lessphp entrega los canales como números, a veces con decimales
             if (count($color) == 3 || count($color) == 4) {
-                $this->r = $color[0];
-                $this->g = $color[1];
-                $this->b = $color[2];
+                $this->r = (int)round($color[0]);
+                $this->g = (int)round($color[1]);
+                $this->b = (int)round($color[2]);
                 $this->a = $color[3] ?? 1;
             }
         } else {
@@ -35,7 +45,7 @@ class Tinyfier_CSS_Color
             $this->a = 1;
 
             //Clean input
-            if ($color[0] == '#') {
+            if (str_starts_with($color, '#')) {
                 $color = substr($color, 1);
             }
             $color = strtolower(str_replace(' ', '', $color));
@@ -51,22 +61,22 @@ class Tinyfier_CSS_Color
                 [
                     //'rgb(123, 234, 45)', 'rgb(255,234,245)', 'rgba(255,234,245,0.5)'
                     'regex'    => '/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*(\d+(?:\.\d+)?))?\s*\)$/i',
-                    'callback' => '_parse_rgba'
+                    'callback' => $this->_parse_rgba(...)
                 ],
                 [
                     //'#00ff00', '336699'
                     'regex'    => '/^(\w{2})(\w{2})(\w{2})$/',
-                    'callback' => '_parse_hex'
+                    'callback' => $this->_parse_hex(...)
                 ],
                 [
                     //'#fb0', 'f0f'
                     'regex'    => '/^(\w{1})(\w{1})(\w{1})$/',
-                    'callback' => '_parse_hex_short'
+                    'callback' => $this->_parse_hex_short(...)
                 ],
                 [
                     //hsl(0, 100%, 50%);
                     'regex'    => '/^hsl\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)$/i',
-                    'callback' => '_parse_hsl'
+                    'callback' => $this->_parse_hsl(...)
                 ]
             ];
 
@@ -74,14 +84,12 @@ class Tinyfier_CSS_Color
             $this->valid = false;
             foreach ($formats as $format) {
                 if (preg_match($format['regex'], $color, $match)) {
-                    $callback = $format['callback'];
-                    $this->$callback($match);
+                    $format['callback']($match);
 
                     //Clean color values
-                    foreach (['r' => 255, 'g' => 255, 'b' => 255, 'a' => 1] as $prop => $max) {
-                        $v = $this->$prop;
-                        $this->$prop = $v < 0 || is_nan($v) ? 0 : min($v, $max);
-                    }
+                    $this->r = max(0, min($this->r, 255));
+                    $this->g = max(0, min($this->g, 255));
+                    $this->b = max(0, min($this->b, 255));
 
                     $this->valid = true;
                     break;
@@ -91,26 +99,35 @@ class Tinyfier_CSS_Color
         return $this->valid;
     }
 
+    /**
+     * @param array<int, string> $match
+     */
     private function _parse_rgba(array $match): void
     {
         $this->r = intval($match[1]);
         $this->g = intval($match[2]);
         $this->b = intval($match[3]);
-        $this->a = !isset($match[4]) || $match[4] == '' ? 1 : floatval($match[4]);
+        $this->a = !isset($match[4]) || $match[4] == '' ? 1 : min(floatval($match[4]), 1);
     }
 
+    /**
+     * @param array<int, string> $match
+     */
     private function _parse_hex(array $match): void
     {
-        $this->r = hexdec($match[1]);
-        $this->g = hexdec($match[2]);
-        $this->b = hexdec($match[3]);
+        $this->r = (int)hexdec($match[1]);
+        $this->g = (int)hexdec($match[2]);
+        $this->b = (int)hexdec($match[3]);
     }
 
+    /**
+     * @param array<int, string> $match
+     */
     private function _parse_hex_short(array $match): void
     {
-        $this->r = hexdec($match[1] . $match[1]);
-        $this->g = hexdec($match[2] . $match[2]);
-        $this->b = hexdec($match[3] . $match[3]);
+        $this->r = (int)hexdec($match[1] . $match[1]);
+        $this->g = (int)hexdec($match[2] . $match[2]);
+        $this->b = (int)hexdec($match[3] . $match[3]);
     }
 
     /**
@@ -118,17 +135,16 @@ class Tinyfier_CSS_Color
      *
      * Based on: {@link http://www.easyrgb.com/index.php?X=MATH&H=19#text19}.ss Lightnesss
      */
+    /**
+     * @param array<int, string> $match
+     */
     private function _parse_hsl(array $match): void
     {
-        [$hue, $saturation, $lightness] = [$match[1], $match[2], $match[3]];
-
-        $hue = $hue / 360;
-        $saturation = $saturation / 100;
-        $lightness = $lightness / 100;
+        $hue = (int)$match[1] / 360;
+        $saturation = (int)$match[2] / 100;
+        $lightness = (int)$match[3] / 100;
         if ($saturation == 0) {
-            $this->r = $lightness * 255;
-            $this->g = $lightness * 255;
-            $this->b = $lightness * 255;
+            $this->r = $this->g = $this->b = (int)round($lightness * 255);
         } else {
             if ($lightness < 0.5) {
                 $v2 = $lightness * (1 + $saturation);
@@ -136,13 +152,13 @@ class Tinyfier_CSS_Color
                 $v2 = ($lightness + $saturation) - ($saturation * $lightness);
             }
             $v1 = 2 * $lightness - $v2;
-            $this->r = 255 * $this->_hue2rgb($v1, $v2, $hue + (1 / 3));
-            $this->g = 255 * $this->_hue2rgb($v1, $v2, $hue);
-            $this->b = 255 * $this->_hue2rgb($v1, $v2, $hue - (1 / 3));
+            $this->r = (int)round(255 * $this->_hue2rgb($v1, $v2, $hue + (1 / 3)));
+            $this->g = (int)round(255 * $this->_hue2rgb($v1, $v2, $hue));
+            $this->b = (int)round(255 * $this->_hue2rgb($v1, $v2, $hue - (1 / 3)));
         }
     }
 
-    private function _hue2rgb($v1, $v2, $hue)
+    private function _hue2rgb(float $v1, float $v2, float $hue): float
     {
         if ($hue < 0) {
             $hue += 1;
@@ -193,8 +209,10 @@ class Tinyfier_CSS_Color
 
     /**
      * Get the color in a RGB/RGBA array
+     *
+     * @return list<int|float>
      */
-    public function to_array($alpha = true): array
+    public function to_array(bool $alpha = true): array
     {
         if ($alpha && $this->a != 1) {
             return [$this->r, $this->g, $this->b, $this->a];
@@ -205,14 +223,18 @@ class Tinyfier_CSS_Color
 
     /**
      * Parse the input color
+     *
+     * @param string|array<int, int|float> $color CSS color or [r, g, b, a?] array
      */
-    public static function create(string $color): self
+    public static function create(string|array $color): self
     {
         return new self($color);
     }
 
     /**
      * List of common color names used in HTML and CSS
+     *
+     * @return array<string, string>
      */
     public static function color_names(): array
     {

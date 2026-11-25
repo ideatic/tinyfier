@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Tinyfier assets loader
  */
@@ -16,7 +18,7 @@ if (!isset($src_folder)) {//Path where look for source files
     $src_folder = dirname($_SERVER['SCRIPT_FILENAME'], 2);
 }
 if (!isset($max_age)) {
-    $max_age = $_GET['max-age'] ?? 604800; //Max time for user cache (default: 1 week)
+    $max_age = (int)($_GET['max-age'] ?? 604800); //Max time for user cache (default: 1 week)
 }if (!isset($separator)) {
     $separator = ','; //Source files separator
 }
@@ -31,7 +33,7 @@ $recache = isset($_GET['recache']); //Disable cache
  * Main code
  */
 //Set error reporting
-error_reporting(E_ALL & ~E_STRICT);
+error_reporting(E_ALL); // E_STRICT está obsoleto desde PHP 8.4
 ini_set('display_errors', $debug);
 ini_set('log_errors', 'On');
 ini_set('error_log', $error_log ?? dirname(__FILE__) . '/error_log.txt');
@@ -167,7 +169,6 @@ if (!file_exists($cache_file) || $debug || $recache) :
             $source = implode(';', $source);
             $source = Tinyfier_JS_Tool::process($source, array(
                         'pretty' => $debug,
-                        'gclosure' => strlen($source) > 750 && !$debug //No usar Google Closure en modo debug o para javascript pequeños
             ));
         } elseif ($type == 'css' || $type == 'less') { //Process and compress, then combine
             //Process and compress
@@ -201,8 +202,8 @@ if (!file_exists($cache_file) || $debug || $recache) :
         return;
     }
 
-    //Save cache
-    for ($try = 0; $try < 2; $try++) {
+    //Save cache (si falla, se crea la carpeta y se reintenta una vez; el segundo fallo termina con die)
+    for ($try = 0; ; $try++) {
         $writing_error = file_put_contents("$cache_dir/$cache_id", $source) === FALSE ||
                 file_put_contents("$cache_dir/$cache_id.gzip", gzencode($source, 9, FORCE_GZIP)) === FALSE ||
                 file_put_contents("$cache_dir/$cache_id.deflate", gzencode($source, 9, FORCE_DEFLATE)) === FALSE;

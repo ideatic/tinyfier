@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Class Minify_HTML
  * @package Minify
@@ -19,17 +22,26 @@
 class Minify_HTML
 {
     private string $_html = '';
-    /**
-     * @var boolean
-     */
     protected bool $_jsCleanComments = true;
+    protected ?bool $_isXhtml = null;
+    protected string $_replacementHash = '';
+    /**
+     * @var array<string, string>
+     */
+    protected array $_placeholders = [];
+    /**
+     * @var (callable(string): string)|null
+     */
+    protected $_cssMinifier = null;
+    /**
+     * @var (callable(string): string)|null
+     */
+    protected $_jsMinifier = null;
 
     /**
      * "Minify" an HTML page
      *
-     * @param string $html
-     *
-     * @param array  $options
+     * @param array{cssMinifier?: callable(string): string, jsMinifier?: callable(string): string, jsCleanComments?: bool, xhtml?: bool} $options
      *
      * 'cssMinifier' : (optional) callback function to process content of STYLE
      * elements.
@@ -39,8 +51,6 @@ class Minify_HTML
      *
      * 'xhtml' : (optional boolean) should content be treated as XHTML1.0? If
      * unset, minify will sniff for an XHTML doctype.
-     *
-     * @return string
      */
     public static function minify(string $html, array $options = []): string
     {
@@ -52,9 +62,7 @@ class Minify_HTML
     /**
      * Create a minifier object
      *
-     * @param string $html
-     *
-     * @param array  $options
+     * @param array{cssMinifier?: callable(string): string, jsMinifier?: callable(string): string, jsCleanComments?: bool, xhtml?: bool} $options
      *
      * 'cssMinifier' : (optional) callback function to process content of STYLE
      * elements.
@@ -71,6 +79,7 @@ class Minify_HTML
     {
         $this->_html = str_replace("\r\n", "\n", trim($html));
         if (isset($options['xhtml'])) {
+            // Los ajustes pueden llegar como 0/1 desde fuera
             $this->_isXhtml = (bool)$options['xhtml'];
         }
         if (isset($options['cssMinifier'])) {
@@ -87,152 +96,120 @@ class Minify_HTML
 
     /**
      * Minify the markeup given in the constructor
-     *
-     * @return string
      */
     public function process(): string
     {
-        if ($this->_isXhtml === null) {
-            $this->_isXhtml = (str_contains($this->_html, '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML'));
-        }
+        $this->_isXhtml ??= str_contains($this->_html, '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML');
 
-        $this->_replacementHash = 'MINIFYHTML' . md5($_SERVER['REQUEST_TIME']);
+        $this->_replacementHash = 'MINIFYHTML' . md5((string)($_SERVER['REQUEST_TIME'] ?? time()));
         $this->_placeholders = [];
+        $html = $this->_html;
 
         // replace SCRIPTs (and minify) with placeholders
-        $this->_html = preg_replace_callback(
-            '/(\\s*)<script(\\b[^>]*?>)([\\s\\S]*?)<\\/script>(\\s*)/i'
-            ,
-            $this->_removeScriptCB(...)
-            ,
-            $this->_html
-        );
+        $html = self::_check(preg_replace_callback('/(\\s*)<script(\\b[^>]*?>)([\\s\\S]*?)<\\/script>(\\s*)/i', $this->_removeScriptCB(...), $html));
 
         // replace STYLEs (and minify) with placeholders
-        $this->_html = preg_replace_callback(
-            '/\\s*<style(\\b[^>]*>)([\\s\\S]*?)<\\/style>\\s*/i'
-            ,
-            $this->_removeStyleCB(...)
-            ,
-            $this->_html
-        );
+        $html = self::_check(preg_replace_callback('/\\s*<style(\\b[^>]*>)([\\s\\S]*?)<\\/style>\\s*/i', $this->_removeStyleCB(...), $html));
 
         // remove HTML comments (not containing IE conditional comments).
-        $this->_html = preg_replace_callback(
-            '/<!--([\\s\\S]*?)-->/'
-            ,
-            $this->_commentCB(...)
-            ,
-            $this->_html
-        );
+        $html = self::_check(preg_replace_callback('/<!--([\\s\\S]*?)-->/', $this->_commentCB(...), $html));
 
         // replace PREs with placeholders
-        $this->_html = preg_replace_callback(
-            '/\\s*<pre(\\b[^>]*?>[\\s\\S]*?<\\/pre>)\\s*/i'
-            ,
-            $this->_removePreCB(...)
-            ,
-            $this->_html
-        );
+        $html = self::_check(preg_replace_callback('/\\s*<pre(\\b[^>]*?>[\\s\\S]*?<\\/pre>)\\s*/i', $this->_removePreCB(...), $html));
 
         // replace TEXTAREAs with placeholders
-        $this->_html = preg_replace_callback(
-            '/\\s*<textarea(\\b[^>]*?>[\\s\\S]*?<\\/textarea>)\\s*/i'
-            ,
-            $this->_removeTextareaCB(...)
-            ,
-            $this->_html
-        );
+        $html = self::_check(preg_replace_callback('/\\s*<textarea(\\b[^>]*?>[\\s\\S]*?<\\/textarea>)\\s*/i', $this->_removeTextareaCB(...), $html));
 
         // trim each line.
         // @todo take into account attribute values that span multiple lines.
-        $this->_html = preg_replace('/^\\s+|\\s+$/m', '', $this->_html);
+        $html = self::_check(preg_replace('/^\\s+|\\s+$/m', '', $html));
 
         // remove ws around block/undisplayed elements
-        $this->_html = preg_replace(
-            '/\\s+(<\\/?(?:area|base(?:font)?|blockquote|body'
-            . '|caption|center|cite|col(?:group)?|dd|dir|div|dl|dt|fieldset|form'
-            . '|frame(?:set)?|h[1-6]|head|hr|html|legend|li|link|map|menu|meta'
-            . '|ol|opt(?:group|ion)|p|param|t(?:able|body|head|d|h||r|foot|itle)'
-            . '|ul)\\b[^>]*>)/i',
-            '$1',
-            $this->_html
+        $html = self::_check(
+            preg_replace(
+                '/\\s+(<\\/?(?:area|base(?:font)?|blockquote|body'
+                . '|caption|center|cite|col(?:group)?|dd|dir|div|dl|dt|fieldset|form'
+                . '|frame(?:set)?|h[1-6]|head|hr|html|legend|li|link|map|menu|meta'
+                . '|ol|opt(?:group|ion)|p|param|t(?:able|body|head|d|h||r|foot|itle)'
+                . '|ul)\\b[^>]*>)/i',
+                '$1',
+                $html
+            )
         );
 
         // remove ws outside of all elements
-        $this->_html = preg_replace(
-            '/>(\\s(?:\\s*))?([^<]+)(\\s(?:\s*))?</'
-            ,
-            '>$1$2$3<'
-            ,
-            $this->_html
-        );
+        $html = self::_check(preg_replace('/>(\\s(?:\\s*))?([^<]+)(\\s(?:\s*))?</', '>$1$2$3<', $html));
 
         // use newlines before 1st attribute in open tags (to limit line lengths)
-        $this->_html = preg_replace('/(<[a-z\\-]+)\\s+([^>]+>)/i', "$1\n$2", $this->_html);
+        $html = self::_check(preg_replace('/(<[a-z\\-]+)\\s+([^>]+>)/i', "$1\n$2", $html));
 
         // fill placeholders
-        $this->_html = str_replace(
-            array_keys($this->_placeholders)
-            ,
-            array_values($this->_placeholders)
-            ,
-            $this->_html
-        );
+        $html = strtr($html, $this->_placeholders);
         // issue 229: multi-pass to catch scripts that didn't get replaced in textareas
-        $this->_html = str_replace(
-            array_keys($this->_placeholders)
-            ,
-            array_values($this->_placeholders)
-            ,
-            $this->_html
-        );
-        return $this->_html;
+        $html = strtr($html, $this->_placeholders);
+
+        return $this->_html = $html;
     }
 
-    protected function _commentCB($m)
+    /**
+     * Las funciones preg_* devuelven null si fallan (por ejemplo, por el límite de backtracking)
+     */
+    private static function _check(?string $result): string
+    {
+        if ($result === null) {
+            throw new RuntimeException('HTML minification failed: ' . preg_last_error_msg());
+        }
+        return $result;
+    }
+
+    /**
+     * @param array<int|string, string> $m
+     */
+    protected function _commentCB(array $m): string
     {
         return (str_starts_with($m[1], '[') || str_contains($m[1], '<!['))
             ? $m[0]
             : '';
     }
 
-    protected function _reservePlace($content): string
+    protected function _reservePlace(string $content): string
     {
         $placeholder = '%' . $this->_replacementHash . count($this->_placeholders) . '%';
         $this->_placeholders[$placeholder] = $content;
         return $placeholder;
     }
 
-    protected ?bool $_isXhtml = null;
-    protected string|null $_replacementHash = null;
-    protected array $_placeholders = [];
-    protected mixed $_cssMinifier = null;
-    protected mixed $_jsMinifier = null;
-
-    protected function _removePreCB($m): string
+    /**
+     * @param array<int|string, string> $m
+     */
+    protected function _removePreCB(array $m): string
     {
         return $this->_reservePlace("<pre{$m[1]}");
     }
 
-    protected function _removeTextareaCB($m): string
+    /**
+     * @param array<int|string, string> $m
+     */
+    protected function _removeTextareaCB(array $m): string
     {
         return $this->_reservePlace("<textarea{$m[1]}");
     }
 
-    protected function _removeStyleCB($m): string
+    /**
+     * @param array<int|string, string> $m
+     */
+    protected function _removeStyleCB(array $m): string
     {
         $openStyle = "<style{$m[1]}";
         $css = $m[2];
         // remove HTML comments
-        $css = preg_replace('/(?:^\\s*<!--|-->\\s*$)/', '', $css);
+        $css = self::_check(preg_replace('/(?:^\\s*<!--|-->\\s*$)/', '', $css));
 
         // remove CDATA section markers
         $css = $this->_removeCdata($css);
 
         // minify
-        $minifier = $this->_cssMinifier ?: 'trim';
-        $css = call_user_func($minifier, $css);
+        $css = ($this->_cssMinifier ?? trim(...))($css);
 
         return $this->_reservePlace(
             $this->_needsCdata($css)
@@ -241,7 +218,10 @@ class Minify_HTML
         );
     }
 
-    protected function _removeScriptCB($m): string
+    /**
+     * @param array<int|string, string> $m
+     */
+    protected function _removeScriptCB(array $m): string
     {
         $openScript = "<script{$m[2]}";
         $js = $m[3];
@@ -252,7 +232,7 @@ class Minify_HTML
 
         // remove HTML comments (and ending "//" if present)
         if ($this->_jsCleanComments) {
-            $js = preg_replace('/(?:^\\s*<!--\\s*|\\s*(?:\\/\\/)?\\s*-->\\s*$)/', '', $js);
+            $js = self::_check(preg_replace('/(?:^\\s*<!--\\s*|\\s*(?:\\/\\/)?\\s*-->\\s*$)/', '', $js));
         }
 
         // remove CDATA section markers
@@ -260,15 +240,15 @@ class Minify_HTML
 
         // check type
         $minify = true;
-        if ($type = preg_match('/type=[\'"](.*?)[\'"]/i', $m[0], $match)) {
+        if (preg_match('/type=[\'"](.*?)[\'"]/i', $m[0], $match)) {
             $minify = strcasecmp($match[1], 'text/javascript') == 0;
         }
 
         // minify
-        $minifier = $minify && $this->_jsMinifier
+        $minifier = $minify && $this->_jsMinifier !== null
             ? $this->_jsMinifier
-            : 'trim';
-        $js = call_user_func($minifier, $js);
+            : trim(...);
+        $js = $minifier($js);
 
         return $this->_reservePlace(
             $this->_needsCdata($js)
@@ -277,16 +257,15 @@ class Minify_HTML
         );
     }
 
-    protected function _removeCdata($str)
+    protected function _removeCdata(string $str): string
     {
         return (str_contains($str, '<![CDATA['))
             ? str_replace(['<![CDATA[', ']]>'], '', $str)
             : $str;
     }
 
-    protected function _needsCdata($str): bool
+    protected function _needsCdata(string $str): bool
     {
-        return ($this->_isXhtml && preg_match('/(?:[<&]|\\-\\-|\\]\\]>)/', $str));
+        return $this->_isXhtml && preg_match('/(?:[<&]|\\-\\-|\\]\\]>)/', $str) === 1;
     }
 }
-

@@ -4,11 +4,12 @@ ini_set('display_errors', 1);
 
 require dirname(__FILE__, 2) . '/vendor/autoload.php';
 
-function format_size($size, $kilobyte = 1024, $format = '%size% %unit%'): string
+function format_size(int|float $size, int $kilobyte = 1024, string $format = '%size% %unit%'): string
 {
 
     $size = $size / $kilobyte; // Convertir bytes a kilobyes
     $units = array('KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+    $unit = array_first($units);
     foreach ($units as $unit) {
         if ($size > $kilobyte) {
             $size = $size / $kilobyte;
@@ -20,7 +21,7 @@ function format_size($size, $kilobyte = 1024, $format = '%size% %unit%'): string
     return strtr(
         $format,
         array(
-            '%size%' => round($size, 2),
+            '%size%' => (string)round($size, 2),
             '%unit%' => $unit
         )
     );

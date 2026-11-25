@@ -1,66 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Basic image manipulation tool (resizing, format change, optimization, etc.)
+ *
+ * @phpstan-import-type OptimizerSettings from Tinyfier_Image_Optimizer
  */
 class Tinyfier_Image_Tool
 {
 
-    protected $_handle;
-    protected string $_format;
+    protected GdImage $_handle;
+    /**
+     * Formato del fichero de origen ('' si la imagen se creó desde un handle)
+     */
+    protected string $_format = '';
 
-    public function __construct($path_or_handle)
+    public function __construct(string|GdImage $path_or_handle)
     {
-        if (is_string($path_or_handle)) {
-            $this->_handle = $this->_load_image($path_or_handle);
-        } else {
-            $this->_handle = $path_or_handle;
-        }
-
-        if (!$this->_handle) {
-            throw new InvalidArgumentException('Invalid path or image handle');
-        }
+        $this->_handle = is_string($path_or_handle) ? $this->_load_image($path_or_handle) : $path_or_handle;
     }
 
-    private function _load_image(string $path): mixed
+    private function _load_image(string $path): GdImage
     {
-        [$w, $h, $type] = getimagesize($path);
-        switch ($type) {
-            case IMAGETYPE_GIF :
-                $this->_format = 'gif';
-                return imagecreatefromgif($path);
-
-            case IMAGETYPE_JPEG:
-                $this->_format = 'jpg';
-                return imagecreatefromjpeg($path);
-
-            case IMAGETYPE_PNG:
-                $this->_format = 'png';
-                return imagecreatefrompng($path);
-
-            case IMAGETYPE_SWF :
-                $this->_format = 'swf';
-                return imagecreatefromswf($path);
-
-            case IMAGETYPE_WBMP :
-                $this->_format = 'wbmp';
-                return imagecreatefromwbmp($path);
-
-            case IMAGETYPE_XBM :
-                $this->_format = 'xbm';
-                return imagecreatefromxbm($path);
-
-            default:
-                return imagecreatefromstring(file_get_contents($path));
+        $info = @getimagesize($path);
+        if ($info === false) {
+            throw new InvalidArgumentException("Invalid image path '{$path}'");
         }
-        return false;
+
+        // GD ya no puede leer SWF, así que ese formato cae en imagecreatefromstring y falla
+        [$this->_format, $handle] = match ($info[2]) {
+            IMAGETYPE_GIF  => ['gif', imagecreatefromgif($path)],
+            IMAGETYPE_JPEG => ['jpg', imagecreatefromjpeg($path)],
+            IMAGETYPE_PNG  => ['png', imagecreatefrompng($path)],
+            IMAGETYPE_WBMP => ['wbmp', imagecreatefromwbmp($path)],
+            IMAGETYPE_XBM  => ['xbm', imagecreatefromxbm($path)],
+            // GD puede estar compilado sin WebP o AVIF
+            IMAGETYPE_WEBP => ['webp', function_exists('imagecreatefromwebp')
+                ? imagecreatefromwebp($path)
+                : throw new RuntimeException('GD was built without WebP support')],
+            IMAGETYPE_AVIF => ['avif', function_exists('imagecreatefromavif')
+                ? imagecreatefromavif($path)
+                : throw new RuntimeException('GD was built without AVIF support')],
+            default        => ['', imagecreatefromstring((string)file_get_contents($path))],
+        };
+
+        if ($handle === false) {
+            throw new InvalidArgumentException("Invalid path or image handle '{$path}'");
+        }
+
+        return $handle;
     }
 
     /**
      * Gets the current image handle
-     * @return mixed
      */
-    public function handle(): mixed
+    public function handle(): GdImage
     {
         return $this->_handle;
     }
@@ -68,14 +63,13 @@ class Tinyfier_Image_Tool
     /**
      * Gets the current image format
      */
-    public function format()
+    public function format(): string
     {
         return $this->_format;
     }
 
     /**
      * Return the current image width
-     * @return int
      */
     public function width(): int
     {
@@ -84,7 +78,6 @@ class Tinyfier_Image_Tool
 
     /**
      * Return the current image height
-     * @return int
      */
     public function height(): int
     {
@@ -94,12 +87,7 @@ class Tinyfier_Image_Tool
     /**
      * Resizes the current image
      *
-     * @param int      $width
-     * @param int|null $height
-     * @param boolean  $keep_aspect
-     * @param boolean  $enlarge Disable image resizing when destination size is bigger than original size (only if keey_aspect=true)
-     *
-     * @return boolean
+     * @param bool $enlarge Disable image resizing when destination size is bigger than original size (only if keey_aspect=true)
      */
     public function resize(int $width, ?int $height = null, bool $keep_aspect = true, bool $enlarge = false): bool
     {
@@ -113,8 +101,8 @@ class Tinyfier_Image_Tool
         // Adjust final size
         if ($keep_aspect) {
             $aspect_ratio = min($width / $current_width, $height / $current_height);
-            $dest_width = round($current_width * $aspect_ratio);
-            $dest_height = round($current_height * $aspect_ratio);
+            $dest_width = (int)round($current_width * $aspect_ratio);
+            $dest_height = (int)round($current_height * $aspect_ratio);
 
             if (!$enlarge && ($dest_width > $current_width || $dest_height > $current_height)) {
                 return true;
@@ -128,7 +116,6 @@ class Tinyfier_Image_Tool
         $thumb = imagecreatetruecolor($dest_width, $dest_height);
         imagealphablending($thumb, false);
         $success = imagecopyresampled($thumb, $this->_handle, 0, 0, 0, 0, $dest_width, $dest_height, $current_width, $current_height);
-        imagedestroy($this->_handle);
 
         $this->_handle = $thumb;
 
@@ -192,8 +179,6 @@ class Tinyfier_Image_Tool
      * @param int|null $maxh  Maximum height allowed for the final image, null to disable
      * @param int|null $minw  Minimum width allowed for the final image, null to disable
      * @param int|null $minh  Minimum height allowed for the final image, null to disable
-     *
-     * @return boolean
      */
     public function aspect_ratio(float $ratio, ?int $maxw = null, ?int $maxh = null, ?int $minw = null, ?int $minh = null): bool
     {
@@ -222,9 +207,9 @@ class Tinyfier_Image_Tool
 
         //Resize to the final ratio
         if ($ratio > 1) { //Width>height
-            $h = round($w / $ratio);
+            $h = (int)round($w / $ratio);
         } else {
-            $w = round($h * $ratio);
+            $w = (int)round($h * $ratio);
         }
 
         return $this->resize($w, $h, false);
@@ -233,7 +218,7 @@ class Tinyfier_Image_Tool
     /**
      * Sets the background color for transparent images
      */
-    public function set_bg_color($r = 255, $g = 255, $b = 255): void
+    public function set_bg_color(int $r = 255, int $g = 255, int $b = 255): void
     {
         // Create a new true color image with the same size
         $w = imagesx($this->_handle);
@@ -242,6 +227,9 @@ class Tinyfier_Image_Tool
 
         // Fill the new image with white background
         $bg = imagecolorallocate($with_bg, $r, $g, $b);
+        if ($bg === false) {
+            throw new RuntimeException('Cannot allocate the background color');
+        }
         imagefill($with_bg, 0, 0, $bg);
 
         // Copy original transparent image onto the new image
@@ -254,10 +242,14 @@ class Tinyfier_Image_Tool
      * Apply a filter on the selected image. For the list of available filters
      * , please check http://php.net/manual/function.imagefilter.php
      */
-    public function filter(string $filter, $arg1 = '', $arg2 = '', $arg3 = '')
+    public function filter(string $filter, int|float|bool ...$args): bool
     {
         //Find filter constant
-        if (!is_numeric($filter) && !defined($filter)) {
+        if (is_numeric($filter)) {
+            $filter_id = (int)$filter;
+        } elseif (defined($filter)) {
+            $filter_id = (int)constant($filter);
+        } else {
             $replaces = [
                 'desaturate' => 'grayscale',
                 'invert'     => 'negate',
@@ -278,32 +270,24 @@ class Tinyfier_Image_Tool
                 throw new UnexpectedValueException("Filter '$filter' not valid");
             }
 
-            $filter = constant($filter);
+            $filter_id = (int)constant($filter);
         }
 
         //Apply filter
-        $args = func_get_args();
-        array_shift($args);
-        array_unshift($args, $filter);
-        array_unshift($args, $this->_handle);
-        return imagefilter(...$args);
+        return imagefilter($this->_handle, $filter_id, ...$args);
     }
 
-    private function _is_transparent($in): bool
+    private function _is_transparent(int $in): bool
     {
-        $c = imagecolorsforindex($this->_handle, $in);
-        if ($c['alpha'] >= 127) {
-            return true;
-        } else {
-            return false;
-        }
+        return imagecolorsforindex($this->_handle, $in)['alpha'] >= 127;
     }
 
     /**
      * Crop the current image, removing the transparent background area
-     * @return resource
+     *
+     * @param string|null $pad CSS-like padding: "top right bottom left", "top right bottom", "vertical horizontal" or "all"
      */
-    public function crop($pad = null)
+    public function crop(?string $pad = null): void
     {
         // Calculate padding for each side.
         if (isset($pad)) {
@@ -332,6 +316,8 @@ class Tinyfier_Image_Tool
         // Set the X variables.
         $xmin = $imw;
         $xmax = 0;
+        $ymin = null;
+        $ymax = 0;
 
         // Start scanning for the edges.
         for ($iy = 0; $iy < $imh; $iy++) {
@@ -345,9 +331,7 @@ class Tinyfier_Image_Tool
                     if ($xmax < $ix) {
                         $xmax = $ix;
                     }
-                    if (!isset($ymin)) {
-                        $ymin = $iy;
-                    }
+                    $ymin ??= $iy;
                     $ymax = $iy;
                     if ($first) {
                         $ix = $xmax;
@@ -355,6 +339,11 @@ class Tinyfier_Image_Tool
                     }
                 }
             }
+        }
+
+        // Imagen totalmente transparente: no hay nada que recortar
+        if ($ymin === null) {
+            return;
         }
 
         // The new width and height of the image. (not including padding)
@@ -366,6 +355,9 @@ class Tinyfier_Image_Tool
 
         // Make the background of the new image the same as the background of the old one.
         $transparent = imagecolorallocatealpha($im2, 255, 255, 255, 127);
+        if ($transparent === false) {
+            throw new RuntimeException('Cannot allocate the transparent color');
+        }
         imagefill($im2, 0, 0, $transparent);
 
         // Copy it over to the new image.
@@ -378,24 +370,21 @@ class Tinyfier_Image_Tool
     /**
      * Save the current image on the specified path
      *
-     * @param string        $path           Path to the saved file, NULL to send it to the browser
-     * @param boolean|int   $quality        Lossy quality of the saved file. TRUE for maximum quality and LOSSLESS optimization
-     * @param boolean|array $optimize       Optimize image after save. It can be an array of Tinyfier_Image_Optimizer::process settings
-     * @param boolean       $check_is_equal Check, before save, that the file exists and it's equal to the current image (so it doesnt have to optimize again)
-     * @param mixed|null    $format         Output format for the image, NULL to detect it from the file name
+     * @param string|null               $path           Path to the saved file, NULL to send it to the browser
+     * @param bool|int                  $quality        Lossy quality of the saved file. TRUE for maximum quality and LOSSLESS optimization
+     * @param bool|OptimizerSettings     $optimize       Optimize image after save. It can be an array of Tinyfier_Image_Optimizer::process settings
+     * @param bool                      $check_is_equal Check, before save, that the file exists and it's equal to the current image (so it doesnt have to optimize again)
+     * @param string|int|null           $format         Output format for the image (extension or IMAGETYPE_* constant), NULL to detect it from the file name
      *
-     * @return boolean
      * @warning Optimization is not available when the image is sent to the browser
      */
-    public function save(string $path, bool|int $quality = 85, bool|array $optimize = true, bool $check_is_equal = false, mixed $format = null): bool
+    public function save(?string $path, bool|int $quality = 85, bool|array $optimize = true, bool $check_is_equal = false, string|int|null $format = null): bool
     {
         //Check if image exists and is equal
-        if ($check_is_equal && file_exists($path) && self::equal($this, $path)) {
+        if ($check_is_equal && $path !== null && file_exists($path) && self::equal($this, $path)) {
             return false; //Same images, don't overwrite
         }
-        if (!isset($format)) {
-            $format = str_replace('.', '', strtolower(pathinfo($path, PATHINFO_EXTENSION)));
-        }
+        $format ??= str_replace('.', '', strtolower(pathinfo((string)$path, PATHINFO_EXTENSION)));
 
         //Save image
         switch ($format) {
@@ -403,7 +392,7 @@ class Tinyfier_Image_Tool
             case 'jpeg':
             case IMAGETYPE_JPEG:
                 $this->set_bg_color();
-                $success = imagejpeg($this->_handle, $path, $optimize || $quality === true ? 100 : $quality);
+                $success = imagejpeg($this->_handle, $path, $optimize || is_bool($quality) ? 100 : $quality);
                 break;
 
             case 'gif':
@@ -418,15 +407,44 @@ class Tinyfier_Image_Tool
                 $format = 'png';
                 break;
 
+            case 'webp':
+            case IMAGETYPE_WEBP:
+                if (!function_exists('imagewebp')) {
+                    throw new RuntimeException('GD was built without WebP support');
+                }
+                // Mantener la transparencia. Sin optimizador externo, la calidad se aplica aquí (true = sin pérdida)
+                imagealphablending($this->_handle, false);
+                imagesavealpha($this->_handle, true);
+                $success = imagewebp($this->_handle, $path, match (true) {
+                    $quality === true  => IMG_WEBP_LOSSLESS,
+                    $quality === false => -1,
+                    default            => $quality,
+                });
+                break;
+
+            case 'avif':
+            case IMAGETYPE_AVIF:
+                if (!function_exists('imageavif')) {
+                    throw new RuntimeException('GD was built without AVIF support');
+                }
+                imagealphablending($this->_handle, false);
+                imagesavealpha($this->_handle, true);
+                $success = imageavif($this->_handle, $path, match (true) {
+                    $quality === true  => 100,
+                    $quality === false => -1,
+                    default            => $quality,
+                });
+                break;
+
             default:
                 throw new InvalidArgumentException("Unrecognized format '$format'");
         }
 
         //Optimize
-        if ($optimize && $path != null && $success) {
+        if ($optimize && $path !== null && $success) {
             $optimizer = new Tinyfier_Image_Optimizer();
             $optimizer->mode = $quality === true ? Tinyfier_Image_Optimizer::MODE_LOSSLESS : Tinyfier_Image_Optimizer::MODE_LOSSY;
-            $optimizer->lossy_quality = $quality;
+            $optimizer->lossy_quality = is_int($quality) ? $quality : 100;
             if (is_array($optimize)) {
                 foreach ($optimize as $k => $v) {
                     $optimizer->$k = $v;
@@ -440,35 +458,26 @@ class Tinyfier_Image_Tool
 
     /**
      * Get the current image with the specified format
-     *
-     * @param string|null $format
-     * @param int         $quality
-     *
-     * @return string
      */
     public function get(?string $format = null, int $quality = 85): string
     {
         ob_start();
         $this->save(null, $quality, true, false, $format);
-        return ob_get_clean();
+        return (string)ob_get_clean();
     }
 
     /**
      * Get the mime type for the given format
-     *
-     * @param string $format
-     *
-     * @return string
      */
     public function mimetype(string $format = 'png'): string
     {
-        return (is_string($format) ? 'image/' . $format : image_type_to_mime_type($format));
+        return "image/{$format}";
     }
 
     /**
      * Send the current image to the browser
      */
-    public function send($format = 'png', $quality = 90): bool
+    public function send(string $format = 'png', int $quality = 90): bool
     {
         header('Content-type: ' . $this->mimetype());
         return $this->save(null, $quality, false, false, $format);
@@ -476,10 +485,6 @@ class Tinyfier_Image_Tool
 
     /**
      * Check if a path refers to a valid image
-     *
-     * @param string $path
-     *
-     * @return boolean
      */
     public static function is_valid_image(string $path): bool
     {
@@ -494,20 +499,16 @@ class Tinyfier_Image_Tool
         } else {
             throw new RuntimeException('Could not find exif_imagetype or getimagesize functions');
         }
-
-        return false;
     }
 
     /**
      * Do a pixel by pixel comparation of two images
      * @warning this function can take several minutes on large files
      *
-     * @param mixed $image_a Path or handle to the first image
-     * @param mixed $image_b Path or handle to the second image
-     *
-     * @return bool
+     * @param self|string|GdImage $image_a Path or handle to the first image
+     * @param self|string|GdImage $image_b Path or handle to the second image
      */
-    public static function equal(mixed $image_a, mixed $image_b): bool
+    public static function equal(self|string|GdImage $image_a, self|string|GdImage $image_b): bool
     {
         if (!($image_a instanceof self)) {
             $image_a = new self($image_a);
