@@ -13,10 +13,10 @@
         }
     ],
     "require": {
-        "ideatic/css-optimizer": "*",
-        "leafo/lessphp": "0.5.*",
+        "ideatic/css-optimizer": "^1.4",
         "php": ">=8.5",
-        "ext-gd": "*"
+        "ext-gd": "*",
+        "wikimedia/less.php": "^5.5"
     },
     "autoload": {
         "psr-0": {

@@ -68,7 +68,7 @@ $css = Tinyfier_CSS_Tool::process('a { color: #ff0000 }', ['less' => false]);
 
 | Setting           | Default     | Description                                                                 |
 |-------------------|-------------|-----------------------------------------------------------------------------|
-| `less`            | `true`      | Process the code with lessphp.                                              |
+| `less`            | `true`      | Process the code with [less.php](https://github.com/wikimedia/less.php).    |
 | `absolute_path`   | `''`        | Absolute path of the file (set by `process_file`).                          |
 | `url_path`        | `''`        | URL of the file, used to rewrite relative `url()` values.                   |
 | `cache_path`      | `''`        | Folder for the generated images (sprites, gradients, filters).             |
@@ -81,8 +81,9 @@ $css = Tinyfier_CSS_Tool::process('a { color: #ff0000 }', ['less' => false]);
 | `data`            | `null`      | Variables for the LESS code.                                                |
 | `prefixes`        | `'all'`     | Vendor prefixes to add (`'all'`, `''`, or a list such as `'webkit,mozilla'`). |
 
-> **Known issue:** `leafo/lessphp` 0.5.0 does not parse on PHP 8. Until it is replaced, use
-> `'less' => false`, or LESS files cause a fatal error.
+LESS is compiled with [wikimedia/less.php](https://github.com/wikimedia/less.php), a maintained port of
+less.js. Relative `url()` values are rewritten from `url_path`, also inside imported files. Math follows the
+less.js 4 default: division needs parentheses (`(10px / 2)`), so `font: 12px/1.5` stays as it is.
 
 #### LESS functions
 

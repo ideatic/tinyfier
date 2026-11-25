@@ -33,7 +33,7 @@ class Tinyfier_CSS_Color
     {
         $this->valid = false;
         if (is_array($color)) {
-            // lessphp entrega los canales como números, a veces con decimales
+            // less.php entrega los canales como números, a veces con decimales
             if (count($color) == 3 || count($color) == 4) {
                 $this->r = (int)round($color[0]);
                 $this->g = (int)round($color[1]);

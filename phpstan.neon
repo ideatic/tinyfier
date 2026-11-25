@@ -4,8 +4,6 @@ parameters:
       - ./
   scanDirectories:
     - src
-  scanFiles:
-    - stubs/lessc.stub
   treatPhpDocTypesAsCertain: false
   polluteScopeWithLoopInitialAssignments: false
   polluteScopeWithAlwaysIterableForeach: false

@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * @phpstan-import-type OptimizerSettings from Tinyfier_Image_Optimizer
  * @phpstan-type CssSettings array{
- *     // Procesar el código con lessphp
+ *     // Procesar el código con less.php
  *     less?: bool,
  *     // Ruta absoluta al fichero ('' si el CSS no viene de un fichero)
  *     absolute_path?: string,
@@ -33,7 +33,7 @@ declare(strict_types=1);
  *     prefixes?: string,
  * }
  * @phpstan-type CssFullSettings array{
- *     // Procesar el código con lessphp
+ *     // Procesar el código con less.php
  *     less: bool,
  *     // Ruta absoluta al fichero ('' si el CSS no viene de un fichero)
  *     absolute_path: string,
